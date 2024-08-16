@@ -1,0 +1,146 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Login Form Using Bootstrap 5</title>
+    <!-- Bootstrap 5 CDN Link -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS Link -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <section class="wrapper">
+        <div class="container">
+            <div class="col-sm-8 offset-sm-2 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4 text-center">
+                <div class="logo">
+                    <img decoding="async" src="~/Content/Images/logo_ter.png" class="img-fluid" alt="logo">
+                </div>
+                <form class="rounded bg-white shadow p-5">
+                    <h3 class="text-dark fw-bolder fs-4 mb-2">Crear una cuenta</h3>
+
+                    <div class="fw-normal text-muted mb-2">
+                        Ya te encuentras registrado? <a href="@Url.Action("Login", "Login")" class="text-primary fw-bold text-decoration-none">Iniciar sesion aqui</a>
+                    </div>
+
+
+                    <div class="form-floating mb-3">
+                        <input type="number" class="form-control" id="floatingid" placeholder="Número de identificacion" required>
+                        <label for="floatingFirstName">Número de identificación</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingnombre_completo" placeholder="Nombre Completo" required>
+                        <label for="floatingLastName">Nombre Completo</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="floatingcorreo" placeholder="Correo" required>
+                        <label for="floatingInput">Correo</label>
+                    </div>
+                    
+                    <div class="form-floating mb-3">
+                        <input type="number" class="form-control" id="floatingcorreo" placeholder="Teléfono" required>
+                        <label for="floatingInput">Telefono</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="floatingcontraseña" placeholder="Contraseña" required>
+                        <label for="floatingPassword">Contraseña</label>
+                        <span class="password-info mt-2">Use 8 or more characters with a mix of letters, numbers & symbols.</span>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="floatingcontraseña" placeholder="Contraseña" required>
+                        <label for="floatingPassword">Confirmar contraseña</label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary submit_btn w-100 my-4">Registrarse</button>
+                </form>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
+
+<style>
+    /* Google Poppins Font CDN Link */
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        
+    }
+
+    /* Variables */
+    :root {
+        --primary-font-family: 'Poppins', sans-serif;
+        --light-white: #f5f8fa;
+        --gray: #5e6278;
+        --gray-1: #e3e3e3;
+    }
+
+    body {
+        font-family: var(--primary-font-family);
+        font-size: 14px;
+    }
+
+    /* Main CSS */
+    .wrapper {
+        padding: 0 0 100px;
+        background-image: url("images/bg.png");
+        background-position: bottom center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-attachment: fixed;
+        min-height: 100%;
+    }
+
+        .wrapper .logo img {
+            max-width: 50%;
+        }
+
+        .wrapper input {
+            background-color: var(--light-white);
+            border-color: var(--light-white);
+            color: var(--gray);
+        }
+
+            .wrapper input:focus {
+                box-shadow: none;
+            }
+
+        .wrapper .password-info {
+            font-size: 10px;
+        }
+
+        .wrapper .submit_btn {
+            padding: 10px 15px;
+            font-weight: 500;
+        }
+
+        .wrapper .login_with {
+            padding: 8px 15px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: 0.3s ease-in-out;
+        }
+
+            .wrapper .submit_btn:focus,
+            .wrapper .login_with:focus {
+                box-shadow: none;
+            }
+
+            .wrapper .login_with:hover {
+                background-color: var(--gray-1);
+                border-color: var(--gray-1);
+            }
+
+            .wrapper .login_with img {
+                max-width: 7%;
+            }
+</style>
