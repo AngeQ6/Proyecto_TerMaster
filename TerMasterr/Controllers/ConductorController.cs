@@ -13,5 +13,16 @@ namespace TerMasterr.Controllers
         {
             return View();
         }
+
+        public ActionResult ModalView()
+        {
+            return View();
+        }
+
+        public ActionResult ModalContent()
+        {
+            // Lógica para obtener el contenido que deseas mostrar
+            return PartialView("_PartialModalContent"); // Devuelve otro PartialView o contenido que necesites
+        }
     }
 }

@@ -363,6 +363,7 @@
     <Content Include="webfonts\fa-brands-400.eot" />
     <Content Include="Views\Shared\_Layout - conductor.cshtml" />
     <Content Include="Views\Conductor\Index.cshtml" />
+    <Content Include="Views\Conductor\ModalView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

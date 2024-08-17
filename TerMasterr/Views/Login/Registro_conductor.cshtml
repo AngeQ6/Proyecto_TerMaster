@@ -21,7 +21,7 @@
         <div class="container">
             <div class="col-sm-8 offset-sm-2 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4 text-center">
                 <div class="logo">
-                    <img decoding="async" src="~/Content/Images/logo_ter.png" class="img-fluid" alt="logo">
+                    <img decoding="async" src="~/Content/Images/Logo_azul.png" class="img-fluid" alt="logo">
                 </div>
                 <form class="rounded bg-white shadow p-5">
                     <h3 class="text-dark fw-bolder fs-4 mb-2">Crear una cuenta</h3>
@@ -30,6 +30,11 @@
                         Ya te encuentras registrado? <a href="@Url.Action("Login", "Login")" class="text-primary fw-bold text-decoration-none">Iniciar sesion aqui</a>
                     </div>
 
+                    @{ // Renderizar el Partial View del modal
+                        Html.RenderPartial("ModalView");
+                    }
+
+                    <button type="submit" class="btn btn-primary submit_btn w-100 my-4" data-toggle="modal" data-target="#staticBackdrop5" data-url="@Url.Action("ModalContent", "Login")">Verificar codigo de pueblo</button>
 
                     <div class="form-floating mb-3">
                         <input type="number" class="form-control" id="floatingid" placeholder="Número de identificacion" required>
@@ -43,7 +48,7 @@
                         <input type="email" class="form-control" id="floatingcorreo" placeholder="Correo" required>
                         <label for="floatingInput">Correo</label>
                     </div>
-                    
+
                     <div class="form-floating mb-3">
                         <input type="number" class="form-control" id="floatingcorreo" placeholder="Teléfono" required>
                         <label for="floatingInput">Telefono</label>
@@ -57,7 +62,7 @@
                         <input type="password" class="form-control" id="floatingcontraseña" placeholder="Contraseña" required>
                         <label for="floatingPassword">Confirmar contraseña</label>
                     </div>
-                    
+
                     <button type="submit" class="btn btn-primary submit_btn w-100 my-4">Registrarse</button>
                 </form>
             </div>
@@ -73,7 +78,6 @@
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        
     }
 
     /* Variables */
@@ -143,4 +147,32 @@
             .wrapper .login_with img {
                 max-width: 7%;
             }
+
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
 </style>
+
+@section scripts{
+    <script>
+            $(document).ready(function () {
+                $('#staticBackdrop5').on('show.bs.modal', function (e) {
+                    var button = $(e.relatedTarget); // Botón que abrió el modal
+                    var url = button.data('url'); // URL desde donde cargar el contenido
+
+                    // Cargar contenido en el cuerpo del modal
+                    $.get(url, function (data) {
+                        $('.modal-body').html(data);
+                    });
+                });
+        });
+    
+    </script>
+}
