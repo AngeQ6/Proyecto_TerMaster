@@ -67,6 +67,7 @@ namespace TerMasterr.Controllers
 
             ViewBag.Error = "ModelState no es válido";
             return View();
+
         }
 
 
