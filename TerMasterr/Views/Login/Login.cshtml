@@ -119,56 +119,7 @@
     @*<script src="js/scripts.js"></script>*@
 
 
-    <!-- Modal -->
-    @*<div class="modal top fade" id="staticBackdrop5" tabindex="-1" aria-labelledby="example" aria-hidden="true" data-bs-keyboard="true">
-        <div class="modal-dialog modal-dialog-centered text-center d-flex justify-content-center">
-            <div class="modal-content w-75 position-relative">
-                <div class="modal-body p-4">
-
-                    <img src="~/Content/Images/logo_ter.png" alt="logo" class="rounded-circle position-absolute top-0 start-50 translate-middle h-50" />    
-
-
-                    @using (Html.BeginForm("Login", "Login", FormMethod.Post, new { id = "LoginForm" }))
-                    {
-                        <div>
-                            <h4 class="pt-lg-5 my-3">Inicio de Sesión</h4>
-
-                            <br />
-
-                             
-                            <div class="form-floating mb-3">
-                                <input type="number" id="id_conductor" name="id_conductor" class="form-control" placeholder="Numero de identificación" required />
-                                <label class="form-label" for="id_conductor">Número de identificación</label>
-                            </div>
-
-                             
-                            <div class="form-floating mb-3">
-                                <input type="password" id="contraseña" name="contraseña" class="form-control" placeholder="Contraseña" required />
-                                <label class="form-label" for="contraseña">Contraseña</label>
-                            </div>
-
-                            @if (ViewBag.Error != null)
-                        {
-                            <div class="alert alert-danger" role="alert">
-                                @ViewBag.Error
-                            </div>
-                        }
-
-                            <div class="align-content-center btn-registro">
-                                <a href="@Url.Action("Registro_conductor", "Login")">Regístrate ahora</a>
-                            </div>
-
-                            <div class="align-content-center btn-registro">
-                                <a href="@Url.Action("RecuperarContrasena", "Login")">¿Has olvidado tu contraseña?</a>
-                            </div>
-                             Botón de enviar 
-                            <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary">Iniciar sesión</button>
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-    </div>*@
+    
 
     <!-- Modal -->
 </body>
