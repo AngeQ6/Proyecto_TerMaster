@@ -31,7 +31,7 @@ namespace TerMasterr.Controllers
         {
             return View();
         }
-        
+
         public ActionResult Registro_conductor()
         {
             return View();
@@ -70,6 +70,9 @@ namespace TerMasterr.Controllers
 
         }
 
-
+        public ActionResult Validar_cod_conductor()
+        {
+            return View();
+        }
     }
 }
