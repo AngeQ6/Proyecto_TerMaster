@@ -148,3 +148,6 @@ C:\Users\USER\Source\Repos\Proyecto_TerMaster\Conexion\obj\Debug\ConexionMongoDB
 C:\Users\USER\Source\Repos\Proyecto_TerMaster\Conexion\obj\Debug\ConexionMongoDB.csproj.CopyComplete
 C:\Users\USER\Source\Repos\Proyecto_TerMaster\Conexion\obj\Debug\Conexion.dll
 C:\Users\USER\Source\Repos\Proyecto_TerMaster\Conexion\obj\Debug\Conexion.pdb
+C:\Users\USER\Source\Repos\Proyecto_TerMaster\Conexion\bin\Debug\Capa_entidad.dll
+C:\Users\USER\Source\Repos\Proyecto_TerMaster\Conexion\bin\Debug\Capa_entidad.pdb
+C:\Users\USER\Source\Repos\Proyecto_TerMaster\Conexion\bin\Debug\Capa_entidad.dll.config

@@ -5,12 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 using System.Configuration;
+using Capa_entidad;
 
 namespace ConexionMongoDB
 {
     public class Conexion
     {
-        private readonly IMongoDatabase _database;
+        private readonly IMongoDatabase db;
 
         public Conexion()
         {
@@ -27,7 +28,7 @@ namespace ConexionMongoDB
                 var mongoClient = new MongoClient(connectionString);
 
                 // Conectar a la base de datos "TerMaster"
-                _database = mongoClient.GetDatabase("TerMaster");
+                db = mongoClient.GetDatabase("TerMaster");
             }
             catch (ConfigurationErrorsException ex)
             {
@@ -56,7 +57,7 @@ namespace ConexionMongoDB
         {
             try
             {
-                return _database.GetCollection<T>(collectionName);
+                return db.GetCollection<T>(collectionName);
             }
             catch (MongoException ex)
             {
@@ -64,5 +65,7 @@ namespace ConexionMongoDB
                 throw new ApplicationException($"No se pudo obtener la colección: {collectionName}", ex);
             }
         }
+
+
     }
 }
