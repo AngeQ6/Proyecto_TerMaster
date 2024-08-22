@@ -234,6 +234,9 @@
   <ItemGroup>
     <Content Include="Content\all.css" />
     <Content Include="Content\all.min.css" />
+    <Content Include="Content\aos.css" />
+    <Content Include="Content\bootstrap-icons.css" />
+    <Content Include="Content\bootstrap-icons.min.css" />
     <Content Include="Content\brands.css" />
     <Content Include="Content\brands.min.css" />
     <Content Include="Content\font-awesome.css" />
@@ -256,6 +259,8 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="Content\glightbox.css" />
+    <Content Include="Content\glightbox.min.css" />
     <Content Include="Content\Images\Logo_azul.png" />
     <Content Include="Content\Images\logo_ter.png" />
     <Content Include="Content\regular.css" />
@@ -266,6 +271,7 @@
     <Content Include="Content\styles.css" />
     <Content Include="Content\svg-with-js.css" />
     <Content Include="Content\svg-with-js.min.css" />
+    <Content Include="Content\swiper-bundle.min.css" />
     <Content Include="Content\v4-shims.css" />
     <Content Include="Content\v4-shims.min.css" />
     <Content Include="favicon.ico" />
@@ -273,6 +279,9 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="mongocrypt.dll" />
+    <Content Include="Scripts\aos.cjs.js" />
+    <Content Include="Scripts\aos.esm.js" />
+    <Content Include="Scripts\aos.js" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
@@ -308,6 +317,8 @@
     <Content Include="fonts\fontawesome-webfont.eot" />
     <Content Include="libmongocrypt.so" />
     <Content Include="libmongocrypt.dylib" />
+    <Content Include="Scripts\aos.js.map" />
+    <Content Include="Content\bootstrap-icons.scss" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\fontawesome\all.js" />
     <Content Include="Scripts\fontawesome\all.min.js" />
@@ -323,6 +334,8 @@
     <Content Include="Scripts\fontawesome\solid.min.js" />
     <Content Include="Scripts\fontawesome\v4-shims.js" />
     <Content Include="Scripts\fontawesome\v4-shims.min.js" />
+    <Content Include="Scripts\glightbox.js" />
+    <Content Include="Scripts\glightbox.min.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
     <Content Include="Scripts\jquery-3.4.1.slim.js" />
@@ -333,6 +346,9 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\purecounter_vanilla.js" />
+    <Content Include="Scripts\swiper-bundle.min.js" />
+    <Content Include="Scripts\validate.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -364,6 +380,9 @@
     <Content Include="Views\Shared\_Layout - conductor.cshtml" />
     <Content Include="Views\Conductor\Index.cshtml" />
     <Content Include="Views\Login\Validar_cod_conductor.cshtml" />
+    <Content Include="Views\Shared\_Layout - conductor _prin.cshtml" />
+    <Content Include="Scripts\purecounter_vanilla.js.map" />
+    <Content Include="Scripts\swiper-bundle.min.js.map" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
