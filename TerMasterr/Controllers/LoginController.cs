@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using Capa_entidad;
 using ConexionMongoDB;
 using MongoDB.Bson;
+using System.Threading.Tasks;
 
 namespace TerMasterr.Controllers
 {
@@ -26,7 +27,7 @@ namespace TerMasterr.Controllers
             }
         }
 
-        // GET: Login
+        /////////////////////////////////////////////// VISTAS ///////////////////////////////
         [HttpGet]
         public ActionResult Login()
         {
@@ -37,6 +38,10 @@ namespace TerMasterr.Controllers
         {
             return View();
         }
+        //////////////////////////////////////////////////////////////////
+       
+
+        //////////////////////////////// METODOS ////////////////////////////////////
 
         [HttpPost]
         public ActionResult Login(Conductor model)
@@ -116,6 +121,51 @@ namespace TerMasterr.Controllers
                 // Manejar errores
                 TempData["Mensaje"] = $"Error: {ex.Message}";
                 return RedirectToAction("Validar_cod_conductor", "Login");
+            }
+        }
+        [HttpPost]
+        public async Task<ActionResult> Registrar(string id_conductor, string nombre, string contraseña, string telefono, string correo)
+        {
+            try
+            {
+                var conexion = new Conexion();
+                var coleccionConductores = conexion.GetCollection<Conductor>("Conductor");
+
+                // Validar si el conductor ya existe
+                var conductorExistente = await coleccionConductores.Find(c => c.id_conductor == Convert.ToInt32(id_conductor)).FirstOrDefaultAsync();
+
+                if (conductorExistente != null)
+                {
+                    // Si el conductor ya existe, mostrar un mensaje de error
+                    TempData["ErrorMessage"] = "El conductor con este ID ya existe. Por favor, use otro ID.";
+                    return RedirectToAction("Registro_conductor", "Login");
+                }
+
+                // Si el conductor no existe, proceder con el registro
+                var nuevo_conductor = new Conductor
+                {
+                    id_conductor = Convert.ToInt32(id_conductor),
+                    nombre = nombre,
+                    contraseña = contraseña,
+                    telefono = Convert.ToInt64(telefono),
+                    correo = correo
+                };
+
+                await coleccionConductores.InsertOneAsync(nuevo_conductor);
+
+                // Si la inserción es exitosa, almacenar un mensaje de éxito en TempData
+                TempData["SuccessMessage"] = "Registro exitoso. Ahora puedes iniciar sesión.";
+
+                // Redirigir al login o a otra página según sea necesario
+                return RedirectToAction("Login", "Login");
+            }
+            catch (Exception ex)
+            {
+                // Manejo de errores: almacenar el mensaje de error en TempData
+                TempData["ErrorMessage"] = "Ocurrió un error al registrar el conductor: " + ex.Message;
+
+                // Redirigir al usuario de vuelta al formulario de registro para que intente nuevamente
+                return RedirectToAction("Registro_conductor", "Login");
             }
         }
 

@@ -11,10 +11,13 @@ namespace Capa_entidad
     public class Conductor
     {
         [BsonId]
-        [BsonRepresentation(BsonType.Int32)]
+        [BsonRepresentation(BsonType.ObjectId)]
 
+        public ObjectId Id { get; set; }
         public int id_conductor { get; set; }
-        public string contraseña { get; set; }
         public string nombre { get; set; }
+        public Int64 telefono { get; set; }
+        public string correo { get; set; }
+        public string contraseña { get; set; }
     }
 }
