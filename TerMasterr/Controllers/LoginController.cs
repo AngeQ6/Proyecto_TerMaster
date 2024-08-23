@@ -13,6 +13,8 @@ namespace TerMasterr.Controllers
 {
     public class LoginController : Controller
     {
+        /////////////////////////////////// CONEXION BD ////////////////////////////
+        
         private readonly Conexion _context;
         public LoginController()
         {
@@ -26,6 +28,11 @@ namespace TerMasterr.Controllers
                 ViewBag.ErrorMessage = "Error al conectar con la base de datos: " + ex.Message;
             }
         }
+        /////////////////////////////////////////////////////////////////////////////////
+
+
+
+
 
         /////////////////////////////////////////////// VISTAS ///////////////////////////////
         [HttpGet]
@@ -108,7 +115,8 @@ namespace TerMasterr.Controllers
                 if (isValid)
                 {
                     TempData["Mensaje_exito"] = "Codigo validado";
-                    return RedirectToAction("Registro_conductor", "Login");
+                    // Devolver a la vista para mostrar el mensaje
+                    return View("Validar_cod_conductor");
                 }
                 else
                 {
@@ -156,8 +164,8 @@ namespace TerMasterr.Controllers
                 // Si la inserción es exitosa, almacenar un mensaje de éxito en TempData
                 TempData["SuccessMessage"] = "Registro exitoso. Ahora puedes iniciar sesión.";
 
-                // Redirigir al login o a otra página según sea necesario
-                return RedirectToAction("Login", "Login");
+                // Devolver la vista de registro para mostrar el mensaje
+                return View("Registro_conductor");
             }
             catch (Exception ex)
             {
@@ -168,6 +176,8 @@ namespace TerMasterr.Controllers
                 return RedirectToAction("Registro_conductor", "Login");
             }
         }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////
 
 
     }

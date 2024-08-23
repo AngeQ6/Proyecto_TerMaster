@@ -46,7 +46,9 @@
                                 Swal.fire({
                                     icon: 'success',
                                     title: '¡Éxito!',
-                                    text: '@TempData["Mensaje_exito"]'
+                                    text: '@Html.Raw(TempData["Mensaje_exito"])'
+                                }).then(function () {
+                                    window.location = '@Url.Action("Registro_conductor", "Login")';
                                 });
 
                             </script>
@@ -59,7 +61,7 @@
                                 Swal.fire({
                                     icon: 'error',
                                     title: '¡Error!',
-                                    text: '@TempData["Mensaje"]'
+                                    text: '@Html.Raw(TempData["Mensaje"])'
                                 });
                             </script>
                          }

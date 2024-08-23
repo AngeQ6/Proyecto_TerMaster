@@ -84,16 +84,22 @@
                                         </div>
                                         <form class="p-3 mt-3" action="@Url.Action("Login", "Login")" method="post">
 
-                                                <div class="form-field d-flex align-items-center">
-                                                    <span class="far fa-user"></span>
-                                                    <input type="number" name="id_conductor" id="id_conductor" placeholder="N° Identificación" required>
+                                            <div class="form-field d-flex align-items-center">
+                                                <span class="far fa-user"></span>
+                                                <input type="number" name="id_conductor" id="id_conductor" placeholder="N° Identificación" required>
+                                            </div>
+                                            <div class="form-field d-flex align-items-center">
+                                                <span class="fas fa-key"></span>
+                                                <input type="password" name="contraseña" id="contraseña" placeholder="Contraseña" required>
+                                            </div>
+                                            @if (ViewBag.Error != null)
+                                            {
+                                                <div class="alert alert-danger" role="alert">
+                                                    @ViewBag.Error
                                                 </div>
-                                                <div class="form-field d-flex align-items-center">
-                                                    <span class="fas fa-key"></span>
-                                                    <input type="password" name="contraseña" id="contraseña" placeholder="Contraseña" required>
-                                                </div>
+                                            }
 
-                                                <button class="btn mt-3">Ingresar</button>
+                                            <button class="btn mt-3">Ingresar</button>
                                         </form>
                                         <div class="text-center fs-6">
                                             <a href="@Url.Action("Recuperar_contrasena", "Login")">¿Olvidaste tu contraseña?</a> o <a href="@Url.Action("Validar_cod_conductor", "Login")">Regístrate</a>
