@@ -28,20 +28,21 @@
 
                 @using (Html.BeginForm("Validar_cod_conductor", "Login", FormMethod.Post))
                 {
-                    <div class="rounded bg-white shadow p-5">
-                        <h3 class="text-dark fw-bolder fs-4 mb-2">Validar codigo de pueblo</h3>
-                        <br />
-                        <div class="form-floating mb-3">
-                            <input type="number" class="form-control" id="floatingid" name="id_pueblo" placeholder="Codigo del pueblo" required>
-                            <label for="floatingFirstName">Codigo del pueblo</label>
-                        </div>
+            <div class="rounded bg-white shadow p-5">
+                <h3 class="text-dark fw-bolder fs-4 mb-2">Validar codigo de pueblo</h3>
+                <br />
+                <div class="form-floating mb-3">
+                    <input type="number" class="form-control" id="floatingid" name="id_pueblo" placeholder="Codigo del pueblo" required>
+                    <label for="floatingFirstName">Codigo del pueblo</label>
+                </div>
 
-                        <button type="submit" class="btn btn-primary submit_btn w-100 my-4">Validar</button>
-                        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                <button type="submit" class="btn btn-primary submit_btn w-60 my-4">Validar</button>
+                <a href="@Url.Action("Login", "Login")" class="btn btn-secondary submit_btn w-40 my-4">Atrás</a>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-                        @if (TempData["Mensaje_exito"] != null)
-                        {
-                            <script>
+                @if (TempData["Mensaje_exito"] != null)
+                {
+                    <script>
 
                                 Swal.fire({
                                     icon: 'success',
@@ -51,22 +52,22 @@
                                     window.location = '@Url.Action("Registro_conductor", "Login")';
                                 });
 
-                            </script>
-                         }
+                    </script>
+                }
 
-                        @if (TempData["Mensaje"] != null)
-                        {
-                            <script>
+                @if (TempData["Mensaje"] != null)
+                {
+                    <script>
 
                                 Swal.fire({
                                     icon: 'error',
                                     title: '¡Error!',
                                     text: '@Html.Raw(TempData["Mensaje"])'
                                 });
-                            </script>
-                         }
+                    </script>
+                }
 
-                    </div>
+            </div>
                  }
             </div>
         </div>
