@@ -508,6 +508,7 @@
     <Content Include="Scripts\purecounter_vanilla.js.map" />
     <Content Include="Scripts\swiper-bundle.min.js.map" />
     <Content Include="Views\Conductor\Index.cshtml" />
+    <Content Include="Views\Login\Recp_contraseña.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

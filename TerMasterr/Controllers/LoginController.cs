@@ -35,7 +35,6 @@ namespace TerMasterr.Controllers
 
 
         /////////////////////////////////////////////// VISTAS ///////////////////////////////
-        [HttpGet]
         public ActionResult Login()
         {
             return View();
@@ -45,8 +44,16 @@ namespace TerMasterr.Controllers
         {
             return View();
         }
+        public ActionResult Recp_contraseña()
+        {
+            return View();
+        }
+        public ActionResult Validar_cod_conductor()
+        {
+            return View();
+        }
         //////////////////////////////////////////////////////////////////
-       
+
 
         //////////////////////////////// METODOS ////////////////////////////////////
 
@@ -83,10 +90,7 @@ namespace TerMasterr.Controllers
 
         }
 
-        public ActionResult Validar_cod_conductor()
-        {
-            return View();
-        }
+        
 
         [HttpPost]
         public ActionResult Validar_cod_conductor(string id_pueblo)

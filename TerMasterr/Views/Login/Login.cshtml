@@ -38,35 +38,7 @@
 
                             <h1 class="display-2 fw-bolder mb-5"><span class="text-gradient ">Bienvenidos a TerMaster</span></h1>
 
-                            <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xxl-start mb-3">
-                                
-                                @*<div>
-                                    <div class="wrapper">
-                                        <div class="logo">
-                                            <img src="~/Content/Images/Logo_redondo.png" alt="">
-                                        </div>
-                                        <div class="text-center mt-4 name">
-                                            Inicio de sesión
-                                        </div>
-                                        <form class="p-3 mt-3">
-                                            <div class="form-field d-flex align-items-center">
-                                                <span class="far fa-user"></span>
-                                                <input type="text" name="userName" id="id_conductor" placeholder="Username">
-                                            </div>
-                                            <div class="form-field d-flex align-items-center">
-                                                <span class="fas fa-key"></span>
-                                                <input type="password" name="password" id="contraseña" placeholder="Password">
-                                            </div>
-                                            <button class="btn mt-3">Ingresar</button>
-                                        </form>
-                                        <div class="text-center fs-6">
-                                            <a href="#">Forget password?</a> or <a href="#">Sign up</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
-                                <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>*@
-                            </div>
+                            <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xxl-start mb-3"></div>
                             
                         </div>
                     </div>
@@ -102,7 +74,7 @@
                                             <button class="btn mt-3">Ingresar</button>
                                         </form>
                                         <div class="text-center fs-6">
-                                            <a href="@Url.Action("Recuperar_contrasena", "Login")">¿Olvidaste tu contraseña?</a> o <a href="@Url.Action("Validar_cod_conductor", "Login")">Regístrate</a>
+                                            <a href="@Url.Action("Recp_contraseña", "Login")">¿Olvidaste tu contraseña?</a> o <a href="@Url.Action("Validar_cod_conductor", "Login")">Regístrate</a>
                                         </div>
                                     </div>
                                     
@@ -116,6 +88,7 @@
                         </div>
                     </div>
                 </div>
+            </div>
         </header>
     </main>
 
