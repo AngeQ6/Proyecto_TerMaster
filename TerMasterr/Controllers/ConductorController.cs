@@ -13,7 +13,14 @@ namespace TerMasterr.Controllers
         {
             return View();
         }
+        public ActionResult Modificar_datos_personales()
+        {
+            return View();
+        }
 
-        
+        public ActionResult Registrar_entrada()
+        {
+            return View();
+        } 
     }
 }

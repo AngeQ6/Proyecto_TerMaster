@@ -1,0 +1,104 @@
+﻿
+@{
+    ViewBag.Title = "Modificar_datos_personales";
+    Layout = "~/Views/Shared/_Layout - conductor.cshtml";
+}
+
+
+
+<style>
+    :root {
+        --background: 0 0% 100%;
+        --foreground: 240 10% 3.9%;
+        --card: 0 0% 100%;
+        --card-foreground: 240 10% 3.9%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 240 10% 3.9%;
+        --primary: 240 5.9% 10%;
+        --primary-foreground: 0 0% 98%;
+        --secondary: 240 4.8% 95.9%;
+        --secondary-foreground: 240 5.9% 10%;
+        --muted: 240 4.8% 95.9%;
+        --muted-foreground: 240 3.8% 45%;
+        --accent: 240 4.8% 95.9%;
+        --accent-foreground: 240 5.9% 10%;
+        --destructive: 0 72% 51%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 240 5.9% 90%;
+        --input: 240 5.9% 90%;
+        --ring: 240 5.9% 10%;
+        --chart-1: 173 58% 39%;
+        --chart-2: 12 76% 61%;
+        --chart-3: 197 37% 24%;
+        --chart-4: 43 74% 66%;
+        --chart-5: 27 87% 67%;
+        --radius: 0.5rem;
+    }
+</style>
+<style>
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Inter', sans-serif;
+        --font-sans-serif: 'Inter';
+    }
+</style>
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+        --font-sans-serif: 'Inter';
+    }
+</style>
+<div class="w-full max-w-4xl mx-auto p-6">
+    <div class="h-2 bg-primary"></div>
+    <div class="space-y-4">
+        <h2 class="text-2xl font-bold">Simulación financiera para cliente</h2>
+        <p>
+            Con este formulario puedes saber cuánto le puede prestar el banco a tu cliente y los montos de pago para la
+            adquisición de su inmueble.
+        </p>
+    </div>
+    <div class="grid grid-cols-2 gap-6">
+        <div class="space-y-4">
+            <label for="bank">Banco</label>
+            <select id="bank" class="w-full px-4 py-2 border rounded">
+                <option value="bank1">Banco 1</option>
+                <option value="bank2">Banco 2</option>
+            </select>
+        </div>
+        <div class="space-y-4">
+            <label for="credit-line">Línea de crédito</label>
+            <select id="credit-line" class="w-full px-4 py-2 border rounded">
+                <option value="line1">Línea 1</option>
+                <option value="line2">Línea 2</option>
+            </select>
+        </div>
+        <div class="space-y-4">
+            <p>¿Conoce el precio de la vivienda?</p>
+            <div class="flex items-center space-x-2">
+                <input type="radio" id="yes" name="price-known" value="yes" />
+                <label for="yes">Sí</label>
+            </div>
+            <div class="flex items-center space-x-2">
+                <input type="radio" id="no" name="price-known" value="no" />
+                <label for="no">No</label>
+            </div>
+        </div>
+        <div class="space-y-4">
+            <label for="monthly-payment">¿Cuánto puede pagar mensualmente tu cliente?</label>
+            <input id="monthly-payment" placeholder="COP$" class="w-full px-4 py-2 border rounded" />
+        </div>
+        <div class="space-y-4">
+            <label for="credit-term">¿A qué plazo necesita el crédito?</label>
+            <select id="credit-term" class="w-full px-4 py-2 border rounded">
+                <option value="term1">Plazo 1</option>
+                <option value="term2">Plazo 2</option>
+            </select>
+        </div>
+        <div class="space-y-4">
+            <label for="savings">¿Cuenta con ahorros?</label>
+            <input id="savings" placeholder="COP$" class="w-full px-4 py-2 border rounded" />
+        </div>
+    </div>
+    <div class="flex justify-end mt-6">
+        <button class="bg-primary text-white px-4 py-2 rounded">Simular</button>
+    </div>
+</div>

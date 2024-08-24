@@ -1,4 +1,4 @@
-/*@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");
 
 :root {
     --header-height: 3rem;
@@ -21,7 +21,7 @@ body {
     padding: 0 1rem;
     font-family: var(--body-font);
     font-size: var(--normal-font-size);
-    transition: .5s;
+    transition: .5s
 }
 
 a {
@@ -38,13 +38,13 @@ a {
     align-items: center;
     justify-content: space-between;
     padding: 0 1rem;
-    background: -webkit-linear-gradient(315deg, #4723D9 0%, #00D2Df 100%);
+    background-color: var(--white-color);
     z-index: var(--z-fixed);
     transition: .5s
 }
 
 .header_toggle {
-    color: var(--white-color);
+    color: var(--first-color);
     font-size: 1.5rem;
     cursor: pointer
 }
@@ -177,4 +177,3 @@ a {
         padding-left: calc(var(--nav-width) + 188px)
     }
 }
-*/

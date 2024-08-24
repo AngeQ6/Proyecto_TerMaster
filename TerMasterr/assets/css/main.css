@@ -147,7 +147,7 @@ h6 {
     --default-color: #ffffff;
     --heading-color: #ffffff;
     color: var(--default-color);
-    background: -webkit-linear-gradient(315deg, #ffde59 0%, #e21e12 100%);
+    background: -webkit-linear-gradient(315deg, #4723D9 0%, #00D2Df 100%);
     padding: 20px 0;
     transition: all 0.5s;
     z-index: 997;
@@ -803,7 +803,7 @@ section,
 
     .hero:before {
         content: "";
-        background: -webkit-linear-gradient(315deg, #ffde59 0%, #e21e12 100%);
+        background: -webkit-linear-gradient(315deg, #4723D9 0%, #00D2Df 100%);
         position: absolute;
         inset: 0;
         z-index: 2;
