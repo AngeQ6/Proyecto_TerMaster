@@ -1332,3 +1332,4 @@ C:\Users\Usuario\source\Repos\PoyectoTerMaster\TerMasterr\obj\Debug\TerMasterr.c
 C:\Users\Usuario\source\Repos\PoyectoTerMaster\TerMasterr\obj\Debug\TerMasterr.csproj.CopyComplete
 C:\Users\Usuario\source\Repos\PoyectoTerMaster\TerMasterr\obj\Debug\TerMasterr.dll
 C:\Users\Usuario\source\Repos\PoyectoTerMaster\TerMasterr\obj\Debug\TerMasterr.pdb
+C:\Users\DELL\source\repos\Proyecto_TerMaster\TerMasterr\bin\QRCoder.dll
