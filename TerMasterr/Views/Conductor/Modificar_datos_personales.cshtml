@@ -1,38 +1,51 @@
-﻿@{
-    ViewBag.Title = "ModificarDatosPersonales";
+﻿
+@{
+    ViewBag.Title = "Modificar_datos_personales";
     Layout = "~/Views/Shared/_Layout - conductor.cshtml";
 }
 
-
-<form>
+<form asp-action="Modificar_datos_personales" method="post">
     <div class="header_2">
         <h2>Modificar datos personales</h2>
     </div>
     <br />
-
     <div class="form-group">
-        <label for="nombre">Nombre Completo</label>
-        <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Ingrese su nombre completo" value="" required />
+        <label for="id">ID</label>
+        <input type="text" class="form-control" id="id" name="id" value="@ViewBag.id_conductor" readonly />
     </div>
     <br />
     <div class="form-group">
-        <label for="email">Correo Electrónico</label>
-        <input type="email" class="form-control" id="email" name="email" placeholder="Ingrese su correo electrónico" value="" required />
+        <label for="nombre">Nombre Completo</label>
+        <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Ingrese su nombre completo" value="@ViewBag.nombre" />
+    </div>
+    <br />
+    <div class="form-group">
+        <label for="correo">Correo Electrónico</label>
+        <input type="email" class="form-control" id="correo" name="correo" placeholder="Ingrese su correo electrónico" value="@ViewBag.correo" />
     </div>
     <br />
     <div class="form-group">
         <label for="telefono">Teléfono</label>
-        <input type="tel" class="form-control" id="telefono" name="telefono" placeholder="Ingrese su número de teléfono" value="" required />
+        <input type="tel" class="form-control" id="telefono" name="telefono" placeholder="Ingrese su número de teléfono" value="@ViewBag.telefono" />
     </div>
     <br />
-    <div class="form-group">
-        <label for="direccion">Dirección</label>
-        <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Ingrese su dirección" value="" required />
-    </div>
-    <br />
-    <button type="submit" class="btn btn-primary btn-block">Modificar</button>
 
+    <button type="submit" class="btn btn-primary btn-block">Modificar</button>
 </form>
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger">
+        @ViewBag.ErrorMessage
+    </div>
+}
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Mensaje"]
+    </div>
+}
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
@@ -71,3 +84,74 @@
             background-color: #5a32a1; /* Color del botón al pasar el mouse */
         }
 </style>
+
+@section scripts{
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+        
+$(document).ready(function () {
+    $.ajax({
+        url: "@Url.Action("Obtener_datos_conductor", "Conductor")",
+        type: 'GET',
+        success: function (data) {
+            console.log("Datos recibidos:", data); // Verifica los datos recibidos
+            if (data) {
+                // No necesitas parsear 'data' porque ya es un objeto JSON
+                $('#id').val(data.id_conductor);
+                $('#nombre').val(data.nombre);
+                $('#correo').val(data.correo);
+                $('#telefono').val(data.telefono);
+            } else {
+                alert("No se recibieron datos del servidor.");
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error("Error en la solicitud AJAX:", status, error); // Imprime el error en la consola
+            alert("Error en la solicitud AJAX: " + error);
+        }
+    });
+});
+
+$('form').submit(function (e) {
+    e.preventDefault(); // Evita que el formulario se envíe de forma tradicional
+
+    var datosUsuario = {
+        nombre: $('#nombre').val(),
+        correo: $('#correo').val(),
+        telefono: $('#telefono').val()
+    };
+
+    console.log("Datos a enviar:", datosUsuario); // Verifica los datos antes de enviarlos
+
+    $.ajax({
+        url: '@Url.Action("Modificar_datos_conductor", "Conductor")',
+        type: 'POST',
+        data: JSON.stringify(datosUsuario),
+        contentType: "application/json; charset=utf-8",
+        success: function (response) {
+            console.log("Respuesta del servidor:", response); // Verifica la respuesta del servidor
+            if (response && response.success) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Actualización exitosa"
+                });
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error al actualizar los datos"
+                });
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error("Error en la solicitud AJAX:", status, error); // Imprime el error en la consola
+            Swal.fire({
+                icon: "error",
+                title: "Error en la solicitud AJAX" + error
+            });
+        }
+    });
+});
+
+
+    </script>
+}

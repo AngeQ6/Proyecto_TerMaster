@@ -64,12 +64,17 @@ namespace TerMasterr.Controllers
             {
                 try
                 {
+                    // Buscar el conductor en la base de datos
                     var conductor = _context.GetCollection<Conductor>("Conductor")
                                             .Find(c => c.id_conductor == model.id_conductor && c.contraseña == model.contraseña)
                                             .FirstOrDefault();
 
                     if (conductor != null)
                     {
+                        // Establecer el ID del conductor en la sesión
+                        Session["id_conductor"] = conductor.id_conductor;
+
+                        // Redirigir a la acción "Index" del controlador "Conductor"
                         return RedirectToAction("Index", "Conductor");
                     }
                     else
@@ -87,10 +92,10 @@ namespace TerMasterr.Controllers
 
             ViewBag.Error = "ModelState no es válido";
             return View();
-
         }
 
-        
+
+
 
         [HttpPost]
         public ActionResult Validar_cod_conductor(string id_pueblo)
