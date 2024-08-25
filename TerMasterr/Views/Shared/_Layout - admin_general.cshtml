@@ -66,6 +66,19 @@
         .sitename {
             margin-left: 10px; /* Espacio entre el logo y el texto */
         }
+
+        body {
+            background-color: #f4f4f4; /* Color de fondo */
+            font-family: Arial, sans-serif; /* Fuente general */
+        }
+
+        .container {
+            max-width: 800px; /* Ancho máximo del contenedor */
+            margin: 50px auto; /* Centrado vertical y horizontal */
+            padding: 30px; /* Espaciado interno */
+            border-radius: 10px; /* Bordes redondeados */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Sombra */
+        }
     </style>
 
 </head>
@@ -84,11 +97,11 @@
 
             <nav id="navmenu" class="navmenu">
                 <ul>
-                    <li><a href="@Url.Action("Index","Conductor")" class="active">Home</a></li>
-                    <li><a href="@Url.Action("Modificar_datos_personales", "Conductor")">Registrar administrador de los pueblos</a></li>
-                    <li><a href="@Url.Action("Modificar_datos_personales", "Conductor")">Pueblos</a></li>
-                    <li><a href="@Url.Action("Modificar_datos_personales", "Conductor")">Reportes</a></li>
-                    <li><a class="dropdown-item" href="@Url.Action("Modificar_datos_personales", "Conductor")">Cerrar Sesion</a></li>
+                    <li><a href="@Url.Action("Index","Administrador_general")" class="active">Home</a></li>
+                    <li><a href="@Url.Action("Registrar_administrador_local", "Administrador_general")">Registrar administradores locales</a></li>
+                    <li><a href="@Url.Action("Pueblos", "Administrador_general")">Pueblos</a></li>
+                    <li><a href="@Url.Action("Reportes", "Administrador_general")">Reportes</a></li>
+                    <li><button class="dropdown-item" href="@Url.Action("Modificar_datos_personales", "Conductor")">Cerrar Sesion</button></li>
                 </ul>
 
                 <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
@@ -97,16 +110,14 @@
         </div>
     </header>
 
-    <main class="main">
-
-        <!-- About Section -->
-        <section id="about" class="about section">
+    <!-- About Section -->
+    <section id="about" class="about section">
+        <form>
             <div class="container" data-aos="fade-up" data-aos-delay="100">
                 @RenderBody()
             </div>
-        </section>
-
-    </main>
+        </form>
+    </section>
 
     <!-- Scroll Top -->
     <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
@@ -114,7 +125,6 @@
     <!-- Imágenes laterales -->
     <!--<img src="@Url.Content("~/Content/Images/Logo_azul.png")" alt="Left Image" class="side-img left-img">
     <img src="@Url.Content("~/Content/Images/Logo_azul.png")" alt="Right Image" class="side-img right-img">-->
-
     <!-- Vendor JS Files -->
     <script src="@Url.Content("~/assets/vendor/bootstrap/js/bootstrap.bundle.min.js")"></script>
     <script src="@Url.Content("~/assets/vendor/php-email-form/validate.js")"></script>

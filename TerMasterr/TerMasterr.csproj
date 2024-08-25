@@ -521,10 +521,10 @@
     <Content Include="Views\Shared\_Layout - admin_general.cshtml" />
     <Content Include="Views\Shared\_Layout - admin_local.cshtml" />
     <Content Include="Views\Administrador_general\Index.cshtml" />
-    <Content Include="Views\Administrador_general\Registrar_administrador_pueblo.cshtml" />
     <Content Include="Views\Administrador_general\Pueblos.cshtml" />
     <Content Include="Views\Administrador_general\Reportes.cshtml" />
     <Content Include="Views\Administrador_general\QR.cshtml" />
+    <Content Include="Views\Administrador_general\Registrar_administrador_local.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
