@@ -326,6 +326,8 @@
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="Content\glightbox.css" />
     <Content Include="Content\glightbox.min.css" />
+    <Content Include="Content\Images\Logo.png" />
+    <Content Include="Content\Images\Logo_2.png" />
     <Content Include="Content\Images\Logo_azul.png" />
     <Content Include="Content\Images\logo_ter.png" />
     <Content Include="Content\img\apple-touch-icon.png" />
@@ -510,12 +512,13 @@
     <Content Include="Views\Login\Recp_contraseña.cshtml" />
     <Content Include="Views\Conductor\Index.cshtml" />
     <Content Include="Views\Conductor\Modificar_datos_personales.cshtml" />
-    <Content Include="Views\Conductor\Registrar_entrada.cshtml" />
+    <Content Include="Views\Shared\_Layout - admin_general.cshtml" />
+    <Content Include="Views\Shared\_Layout - admin_local.cshtml" />
+    <Content Include="Views\Administrador_general\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
-    <Folder Include="Views\Administrador_general\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
