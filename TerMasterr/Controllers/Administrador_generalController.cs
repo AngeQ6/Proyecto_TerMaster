@@ -13,5 +13,17 @@ namespace TerMasterr.Controllers
         {
             return View();
         }
+        public ActionResult Registrar_administrador_pueblo()
+        {
+            return View();
+        }
+        public ActionResult Pueblos()
+        {
+            return View();
+        }
+        public ActionResult Reportes()
+        {
+            return View();
+        }
     }
 }
