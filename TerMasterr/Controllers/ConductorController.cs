@@ -17,10 +17,6 @@ namespace TerMasterr.Controllers
         {
             return View();
         }
-
-        public ActionResult Registrar_entrada()
-        {
-            return View();
-        } 
+ 
     }
 }

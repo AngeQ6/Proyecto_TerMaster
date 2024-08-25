@@ -52,6 +52,7 @@
             max-width: calc(100% - 16%); /* Ajusta el espacio del contenido para no solaparse con las imágenes laterales */
             padding: 0;
         }
+
         .logo {
             display: flex;
             align-items: center;
@@ -73,10 +74,10 @@
 
     <header id="header" class="header d-flex align-items-center fixed-top">
 
-        
+
         <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
-            
-            <a  class="logo d-flex align-items-center">
+
+            <a class="logo d-flex align-items-center">
                 <img src="~/Content/Images/Logo.png" width="70" height="70">
                 <h1 class="sitename">TerMaster</h1>
             </a>
@@ -85,9 +86,9 @@
                 <ul>
                     <li><a href="@Url.Action("Index","Conductor")" class="active">Home</a></li>
                     <li><a href="@Url.Action("Modificar_datos_personales", "Conductor")">Modificar datos personales</a></li>
-                    <li><a class="dropdown-item"  href="@Url.Action("Modificar_datos_personales", "Conductor")">Cerrar Sesion</a></li>
+                    <li><a class="dropdown-item" href="@Url.Action("Modificar_datos_personales", "Conductor")">Cerrar Sesion</a></li>
                 </ul>
-                
+
                 <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
             </nav>
 
