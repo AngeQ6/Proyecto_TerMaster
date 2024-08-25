@@ -1,0 +1,12 @@
+# Ignorar archivos binarios y de caché generados por Visual Studio
+*.suo
+*.dll
+*.pdb
+*.cache
+*.csproj.AssemblyReference.cache
+*.DesignTimeResolveAssemblyReferencesInput.cache
+*.exe
+*.bin
+*.obj
+*.log
+.vs/
