@@ -40,6 +40,7 @@ namespace TerMasterr.Controllers
 
         /////////////////////////// METODOS /////////////////////////////////////////////
 
+<<<<<<< HEAD
         //public ActionResult Generar_QR()
         //{
         //    string qrContent = "https://otherminttower78.conveyor.cloud/Aprendiz/RegistrarAsistencia";
@@ -47,6 +48,15 @@ namespace TerMasterr.Controllers
         //    QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrContent, QRCodeGenerator.ECCLevel.Q);
         //    BitmapByteQRCode qrCode = new BitmapByteQRCode(qrCodeData);
         //    byte[] qrCodeImage = qrCode.GetGraphic(20);
+=======
+        public ActionResult Generar_QR()
+        {
+            string qrContent = "https://otherminttower78.conveyor.cloud/Aprendiz/RegistrarAsistencia";
+            QRCodeGenerator qrGenerator = new QRCodeGenerator();
+            QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrContent, QRCodeGenerator.ECCLevel.Q);
+            BitmapByteQRCode qrCode = new BitmapByteQRCode(qrCodeData);
+            byte[] qrCodeImage = qrCode.GetGraphic(15);
+>>>>>>> 72d63ac880e09f0bad8fd9f14252105e944978d0
 
         //    return File(qrCodeImage, "image/png");
         //}
