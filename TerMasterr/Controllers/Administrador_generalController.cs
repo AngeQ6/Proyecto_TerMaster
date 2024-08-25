@@ -42,7 +42,7 @@ namespace TerMasterr.Controllers
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
             QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrContent, QRCodeGenerator.ECCLevel.Q);
             BitmapByteQRCode qrCode = new BitmapByteQRCode(qrCodeData);
-            byte[] qrCodeImage = qrCode.GetGraphic(20);
+            byte[] qrCodeImage = qrCode.GetGraphic(15);
 
             return File(qrCodeImage, "image/png");
         }
