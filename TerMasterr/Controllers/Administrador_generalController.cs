@@ -7,7 +7,7 @@ using System.Web.Mvc;
 using Capa_entidad;
 using ConexionMongoDB;
 using MongoDB.Driver;
-//using QRCoder;
+using QRCoder;
 
 namespace TerMasterr.Controllers
 {
@@ -40,15 +40,6 @@ namespace TerMasterr.Controllers
 
         /////////////////////////// METODOS /////////////////////////////////////////////
 
-<<<<<<< HEAD
-        //public ActionResult Generar_QR()
-        //{
-        //    string qrContent = "https://otherminttower78.conveyor.cloud/Aprendiz/RegistrarAsistencia";
-        //    QRCodeGenerator qrGenerator = new QRCodeGenerator();
-        //    QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrContent, QRCodeGenerator.ECCLevel.Q);
-        //    BitmapByteQRCode qrCode = new BitmapByteQRCode(qrCodeData);
-        //    byte[] qrCodeImage = qrCode.GetGraphic(20);
-=======
         public ActionResult Generar_QR()
         {
             string qrContent = "https://otherminttower78.conveyor.cloud/Aprendiz/RegistrarAsistencia";
@@ -56,10 +47,9 @@ namespace TerMasterr.Controllers
             QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrContent, QRCodeGenerator.ECCLevel.Q);
             BitmapByteQRCode qrCode = new BitmapByteQRCode(qrCodeData);
             byte[] qrCodeImage = qrCode.GetGraphic(15);
->>>>>>> 72d63ac880e09f0bad8fd9f14252105e944978d0
 
-        //    return File(qrCodeImage, "image/png");
-        //}
+            return File(qrCodeImage, "image/png");
+        }
 
         [HttpPost]
         public async Task<ActionResult> Registrar_administrador_local(int id_admin_local, string nombre_admin_local, string apellido_admin_local, string correo_admin_local, int telefono_admin_local)
@@ -76,7 +66,7 @@ namespace TerMasterr.Controllers
                 {
                     // Si el conductor ya existe, mostrar un mensaje de error
                     TempData["ErrorMessage"] = "El administrador local con este ID ya existe. Por favor, use otro ID.";
-                    return RedirectToAction("Registrar_admin_local", "Administrador_general");
+                    return RedirectToAction("Registrar_administrador_local", "Administrador_general");
                 }
 
                 // Generar una contraseña aleatoria
@@ -99,7 +89,7 @@ namespace TerMasterr.Controllers
                 TempData["SuccessMessage"] = "Registro exitoso. Contraseña generada: " + contraseñaGenerada;
 
                 // Devolver la vista de registro para mostrar el mensaje
-                return View("Registrar_admin_local");
+                return View("Registrar_administrador_local");
             }
             catch (Exception ex)
             {
@@ -107,7 +97,8 @@ namespace TerMasterr.Controllers
                 TempData["ErrorMessage"] = "Ocurrió un error al registrar el administrador: " + ex.Message;
 
                 // Redirigir al usuario de vuelta al formulario de registro para que intente nuevamente
-                return RedirectToAction("Registrar_admin_local", "Administrador_general");
+                //return RedirectToAction("Registrar_admin_local", "Administrador_general");
+                return View("Registrar_administrador_local");
             }
         }
 
