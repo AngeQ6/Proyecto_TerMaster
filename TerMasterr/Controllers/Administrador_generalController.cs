@@ -62,7 +62,7 @@ namespace TerMasterr.Controllers
         //}
 
         [HttpPost]
-        public async Task<ActionResult> Registrar_admin_local(int id_admin_local, string nombre_admin_local, string apellido_admin_local, string correo_admin_local, int telefono_admin_local)
+        public async Task<ActionResult> Registrar_administrador_local(int id_admin_local, string nombre_admin_local, string apellido_admin_local, string correo_admin_local, int telefono_admin_local)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace TerMasterr.Controllers
                 {
                     // Si el conductor ya existe, mostrar un mensaje de error
                     TempData["ErrorMessage"] = "El administrador local con este ID ya existe. Por favor, use otro ID.";
-                    return RedirectToAction("Registro_admin_local", "Administrador_local");
+                    return RedirectToAction("Registrar_admin_local", "Administrador_general");
                 }
 
                 // Generar una contraseña aleatoria
@@ -107,7 +107,7 @@ namespace TerMasterr.Controllers
                 TempData["ErrorMessage"] = "Ocurrió un error al registrar el administrador: " + ex.Message;
 
                 // Redirigir al usuario de vuelta al formulario de registro para que intente nuevamente
-                return RedirectToAction("Registro_admin_local", "Administrador_general");
+                return RedirectToAction("Registrar_admin_local", "Administrador_general");
             }
         }
 
