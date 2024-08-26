@@ -72,7 +72,7 @@ namespace TerMasterr.Controllers
                     if (conductor != null)
                     {
                         // Establecer el ID del conductor en la sesión
-                        Session["id_conductor"] = conductor.id_conductor;
+                        Session["IdConductor"] = conductor.id_conductor;
 
                         // Redirigir a la acción "Index" del controlador "Conductor"
                         return RedirectToAction("Index", "Conductor");
