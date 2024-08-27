@@ -14,6 +14,7 @@ namespace TerMasterr.Controllers
    
     public class ConductorController : Controller
     {
+        ///////////////////////////////////////// CONEXION /////////////////////////////////////////
         private readonly Conexion _context;
         public ConductorController()
         {
@@ -27,6 +28,11 @@ namespace TerMasterr.Controllers
                 ViewBag.ErrorMessage = "Error al conectar con la base de datos: " + ex.Message;
             }
         }
+        //////////////////////////////////////////////////////////////////////////////////
+        
+
+
+        ////////////////////////// VISAS /////////////////////////////////////////
         // GET: Conductor
         public ActionResult Index()
         {
@@ -36,7 +42,10 @@ namespace TerMasterr.Controllers
         {
             return View();
         }
+        //////////////////////////////////////////////////////////////////////////////////
 
+
+        ///////////////////////////////////////// METODOS /////////////////////////////////////////
         public JsonResult Obtener_datos_conductor()
         {
             try
@@ -105,7 +114,7 @@ namespace TerMasterr.Controllers
         public JsonResult RegistrarAsistencia(string qrContent)
         {
             // Verificar que el contenido del QR sea el correcto
-            if (qrContent != "https://foundtealtrail99.conveyor.cloud/Conductor/RegistrarAsistencia")
+            if (qrContent != "https://192.168.1.4:45456/Conductor/RegistrarAsistencia")
             {
                 return Json(new { success = false, message = "QR no detectado. Asegúrese de estar escaneando el código correcto." }, JsonRequestBehavior.AllowGet);
             }
@@ -168,6 +177,7 @@ namespace TerMasterr.Controllers
                 return Json(new { success = true, message = "Salida registrada correctamente." }, JsonRequestBehavior.AllowGet);
             }
         }
+        //////////////////////////////////////////////////////////////////////////////////
 
     }
 }
