@@ -1,46 +1,54 @@
 ﻿
 @{
-    ViewBag.Title = "Registrar_administrador_local";
+    ViewBag.Title = "Registrar Administrador Local";
     Layout = "~/Views/Shared/_Layout - admin_general.cshtml";
 }
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<form>
+<form method="post" action="@Url.Action("Registrar_administrador_local", "Administrador_general")">
     <div class="header_2">
         <h2>Registrar Administrador Local</h2>
     </div>
     <br />
-    @using (Html.BeginForm("Registrar_administrador_local", "Administrador_general", FormMethod.Post))
-    {
-        <div class="form-group">
-            <label for="id_admin_local">ID</label>
-            <input type="text" class="form-control" id="id_admin_local" name="id_admin_local" placeholder="Ingrese el ID" required />
-        </div>
-        <br />
-        <div class="form-group">
-            <label for="nombre_admin_local">Nombre Completo</label>
-            <input type="text" class="form-control" id="nombre_admin_local" name="nombre_admin_local" placeholder="Ingrese el nombre completo" required />
-        </div>
-        <br />
-        <div class="form-group">
-            <label for="apellido_admin_local">Apellido</label>
-            <input type="text" class="form-control" id="apellido_admin_local" name="apellido_admin_local" placeholder="Ingrese el apellido" required />
-        </div>
-        <br />
-        <div class="form-group">
-            <label for="correo_admin_local">Correo Electrónico</label>
-            <input type="email" class="form-control" id="correo_admin_local" name="correo_admin_local" placeholder="Ingrese el correo electrónico" required />
-        </div>
-        <br />
-        <div class="form-group">
-            <label for="telefono_admin_local">Teléfono</label>
-            <input type="tel" class="form-control" id="telefono_admin_local" name="telefono_admin_local" placeholder="Ingrese el número de teléfono" required />
-        </div>
-        <br />
-        <button type="submit" class="btn btn-primary btn-block">Registrar</button>
 
-        @if (TempData["SuccessMessage"] != null)
-        {
-            <script>
+    <div class="form-group">
+        <label for="id_admin_local">ID</label>
+        <input type="number" class="form-control" id="id_admin_local" name="id_admin_local" placeholder="Ingrese el ID" required />
+    </div>
+    <br />
+
+    <div class="form-group">
+        <label for="nombre_admin_local">Nombre Completo</label>
+        <input type="text" class="form-control" id="nombre_admin_local" name="nombre_admin_local" placeholder="Ingrese el nombre completo" required />
+    </div>
+    <br />
+
+    <div class="form-group">
+        <label for="apellido_admin_local">Apellido</label>
+        <input type="text" class="form-control" id="apellido_admin_local" name="apellido_admin_local" placeholder="Ingrese el apellido" required />
+    </div>
+    <br />
+
+    <div class="form-group">
+        <label for="correo_admin_local">Correo Electrónico</label>
+        <input type="email" class="form-control" id="correo_admin_local" name="correo_admin_local" placeholder="Ingrese el correo electrónico" required />
+    </div>
+    <br />
+
+    <div class="form-group">
+        <label for="telefono_admin_local">Teléfono</label>
+        <input type="tel" class="form-control" id="telefono_admin_local" name="telefono_admin_local" placeholder="Ingrese el número de teléfono" required />
+    </div>
+    <br />
+
+    
+
+    <button type="submit" class="btn btn-primary btn-block">Registrar</button>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <script>
             Swal.fire({
                 icon: 'success',
                 title: '¡Éxito!',
@@ -48,21 +56,20 @@
             }).then(function () {
                 window.location = '@Url.Action("Registrar_administrador_local", "Administrador_general")';
             });
-            </script>
-        }
-        @if (TempData["ErrorMessage"] != null)
-        {
-            <script>
+        </script>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <script>
             Swal.fire({
                 icon: 'error',
                 title: '¡Error!',
                 text: '@Html.Raw(TempData["ErrorMessage"])'
             });
-            </script>
-        }
+        </script>
     }
-
 </form>
+
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.9.2/dist/umd/popper.min.js"></script>

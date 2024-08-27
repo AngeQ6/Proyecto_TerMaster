@@ -1,7 +1,10 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\TerMasterr",
+    "\\TerMasterr\\Views",
+    "\\TerMasterr\\Views\\Administrador_general"
   ],
-  "SelectedNode": "\\TerMasterr.sln",
+  "SelectedNode": "\\TerMasterr\\Views\\Administrador_general\\Registrar_administrador_local.cshtml",
   "PreviewInSolutionExplorer": false
 }
