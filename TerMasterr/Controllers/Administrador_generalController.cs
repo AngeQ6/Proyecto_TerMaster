@@ -42,7 +42,7 @@ namespace TerMasterr.Controllers
 
         public ActionResult Generar_QR()
         {
-            string qrContent = "https://otherminttower78.conveyor.cloud/Aprendiz/RegistrarAsistencia";
+            string qrContent = "https://foundtealtrail99.conveyor.cloud/Conductor/RegistrarAsistencia";
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
             QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrContent, QRCodeGenerator.ECCLevel.Q);
             BitmapByteQRCode qrCode = new BitmapByteQRCode(qrCodeData);
