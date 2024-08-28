@@ -19,5 +19,6 @@ namespace Capa_entidad
         public Int64 telefono { get; set; }
         public string correo { get; set; }
         public string contraseña { get; set; }
+        public string placa_bus_asignado { get; set; }
     }
 }

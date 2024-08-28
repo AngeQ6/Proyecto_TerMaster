@@ -126,14 +126,14 @@ namespace TerMasterr.Controllers
             }
 
             // Obtener el ID del conductor desde la sesión
-            var idConductor = Session["id_conductor"].ToString();
+            var idConductor = Convert.ToInt32(Session["id_conductor"].ToString());
 
             // Usar _context para obtener la colección de conductores y asistencias
-            var conductoresCollection = _context.GetCollection<BsonDocument>("Conductor");
+            var conductoresCollection = _context.GetCollection<Conductor>("Conductor");
             var asistenciasCollection = _context.GetCollection<BsonDocument>("Asistencia");
 
             // Obtener la información del conductor desde la colección para obtener la placa del bus asignado
-            var filtroConductor = Builders<BsonDocument>.Filter.Eq("id_conductor", idConductor);
+            var filtroConductor = Builders<Conductor>.Filter.Eq("id_conductor", idConductor);
             var conductor = conductoresCollection.Find(filtroConductor).FirstOrDefault();
 
             if (conductor == null)
@@ -141,7 +141,7 @@ namespace TerMasterr.Controllers
                 return Json(new { success = false, message = "Conductor no encontrado en la base de datos." }, JsonRequestBehavior.AllowGet);
             }
 
-            var placaBus = conductor["placa_bus_asignado"].AsString;
+            var placaBus = conductor.placa_bus_asignado;
 
             // Obtener la fecha actual
             var fechaActual = DateTime.Now;
