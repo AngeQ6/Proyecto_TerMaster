@@ -7,7 +7,9 @@ using System.Web.Mvc;
 using Capa_entidad;
 using ConexionMongoDB;
 using MongoDB.Driver;
-using QRCoder;
+//using QRCoder;
+//using SendGrid;
+//using SendGrid.Helpers.Mail;
 
 namespace TerMasterr.Controllers
 {
@@ -40,40 +42,39 @@ namespace TerMasterr.Controllers
 
         /////////////////////////// METODOS /////////////////////////////////////////////
 
-        public ActionResult Generar_QR()
-        {
-            string qrContent = "https://otherminttower78.conveyor.cloud/Aprendiz/RegistrarAsistencia";
-            QRCodeGenerator qrGenerator = new QRCodeGenerator();
-            QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrContent, QRCodeGenerator.ECCLevel.Q);
-            BitmapByteQRCode qrCode = new BitmapByteQRCode(qrCodeData);
-            byte[] qrCodeImage = qrCode.GetGraphic(15);
+        //public ActionResult Generar_QR()
+        //{
+        //    string qrContent = "https://192.168.1.4:45455/Conductor/RegistrarAsistencia";
+        //    QRCodeGenerator qrGenerator = new QRCodeGenerator();
+        //    QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrContent, QRCodeGenerator.ECCLevel.Q);
+        //    BitmapByteQRCode qrCode = new BitmapByteQRCode(qrCodeData);
+        //    byte[] qrCodeImage = qrCode.GetGraphic(15);
 
-            return File(qrCodeImage, "image/png");
-        }
+        //    return File(qrCodeImage, "image/png");
+        //}
+
+        
 
         [HttpPost]
-        public async Task<ActionResult> Registrar_administrador_local(int id_admin_local, string nombre_admin_local, string apellido_admin_local, string correo_admin_local, int telefono_admin_local)
+        public async Task<ActionResult> Registrar_administrador_local(int id_admin_local, string nombre_admin_local, string apellido_admin_local, string correo_admin_local, long telefono_admin_local)
         {
             try
             {
                 var conexion = new Conexion();
-                var coleccionConductores = conexion.GetCollection<Admin_local>("Admin_local");
+                var coleccion_admi_local = conexion.GetCollection<Admin_local>("Admin_local");
 
-                // Validar si el conductor ya existe
-                var conductorExistente = await coleccionConductores.Find(c => c.id_admin_local == id_admin_local).FirstOrDefaultAsync();
+                // Validar si el administrador local ya existe
+                var adminExistente = await coleccion_admi_local.Find(c => c.id_admin_local == id_admin_local).FirstOrDefaultAsync();
 
-                if (conductorExistente != null)
+                if (adminExistente != null)
                 {
-                    // Si el conductor ya existe, mostrar un mensaje de error
                     TempData["ErrorMessage"] = "El administrador local con este ID ya existe. Por favor, use otro ID.";
                     return RedirectToAction("Registrar_administrador_local", "Administrador_general");
                 }
 
-                // Generar una contraseña aleatoria
                 string contraseñaGenerada = GenerarContraseña();
-
-                // Si el conductor no existe, proceder con el registro
-                var nuevo_conductor = new Admin_local
+                // Registrar nuevo administrador local
+                var nuevo_admin_local = new Admin_local
                 {
                     id_admin_local = id_admin_local,
                     nombre_admin_local = nombre_admin_local,
@@ -83,26 +84,22 @@ namespace TerMasterr.Controllers
                     contraseña_admin_local = contraseñaGenerada
                 };
 
-                await coleccionConductores.InsertOneAsync(nuevo_conductor);
+                await coleccion_admi_local.InsertOneAsync(nuevo_admin_local);
 
-                // Si la inserción es exitosa, almacenar un mensaje de éxito en TempData
-                TempData["SuccessMessage"] = "Registro exitoso. Contraseña generada: " + contraseñaGenerada;
+                // Enviar la contraseña generada por correo electrónico
+                //await EnviarCorreoAsync(correo_admin_local, contraseñaGenerada);
 
-                // Devolver la vista de registro para mostrar el mensaje
+                // Si la inserción y el envío de correo son exitosos, almacenar un mensaje de éxito en TempData
+                TempData["SuccessMessage"] = "Registro exitoso. Se ha enviado una contraseña generada al correo proporcionado.";
                 return View("Registrar_administrador_local");
             }
             catch (Exception ex)
             {
-                // Manejo de errores: almacenar el mensaje de error en TempData
-                TempData["ErrorMessage"] = "Ocurrió un error al registrar el administrador: " + ex.Message;
-
-                // Redirigir al usuario de vuelta al formulario de registro para que intente nuevamente
-                //return RedirectToAction("Registrar_admin_local", "Administrador_general");
-                return View("Registrar_administrador_local");
+                TempData["ErrorMessage"] = "Ocurrió un error al registrar el administrador local: " + ex.Message;
+                return RedirectToAction("Registrar_administrador_local", "Administrador_general");
             }
         }
 
-        // Método para generar una contraseña aleatoria
         private string GenerarContraseña(int longitud = 12)
         {
             const string caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
@@ -111,5 +108,20 @@ namespace TerMasterr.Controllers
                                         .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
+
+        //public async Task EnviarCorreoAsync(string destinatario, string contrasena)
+        //{
+        //    var apiKey = ConfigurationManager.AppSettings["SendGridApiKey"];
+        //    var cliente = new SendGridClient(apiKey);
+        //    var from = new EmailAddress("angelicaquintana06@hotmail.com", "TerMaster");
+        //    var subject = "Tu nueva contraseña";
+        //    var to = new EmailAddress(destinatario);
+        //    var plainTextContent = $"Tu contraseña es: {contrasena}";
+        //    var htmlContent = $"<strong>Tu contraseña es: {contrasena}</strong>";
+        //    var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+
+        //    var response = await cliente.SendEmailAsync(msg);
+
+        //}
     }
 }

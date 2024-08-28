@@ -230,11 +230,13 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\Administrador_generalController.cs" />
+    <Compile Include="Controllers\Admin_localController.cs" />
     <Compile Include="Controllers\ConductorController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -525,6 +527,8 @@
     <Content Include="Views\Administrador_general\Reportes.cshtml" />
     <Content Include="Views\Administrador_general\QR.cshtml" />
     <Content Include="Views\Administrador_general\Registrar_administrador_local.cshtml" />
+    <Content Include="Views\Conductor\Reg_huella.cshtml" />
+    <Content Include="Views\Admin_local\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

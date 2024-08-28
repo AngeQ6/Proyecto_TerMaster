@@ -58,30 +58,51 @@ namespace TerMasterr.Controllers
         //////////////////////////////// METODOS ////////////////////////////////////
 
         [HttpPost]
-        public ActionResult Login(Conductor model)
+        public ActionResult Login(string id, string contraseña)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    // Buscar el conductor en la base de datos
+                    
+                    // Buscar el usuario en la colección de conductores
                     var conductor = _context.GetCollection<Conductor>("Conductor")
-                                            .Find(c => c.id_conductor == model.id_conductor && c.contraseña == model.contraseña)
-                                            .FirstOrDefault();
+                        .Find(c => c.id_conductor.ToString() == id && c.contraseña == contraseña)
+                        .FirstOrDefault();
 
                     if (conductor != null)
                     {
-                        // Establecer el ID del conductor en la sesión
-                        Session["id_conductor"] = conductor.id_conductor;
 
-                        // Redirigir a la acción "Index" del controlador "Conductor"
+                        Session["id_conductor"] = conductor.id_conductor;
                         return RedirectToAction("Index", "Conductor");
                     }
-                    else
+
+                    // Buscar el usuario en la colección de administradores generales
+                    var adminGeneral = _context.GetCollection<AdminG>("AdminG")
+                        .Find(a => a.id_admin_general.ToString() == id && a.contraseña_admin_general == contraseña)
+                        .FirstOrDefault();
+
+                    if (adminGeneral != null)
                     {
-                        ViewBag.Error = "Número de identificación o contraseña incorrecta";
-                        return View();
+
+                        Session["IdAdminG"] = adminGeneral.id_admin_general;
+                        return RedirectToAction("Index", "Administrador_general");
                     }
+
+                    // Buscar el usuario en la colección de administradores locales
+                    var adminLocal = _context.GetCollection<Admin_local>("Admin_local")
+                        .Find(a => a.id_admin_local.ToString() == id && a.contraseña_admin_local == contraseña)
+                        .FirstOrDefault();
+
+                    if (adminLocal != null)
+                    {
+
+                        Session["IdAdmin_local"] = adminLocal.id_admin_local;
+                        return RedirectToAction("Index", "Admin_local");
+                    }
+
+                    ViewBag.Error = "Número de identificación o contraseña incorrecta";
+                    return View();
                 }
                 catch (ApplicationException ex)
                 {
@@ -93,6 +114,7 @@ namespace TerMasterr.Controllers
             ViewBag.Error = "ModelState no es válido";
             return View();
         }
+
 
 
 
@@ -140,51 +162,51 @@ namespace TerMasterr.Controllers
                 return RedirectToAction("Validar_cod_conductor", "Login");
             }
         }
-        [HttpPost]
-        public async Task<ActionResult> Registrar(string id_conductor, string nombre, string contraseña, string telefono, string correo)
-        {
-            try
+            [HttpPost]
+            public async Task<ActionResult> Registrar(string id_conductor, string nombre, string contraseña, string telefono, string correo)
             {
-                var conexion = new Conexion();
-                var coleccionConductores = conexion.GetCollection<Conductor>("Conductor");
-
-                // Validar si el conductor ya existe
-                var conductorExistente = await coleccionConductores.Find(c => c.id_conductor == Convert.ToInt32(id_conductor)).FirstOrDefaultAsync();
-
-                if (conductorExistente != null)
+                try
                 {
-                    // Si el conductor ya existe, mostrar un mensaje de error
-                    TempData["ErrorMessage"] = "El conductor con este ID ya existe. Por favor, use otro ID.";
+                    var conexion = new Conexion();
+                    var coleccionConductores = conexion.GetCollection<Conductor>("Conductor");
+
+                    // Validar si el conductor ya existe
+                    var conductorExistente = await coleccionConductores.Find(c => c.id_conductor == Convert.ToInt32(id_conductor)).FirstOrDefaultAsync();
+
+                    if (conductorExistente != null)
+                    {
+                        // Si el conductor ya existe, mostrar un mensaje de error
+                        TempData["ErrorMessage"] = "El conductor con este ID ya existe. Por favor, use otro ID.";
+                        return RedirectToAction("Registro_conductor", "Login");
+                    }
+
+                    // Si el conductor no existe, proceder con el registro
+                    var nuevo_conductor = new Conductor
+                    {
+                        id_conductor = Convert.ToInt32(id_conductor),
+                        nombre = nombre,
+                        contraseña = contraseña,
+                        telefono = Convert.ToInt64(telefono),
+                        correo = correo
+                    };
+
+                    await coleccionConductores.InsertOneAsync(nuevo_conductor);
+
+                    // Si la inserción es exitosa, almacenar un mensaje de éxito en TempData
+                    TempData["SuccessMessage"] = "Registro exitoso. Ahora puedes iniciar sesión.";
+
+                    // Devolver la vista de registro para mostrar el mensaje
+                    return View("Registro_conductor");
+                }
+                catch (Exception ex)
+                {
+                    // Manejo de errores: almacenar el mensaje de error en TempData
+                    TempData["ErrorMessage"] = "Ocurrió un error al registrar el conductor: " + ex.Message;
+
+                    // Redirigir al usuario de vuelta al formulario de registro para que intente nuevamente
                     return RedirectToAction("Registro_conductor", "Login");
                 }
-
-                // Si el conductor no existe, proceder con el registro
-                var nuevo_conductor = new Conductor
-                {
-                    id_conductor = Convert.ToInt32(id_conductor),
-                    nombre = nombre,
-                    contraseña = contraseña,
-                    telefono = Convert.ToInt64(telefono),
-                    correo = correo
-                };
-
-                await coleccionConductores.InsertOneAsync(nuevo_conductor);
-
-                // Si la inserción es exitosa, almacenar un mensaje de éxito en TempData
-                TempData["SuccessMessage"] = "Registro exitoso. Ahora puedes iniciar sesión.";
-
-                // Devolver la vista de registro para mostrar el mensaje
-                return View("Registro_conductor");
             }
-            catch (Exception ex)
-            {
-                // Manejo de errores: almacenar el mensaje de error en TempData
-                TempData["ErrorMessage"] = "Ocurrió un error al registrar el conductor: " + ex.Message;
-
-                // Redirigir al usuario de vuelta al formulario de registro para que intente nuevamente
-                return RedirectToAction("Registro_conductor", "Login");
-            }
-        }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////
 
