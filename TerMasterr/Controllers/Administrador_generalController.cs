@@ -44,7 +44,7 @@ namespace TerMasterr.Controllers
 
         public ActionResult Generar_QR()
         {
-            string qrContent = "https://192.168.1.4:45456/Conductor/RegistrarAsistencia";
+            string qrContent = "https://192.168.1.4:45455/Conductor/RegistrarAsistencia";
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
             QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrContent, QRCodeGenerator.ECCLevel.Q);
             BitmapByteQRCode qrCode = new BitmapByteQRCode(qrCodeData);

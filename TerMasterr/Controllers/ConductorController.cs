@@ -110,11 +110,155 @@ namespace TerMasterr.Controllers
 
             return Json(new { success = false });
         }
+        //[HttpGet]
+        //public JsonResult RegistrarAsistencia(string qrContent)
+        //{
+        //    // Verificar que el contenido del QR sea el correcto
+        //    if (qrContent != "https://192.168.1.4:45456/Conductor/RegistrarAsistencia")
+        //    {
+        //        return Json(new { success = false, message = "QR no detectado. Asegúrese de estar escaneando el código correcto." }, JsonRequestBehavior.AllowGet);
+        //    }
+
+        //    // Verificar que el conductor esté autenticado
+        //    if (Session["id_conductor"] == null)
+        //    {
+        //        return Json(new { success = false, message = "No se pudo registrar la asistencia. Por favor, intente iniciar sesión de nuevo." }, JsonRequestBehavior.AllowGet);
+        //    }
+
+        //    // Obtener el ID del conductor desde la sesión
+        //    var idConductor = Convert.ToInt32(Session["id_conductor"].ToString());
+
+        //    // Usar _context para obtener la colección de conductores y asistencias
+        //    var conductoresCollection = _context.GetCollection<Conductor>("Conductor");
+        //    var asistenciasCollection = _context.GetCollection<BsonDocument>("Asistencia");
+
+        //    // Obtener la información del conductor desde la colección para obtener la placa del bus asignado
+        //    var filtroConductor = Builders<Conductor>.Filter.Eq("id_conductor", idConductor);
+        //    var conductor = conductoresCollection.Find(filtroConductor).FirstOrDefault();
+
+        //    if (conductor == null)
+        //    {
+        //        return Json(new { success = false, message = "Conductor no encontrado en la base de datos." }, JsonRequestBehavior.AllowGet);
+        //    }
+
+        //    var placaBus = conductor.placa_bus_asignado;
+
+        //    // Obtener la fecha actual
+        //    var fechaActual = DateTime.Now;
+
+        //    // Verificar si ya existe un registro de entrada sin salida para este conductor
+        //    var filtroAsistencia = Builders<BsonDocument>.Filter.And(
+        //        Builders<BsonDocument>.Filter.Eq("id_conductor", idConductor),  // Usar id_conductor en lugar de ObjectId
+        //        Builders<BsonDocument>.Filter.Eq("fecha_salida", BsonNull.Value)
+        //    );
+
+        //    var registroExistente = asistenciasCollection.Find(filtroAsistencia).FirstOrDefault();
+
+        //    if (registroExistente == null)
+        //    {
+        //        // Registrar nueva entrada
+        //        var nuevoRegistro = new BsonDocument
+        //    {
+        //        { "fecha_ingreso", fechaActual },
+        //        { "id_conductor", idConductor },  // Usar id_conductor en lugar de ObjectId
+        //        { "placa_bus", placaBus }  // Usar la placa obtenida del conductor
+        //    };
+
+        //        asistenciasCollection.InsertOne(nuevoRegistro);
+
+        //        return Json(new { success = true, message = "Entrada registrada correctamente." }, JsonRequestBehavior.AllowGet);
+        //    }
+        //    else
+        //    {
+        //        // Actualizar el registro existente con la fecha de salida
+        //        var update = Builders<BsonDocument>.Update.Set("fecha_salida", fechaActual);
+        //        asistenciasCollection.UpdateOne(filtroAsistencia, update);
+
+        //        return Json(new { success = true, message = "Salida registrada correctamente." }, JsonRequestBehavior.AllowGet);
+        //    }
+        //}
+
+        //[HttpGet]
+        //public JsonResult RegistrarAsistencia(string qrContent)
+        //{
+        //    // Verificar que el contenido del QR sea el correcto
+        //    if (qrContent != "https://192.168.1.4:45455/Conductor/RegistrarAsistencia")
+        //    {
+        //        return Json(new { success = false, message = "QR no detectado. Asegúrese de estar escaneando el código correcto." }, JsonRequestBehavior.AllowGet);
+        //    }
+
+        //    // Verificar que el conductor esté autenticado
+        //    if (Session["id_conductor"] == null)
+        //    {
+        //        return Json(new { success = false, message = "No se pudo registrar la asistencia. Por favor, intente iniciar sesión de nuevo." }, JsonRequestBehavior.AllowGet);
+        //    }
+
+        //    // Obtener el ID del conductor desde la sesión
+        //    int idConductor = Convert.ToInt32(Session["id_conductor"]);
+
+        //    // Usar _context para obtener la colección de conductores y asistencias
+        //    var conductoresCollection = _context.GetCollection<Conductor>("Conductor");
+        //    var asistenciasCollection = _context.GetCollection<Asistencia>("Asistencia");
+
+        //    // Obtener la información del conductor desde la colección usando el modelo Conductor
+        //    var filtroConductor = Builders<Conductor>.Filter.Eq(c => c.id_conductor, idConductor);
+        //    var conductor = conductoresCollection.Find(filtroConductor).FirstOrDefault();
+
+        //    if (conductor == null)
+        //    {
+        //        return Json(new { success = false, message = "Conductor no encontrado en la base de datos." }, JsonRequestBehavior.AllowGet);
+        //    }
+
+        //    var placaBus = conductor.placa_bus_asignado;  // Asegúrate de tener este campo en tu modelo Conductor
+
+        //    // Obtener la fecha actual en UTC
+        //    var fechaUTC = DateTime.UtcNow;
+
+        //    // Convertir la fecha actual a la zona horaria de Colombia (UTC-5)
+        //    TimeZoneInfo colombiaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time"); // Nombre de zona horaria para Colombia
+        //    DateTime fechaActualColombia = TimeZoneInfo.ConvertTimeFromUtc(fechaUTC, colombiaTimeZone);
+
+        //    // Verificar si ya existe un registro de entrada sin salida para este conductor
+        //    var filtroAsistencia = Builders<Asistencia>.Filter.And(
+        //        Builders<Asistencia>.Filter.Eq(a => a.IdConductor, idConductor),
+        //        Builders<Asistencia>.Filter.Eq(a => a.FechaSalida, null)
+        //    );
+
+        //    var registroExistente = asistenciasCollection.Find(filtroAsistencia).FirstOrDefault();
+
+        //    if (registroExistente == null)
+        //    {
+        //        // Obtener el siguiente valor del ID autoincrementado
+        //        int nuevoIdAsistencia = _context.GetNextSequenceValue("Asistencia");
+
+        //        // Registrar nueva entrada
+        //        var nuevaAsistencia = new Asistencia
+        //        {
+        //            IdAsistencia = nuevoIdAsistencia,
+        //            FechaIngreso = fechaActualColombia,
+        //            IdConductor = idConductor,
+        //            PlacaBus = placaBus
+        //        };
+
+        //        asistenciasCollection.InsertOne(nuevaAsistencia);
+
+        //        return Json(new { success = true, message = "Entrada registrada correctamente." }, JsonRequestBehavior.AllowGet);
+        //    }
+        //    else
+        //    {
+        //        // Actualizar el registro existente con la fecha de salida
+        //        var update = Builders<Asistencia>.Update.Set(a => a.FechaSalida, fechaActualColombia);
+        //        asistenciasCollection.UpdateOne(filtroAsistencia, update);
+
+        //        return Json(new { success = true, message = "Salida registrada correctamente." }, JsonRequestBehavior.AllowGet);
+        //    }
+        //}
+
         [HttpGet]
         public JsonResult RegistrarAsistencia(string qrContent)
         {
             // Verificar que el contenido del QR sea el correcto
-            if (qrContent != "https://192.168.1.4:45456/Conductor/RegistrarAsistencia")
+            if (qrContent != "https://192.168.1.4:45455/Conductor/RegistrarAsistencia")
             {
                 return Json(new { success = false, message = "QR no detectado. Asegúrese de estar escaneando el código correcto." }, JsonRequestBehavior.AllowGet);
             }
@@ -126,14 +270,14 @@ namespace TerMasterr.Controllers
             }
 
             // Obtener el ID del conductor desde la sesión
-            var idConductor = Convert.ToInt32(Session["id_conductor"].ToString());
+            int idConductor = Convert.ToInt32(Session["id_conductor"]);
 
             // Usar _context para obtener la colección de conductores y asistencias
             var conductoresCollection = _context.GetCollection<Conductor>("Conductor");
-            var asistenciasCollection = _context.GetCollection<BsonDocument>("Asistencia");
+            var asistenciasCollection = _context.GetCollection<Asistencia>("Asistencia");
 
-            // Obtener la información del conductor desde la colección para obtener la placa del bus asignado
-            var filtroConductor = Builders<Conductor>.Filter.Eq("id_conductor", idConductor);
+            // Obtener la información del conductor desde la colección usando el modelo Conductor
+            var filtroConductor = Builders<Conductor>.Filter.Eq(c => c.id_conductor, idConductor);
             var conductor = conductoresCollection.Find(filtroConductor).FirstOrDefault();
 
             if (conductor == null)
@@ -141,42 +285,51 @@ namespace TerMasterr.Controllers
                 return Json(new { success = false, message = "Conductor no encontrado en la base de datos." }, JsonRequestBehavior.AllowGet);
             }
 
-            var placaBus = conductor.placa_bus_asignado;
+            var placaBus = conductor.placa_bus_asignado;  // Asegúrate de tener este campo en tu modelo Conductor
 
-            // Obtener la fecha actual
-            var fechaActual = DateTime.Now;
+            // Obtener la fecha actual en UTC
+            var fechaUTC = DateTime.UtcNow;
+
+            // Convertir la fecha actual a la zona horaria de Colombia (UTC-5)
+            TimeZoneInfo colombiaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time"); // Nombre de zona horaria para Colombia
+            DateTime fechaActualColombia = TimeZoneInfo.ConvertTimeFromUtc(fechaUTC, colombiaTimeZone);
 
             // Verificar si ya existe un registro de entrada sin salida para este conductor
-            var filtroAsistencia = Builders<BsonDocument>.Filter.And(
-                Builders<BsonDocument>.Filter.Eq("id_conductor", idConductor),  // Usar id_conductor en lugar de ObjectId
-                Builders<BsonDocument>.Filter.Eq("fecha_salida", BsonNull.Value)
+            var filtroAsistencia = Builders<Asistencia>.Filter.And(
+                Builders<Asistencia>.Filter.Eq(a => a.IdConductor, idConductor),
+                Builders<Asistencia>.Filter.Eq(a => a.FechaSalida, null)
             );
 
             var registroExistente = asistenciasCollection.Find(filtroAsistencia).FirstOrDefault();
 
             if (registroExistente == null)
             {
-                // Registrar nueva entrada
-                var nuevoRegistro = new BsonDocument
-            {
-                { "fecha_ingreso", fechaActual },
-                { "id_conductor", idConductor },  // Usar id_conductor en lugar de ObjectId
-                { "placa_bus", placaBus }  // Usar la placa obtenida del conductor
-            };
+                // Obtener el siguiente valor del ID autoincrementado
+                int nuevoIdAsistencia = _context.GetNextSequenceValue("Asistencia");
 
-                asistenciasCollection.InsertOne(nuevoRegistro);
+                // Registrar nueva entrada
+                var nuevaAsistencia = new Asistencia
+                {
+                    IdAsistencia = nuevoIdAsistencia,
+                    FechaIngreso = fechaActualColombia,  // Usar la fecha ajustada a Colombia
+                    IdConductor = idConductor,
+                    PlacaBus = placaBus
+                };
+
+                asistenciasCollection.InsertOne(nuevaAsistencia);
 
                 return Json(new { success = true, message = "Entrada registrada correctamente." }, JsonRequestBehavior.AllowGet);
             }
             else
             {
                 // Actualizar el registro existente con la fecha de salida
-                var update = Builders<BsonDocument>.Update.Set("fecha_salida", fechaActual);
+                var update = Builders<Asistencia>.Update.Set(a => a.FechaSalida, fechaActualColombia);  // Usar la fecha ajustada a Colombia
                 asistenciasCollection.UpdateOne(filtroAsistencia, update);
 
                 return Json(new { success = true, message = "Salida registrada correctamente." }, JsonRequestBehavior.AllowGet);
             }
         }
+
         //////////////////////////////////////////////////////////////////////////////////
 
     }
