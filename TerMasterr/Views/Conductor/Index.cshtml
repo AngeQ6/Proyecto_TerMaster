@@ -100,10 +100,15 @@
                         data: { qrContent: qrContent },
                         success: function (response) {
                             if (response.success) {
+                                let hora = response.hora % 12 || 12; // Convierte a formato 12 horas
+                                let minuto = response.minuto.toString().padStart(2, '0');
+                                let ampm = response.esPM ? 'p.m.' : 'a.m.';
+                                let horaFormateada = `${hora}:${minuto} ${ampm}`;
+                                let mensaje = `${response.message} a las ${horaFormateada}`;
                                 Swal.fire({
                                     icon: 'success',
                                     title: '¡Éxito!',
-                                    text: response.message
+                                    text: mensaje
                                 });
                             } else {
                                 Swal.fire({

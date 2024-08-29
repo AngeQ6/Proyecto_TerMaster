@@ -9,12 +9,12 @@ namespace TerMasterr
     {
         static void Main()
         {
-            // Nombre de la zona horaria para Colombia en Windows
+            // Nombre de la zona horaria para Colombia en Windows y Unix/Linux
             string timeZoneIdWindows = "SA Pacific Standard Time";
-            // Nombre de la zona horaria para Colombia en Unix/Linux
             string timeZoneIdUnix = "America/Bogota";
 
-            TimeZoneInfo colombiaTimeZone;
+            // Inicializar la variable de la zona horaria como null
+            TimeZoneInfo colombiaTimeZone = null;
 
             // Intentar encontrar la zona horaria en Windows
             try
@@ -27,15 +27,18 @@ namespace TerMasterr
                 Console.WriteLine("La zona horaria 'SA Pacific Standard Time' no se encontró en este sistema.");
             }
 
-            // Intentar encontrar la zona horaria en Unix/Linux
-            try
+            // Si no se encontró la zona horaria de Windows, intentar encontrarla en Unix/Linux
+            if (colombiaTimeZone == null)
             {
-                colombiaTimeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneIdUnix);
-                Console.WriteLine($"Zona horaria encontrada: {colombiaTimeZone.DisplayName} ({colombiaTimeZone.Id})");
-            }
-            catch (TimeZoneNotFoundException)
-            {
-                Console.WriteLine("La zona horaria 'America/Bogota' no se encontró en este sistema.");
+                try
+                {
+                    colombiaTimeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneIdUnix);
+                    Console.WriteLine($"Zona horaria encontrada: {colombiaTimeZone.DisplayName} ({colombiaTimeZone.Id})");
+                }
+                catch (TimeZoneNotFoundException)
+                {
+                    Console.WriteLine("La zona horaria 'America/Bogota' no se encontró en este sistema.");
+                }
             }
 
             // En caso de que ninguna esté disponible

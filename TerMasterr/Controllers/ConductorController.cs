@@ -260,7 +260,7 @@ namespace TerMasterr.Controllers
             // Verificar que el contenido del QR sea el correcto
             if (qrContent != "https://192.168.1.4:45455/Conductor/RegistrarAsistencia")
             {
-                return Json(new { success = false, message = "QR no detectado. Asegúrese de estar escaneando el código correcto." }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, message = "QR incorrecto. Asegúrese de escanear el código correcto." }, JsonRequestBehavior.AllowGet);
             }
 
             // Verificar que el conductor esté autenticado
@@ -287,12 +287,14 @@ namespace TerMasterr.Controllers
 
             var placaBus = conductor.placa_bus_asignado;  // Asegúrate de tener este campo en tu modelo Conductor
 
-            // Obtener la fecha actual en UTC
-            var fechaUTC = DateTime.UtcNow;
+            // Obtener la zona horaria de Colombia
+            TimeZoneInfo colombiaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
 
-            // Convertir la fecha actual a la zona horaria de Colombia (UTC-5)
-            TimeZoneInfo colombiaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time"); // Nombre de zona horaria para Colombia
-            DateTime fechaActualColombia = TimeZoneInfo.ConvertTimeFromUtc(fechaUTC, colombiaTimeZone);
+            // Obtener la fecha y hora actual en Colombia
+            DateTime fechaActualColombia = TimeZoneInfo.ConvertTime(DateTime.Now, colombiaTimeZone);
+
+            // Convertir a UTC para almacenar en MongoDB
+            DateTime fechaActualUTC = TimeZoneInfo.ConvertTimeToUtc(fechaActualColombia, colombiaTimeZone);
 
             // Verificar si ya existe un registro de entrada sin salida para este conductor
             var filtroAsistencia = Builders<Asistencia>.Filter.And(
@@ -311,22 +313,22 @@ namespace TerMasterr.Controllers
                 var nuevaAsistencia = new Asistencia
                 {
                     IdAsistencia = nuevoIdAsistencia,
-                    FechaIngreso = fechaActualColombia,  // Usar la fecha ajustada a Colombia
+                    FechaIngreso = fechaActualUTC,  // Usar la fecha ajustada a Colombia
                     IdConductor = idConductor,
                     PlacaBus = placaBus
                 };
 
                 asistenciasCollection.InsertOne(nuevaAsistencia);
 
-                return Json(new { success = true, message = "Entrada registrada correctamente." }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = true, message = "Entrada registrada correctamente", hora = fechaActualColombia.Hour, minuto = fechaActualColombia.Minute, esPM = fechaActualColombia.Hour >= 12 }, JsonRequestBehavior.AllowGet);
             }
             else
             {
                 // Actualizar el registro existente con la fecha de salida
-                var update = Builders<Asistencia>.Update.Set(a => a.FechaSalida, fechaActualColombia);  // Usar la fecha ajustada a Colombia
+                var update = Builders<Asistencia>.Update.Set(a => a.FechaSalida, fechaActualUTC);  // Usar la fecha ajustada a Colombia
                 asistenciasCollection.UpdateOne(filtroAsistencia, update);
 
-                return Json(new { success = true, message = "Salida registrada correctamente." }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = true, message = "Salida registrada correctamente", hora = fechaActualColombia.Hour, minuto = fechaActualColombia.Minute, esPM = fechaActualColombia.Hour >= 12 }, JsonRequestBehavior.AllowGet);
             }
         }
 
