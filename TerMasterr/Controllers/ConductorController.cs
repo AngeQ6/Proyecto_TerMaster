@@ -15,6 +15,7 @@ namespace TerMasterr.Controllers
     public class ConductorController : Controller
     {
         ///////////////////////////////////////// CONEXION /////////////////////////////////////////
+        #region
         private readonly Conexion _context;
         public ConductorController()
         {
@@ -29,11 +30,11 @@ namespace TerMasterr.Controllers
             }
         }
         //////////////////////////////////////////////////////////////////////////////////
-        
+        #endregion
 
 
         ////////////////////////// VISAS /////////////////////////////////////////
-        // GET: Conductor
+        #region
         public ActionResult Index()
         {
             return View();
@@ -42,51 +43,14 @@ namespace TerMasterr.Controllers
         {
             return View();
         }
-        public ActionResult Reg_huella(int id_conductor)
-        {
-            ViewBag.IdConductor = id_conductor;
-            return View();
-        }
         //////////////////////////////////////////////////////////////////////////////////
+        #endregion
+
 
 
         ///////////////////////////////////////// METODOS /////////////////////////////////////////
-
-        public class HuellaRequest
-        {
-            public byte[] HuellaDactilar { get; set; }
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> RegistrarHuella(int id_conductor, HuellaRequest request)
-        {
-            if (request?.HuellaDactilar == null)
-            {
-                return Json(new { success = false, message = "Datos de huella inválidos" });
-            }
-
-            try
-            {
-                var conductoresCollection = _context.GetCollection<Conductor>("Conductores");
-                var filter = Builders<Conductor>.Filter.Eq(c => c.id_conductor, id_conductor);
-                var update = Builders<Conductor>.Update.Set(c => c.huella_dactilar, request.HuellaDactilar);
-
-                var result = await conductoresCollection.UpdateOneAsync(filter, update);
-
-                if (result.ModifiedCount > 0)
-                {
-                    return Json(new { success = true, message = "Huella dactilar registrada con éxito" });
-                }
-                else
-                {
-                    return Json(new { success = false, message = "No se pudo actualizar la huella dactilar" });
-                }
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = "Error al registrar la huella: " + ex.Message });
-            }
-        }
+        #region
+        
 
         public JsonResult Obtener_datos_conductor()
         {
@@ -157,7 +121,7 @@ namespace TerMasterr.Controllers
         public JsonResult RegistrarAsistencia(string qrContent)
         {
             // Verificar que el contenido del QR sea el correcto
-            if (qrContent != "https://192.168.1.4:45455/Conductor/RegistrarAsistencia")
+            if (qrContent != "https://goodaquadog63.conveyor.cloud/Conductor/RegistrarAsistencia")
             {
                 return Json(new { success = false, message = "QR incorrecto. Asegúrese de escanear el código correcto." }, JsonRequestBehavior.AllowGet);
             }
@@ -232,6 +196,6 @@ namespace TerMasterr.Controllers
         }
 
         //////////////////////////////////////////////////////////////////////////////////
-
+        #endregion
     }
 }
