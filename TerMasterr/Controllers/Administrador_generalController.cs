@@ -7,7 +7,7 @@ using System.Web.Mvc;
 using Capa_entidad;
 using ConexionMongoDB;
 using MongoDB.Driver;
-using QRCoder;
+//using QRCoder;
 //using SendGrid;
 //using SendGrid.Helpers.Mail;
 
@@ -42,16 +42,16 @@ namespace TerMasterr.Controllers
 
         /////////////////////////// METODOS /////////////////////////////////////////////
 
-        public ActionResult Generar_QR()
-        {
-            string qrContent = "https://192.168.1.4:45455/Conductor/RegistrarAsistencia";
-            QRCodeGenerator qrGenerator = new QRCodeGenerator();
-            QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrContent, QRCodeGenerator.ECCLevel.Q);
-            BitmapByteQRCode qrCode = new BitmapByteQRCode(qrCodeData);
-            byte[] qrCodeImage = qrCode.GetGraphic(15);
+        //public ActionResult Generar_QR()
+        //{
+        //    string qrContent = "https://192.168.1.4:45455/Conductor/RegistrarAsistencia";
+        //    QRCodeGenerator qrGenerator = new QRCodeGenerator();
+        //    QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrContent, QRCodeGenerator.ECCLevel.Q);
+        //    BitmapByteQRCode qrCode = new BitmapByteQRCode(qrCodeData);
+        //    byte[] qrCodeImage = qrCode.GetGraphic(15);
 
-            return File(qrCodeImage, "image/png");
-        }
+        //    return File(qrCodeImage, "image/png");
+        //}
 
         
 

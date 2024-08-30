@@ -58,30 +58,51 @@ namespace TerMasterr.Controllers
         //////////////////////////////// METODOS ////////////////////////////////////
 
         [HttpPost]
-        public ActionResult Login(Conductor model)
+        public ActionResult Login(Conductor model, AdminG model1, Admin_local model2)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    // Buscar el conductor en la base de datos
+                    
+                    // Buscar el usuario en la colección de conductores
                     var conductor = _context.GetCollection<Conductor>("Conductor")
-                                            .Find(c => c.id_conductor == model.id_conductor && c.contraseña == model.contraseña)
-                                            .FirstOrDefault();
+                        .Find(c => c.id_conductor == model.id_conductor && c.contraseña == model.contraseña)
+                        .FirstOrDefault();
 
                     if (conductor != null)
                     {
-                        // Establecer el ID del conductor en la sesión
-                        Session["id_conductor"] = conductor.id_conductor;
-
-                        // Redirigir a la acción "Index" del controlador "Conductor"
+                        System.Diagnostics.Debug.WriteLine("Conductor encontrado");
+                        Session["UserId"] = conductor.id_conductor;
                         return RedirectToAction("Index", "Conductor");
                     }
-                    else
+
+                    // Buscar el usuario en la colección de administradores generales
+                    var adminGeneral = _context.GetCollection<AdminG>("AdminG")
+                        .Find(a => a.id_admin_general == model1.id_admin_general && a.contraseña_admin_general == model1.contraseña_admin_general)
+                        .FirstOrDefault();
+
+                    if (adminGeneral != null)
                     {
-                        ViewBag.Error = "Número de identificación o contraseña incorrecta";
-                        return View();
+                        System.Diagnostics.Debug.WriteLine("Admin General encontrado");
+                        Session["UserId"] = adminGeneral.id_admin_general;
+                        return RedirectToAction("Index", "Administrador_general");
                     }
+
+                    // Buscar el usuario en la colección de administradores locales
+                    var adminLocal = _context.GetCollection<Admin_local>("Admin_local")
+                        .Find(a => a.id_admin_local == model2.id_admin_local && a.contraseña_admin_local == model2.contraseña_admin_local)
+                        .FirstOrDefault();
+
+                    if (adminLocal != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine("Admin Local encontrado");
+                        Session["UserId"] = adminLocal.id_admin_local;
+                        return RedirectToAction("Index", "Admin_local");
+                    }
+
+                    ViewBag.Error = "Número de identificación o contraseña incorrecta";
+                    return View();
                 }
                 catch (ApplicationException ex)
                 {
@@ -93,6 +114,7 @@ namespace TerMasterr.Controllers
             ViewBag.Error = "ModelState no es válido";
             return View();
         }
+
 
 
 

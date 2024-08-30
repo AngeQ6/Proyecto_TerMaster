@@ -230,6 +230,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\Administrador_generalController.cs" />
+    <Compile Include="Controllers\Admin_localController.cs" />
     <Compile Include="Controllers\ConductorController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Global.asax.cs">
@@ -530,6 +531,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
+    <Folder Include="Views\Admin_local\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
