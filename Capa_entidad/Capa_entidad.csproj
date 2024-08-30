@@ -57,6 +57,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdminG.cs" />
     <Compile Include="Admin_local.cs" />
     <Compile Include="Asistencia.cs" />
     <Compile Include="Conductor.cs" />
