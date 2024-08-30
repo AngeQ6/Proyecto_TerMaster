@@ -20,5 +20,7 @@ namespace Capa_entidad
         public string correo { get; set; }
         public string contraseña { get; set; }
         public string placa_bus_asignado { get; set; }
+        [BsonElement("huella_dactilar")]
+        public byte[] huella_dactilar { get; set; }
     }
 }
