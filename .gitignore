@@ -1,0 +1,25 @@
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# ReSharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+
+# Office Temp Files
+~$*
+
+# Auto-generated files
+*.dll
+*.pdb
+*.cache
+*.sqlite
+
+# Folders
+/bin/
+/obj/
+
+
