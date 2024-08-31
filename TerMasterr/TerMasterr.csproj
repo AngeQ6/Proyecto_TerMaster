@@ -232,6 +232,7 @@
     <Compile Include="Controllers\Administrador_generalController.cs" />
     <Compile Include="Controllers\Admin_localController.cs" />
     <Compile Include="Controllers\ConductorController.cs" />
+    <Compile Include="Controllers\HuellaController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -527,7 +528,12 @@
     <Content Include="Views\Administrador_general\Reportes.cshtml" />
     <Content Include="Views\Administrador_general\QR.cshtml" />
     <Content Include="Views\Administrador_general\Registrar_administrador_local.cshtml" />
+<<<<<<< HEAD
     <Content Include="Views\Conductor\Reg_huella.cshtml" />
+=======
+    <Content Include="Views\Admin_local\Index.cshtml" />
+    <Content Include="Views\Huella\Index.cshtml" />
+>>>>>>> 1bf7e240fcb36336a4e986c54d2f83dcb828f6fb
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -7,7 +7,11 @@ using System.Web.Mvc;
 using Capa_entidad;
 using ConexionMongoDB;
 using MongoDB.Driver;
+<<<<<<< HEAD
 //using QRCoder;
+=======
+using QRCoder;
+>>>>>>> 1bf7e240fcb36336a4e986c54d2f83dcb828f6fb
 //using SendGrid;
 //using SendGrid.Helpers.Mail;
 
@@ -16,7 +20,7 @@ namespace TerMasterr.Controllers
     public class Administrador_generalController : Controller
     {
         ///////////////////////////////////// VISTAS ///////////////////////////////////
-        // GET: Administrador_general
+        #region
         public ActionResult Index()
         {
             return View();
@@ -38,9 +42,10 @@ namespace TerMasterr.Controllers
             return View();
         }
         //////////////////////////////////////////////////////////////////////////////////////
-
+        #endregion
 
         /////////////////////////// METODOS /////////////////////////////////////////////
+<<<<<<< HEAD
 
         //public ActionResult Generar_QR()
         //{
@@ -49,11 +54,23 @@ namespace TerMasterr.Controllers
         //    QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrContent, QRCodeGenerator.ECCLevel.Q);
         //    BitmapByteQRCode qrCode = new BitmapByteQRCode(qrCodeData);
         //    byte[] qrCodeImage = qrCode.GetGraphic(15);
+=======
+        #region
+        public ActionResult Generar_QR()
+        {
+            string qrContent = "https://goodaquadog63.conveyor.cloud/Conductor/RegistrarAsistencia";
+            QRCodeGenerator qrGenerator = new QRCodeGenerator();
+            QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrContent, QRCodeGenerator.ECCLevel.Q);
+            BitmapByteQRCode qrCode = new BitmapByteQRCode(qrCodeData);
+            byte[] qrCodeImage = qrCode.GetGraphic(15);
+>>>>>>> 1bf7e240fcb36336a4e986c54d2f83dcb828f6fb
 
         //    return File(qrCodeImage, "image/png");
         //}
 
         
+
+
 
         [HttpPost]
         public async Task<ActionResult> Registrar_administrador_local(int id_admin_local, string nombre_admin_local, string apellido_admin_local, string correo_admin_local, long telefono_admin_local)
@@ -123,5 +140,9 @@ namespace TerMasterr.Controllers
         //    var response = await cliente.SendEmailAsync(msg);
 
         //}
+<<<<<<< HEAD
+=======
+        #endregion
+>>>>>>> 1bf7e240fcb36336a4e986c54d2f83dcb828f6fb
     }
 }

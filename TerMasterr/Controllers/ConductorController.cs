@@ -15,6 +15,10 @@ namespace TerMasterr.Controllers
     public class ConductorController : Controller
     {
         ///////////////////////////////////////// CONEXION /////////////////////////////////////////
+<<<<<<< HEAD
+=======
+        #region
+>>>>>>> 1bf7e240fcb36336a4e986c54d2f83dcb828f6fb
         private readonly Conexion _context;
         public ConductorController()
         {
@@ -29,11 +33,19 @@ namespace TerMasterr.Controllers
             }
         }
         //////////////////////////////////////////////////////////////////////////////////
+<<<<<<< HEAD
         
 
 
         ////////////////////////// VISAS /////////////////////////////////////////
         // GET: Conductor
+=======
+        #endregion
+
+
+        ////////////////////////// VISAS /////////////////////////////////////////
+        #region
+>>>>>>> 1bf7e240fcb36336a4e986c54d2f83dcb828f6fb
         public ActionResult Index()
         {
             return View();
@@ -42,6 +54,7 @@ namespace TerMasterr.Controllers
         {
             return View();
         }
+<<<<<<< HEAD
         public ActionResult Reg_huella(int id_conductor)
         {
             ViewBag.IdConductor = id_conductor;
@@ -87,6 +100,16 @@ namespace TerMasterr.Controllers
                 return Json(new { success = false, message = "Error al registrar la huella: " + ex.Message });
             }
         }
+=======
+        //////////////////////////////////////////////////////////////////////////////////
+        #endregion
+
+
+
+        ///////////////////////////////////////// METODOS /////////////////////////////////////////
+        #region
+        
+>>>>>>> 1bf7e240fcb36336a4e986c54d2f83dcb828f6fb
 
         public JsonResult Obtener_datos_conductor()
         {
@@ -157,7 +180,11 @@ namespace TerMasterr.Controllers
         public JsonResult RegistrarAsistencia(string qrContent)
         {
             // Verificar que el contenido del QR sea el correcto
+<<<<<<< HEAD
             if (qrContent != "https://192.168.1.4:45455/Conductor/RegistrarAsistencia")
+=======
+            if (qrContent != "https://goodaquadog63.conveyor.cloud/Conductor/RegistrarAsistencia")
+>>>>>>> 1bf7e240fcb36336a4e986c54d2f83dcb828f6fb
             {
                 return Json(new { success = false, message = "QR incorrecto. Asegúrese de escanear el código correcto." }, JsonRequestBehavior.AllowGet);
             }
@@ -232,6 +259,10 @@ namespace TerMasterr.Controllers
         }
 
         //////////////////////////////////////////////////////////////////////////////////
+<<<<<<< HEAD
 
+=======
+        #endregion
+>>>>>>> 1bf7e240fcb36336a4e986c54d2f83dcb828f6fb
     }
 }
