@@ -5,94 +5,94 @@
 }
 
 <h2>Index</h2>
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card mt-5">
-                <div class="card-body text-center">
-                    <h2 class="card-title mb-4">Autenticación por Huella Dactilar</h2>
-                    <div id="fingerprint-icon" class="mb-4">
-                        <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 1a10 10 0 0 1 10 10c0 5.52-4.48 10-10 10S2 16.52 2 11"></path>
-                            <path d="M12 3a8 8 0 0 1 8 8c0 4.42-3.58 8-8 8s-8-3.58-8-8"></path>
-                            <path d="M12 5a6 6 0 0 1 6 6c0 3.31-2.69 6-6 6s-6-2.69-6-6"></path>
-                            <path d="M12 7a4 4 0 0 1 4 4c0 2.21-1.79 4-4 4s-4-1.79-4-4"></path>
-                            <path d="M12 9a2 2 0 0 1 2 2c0 1.1-.9 2-2 2s-2-.9-2-2"></path>
-                        </svg>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card mt-5">
+                    <div class="card-body text-center">
+                        <h2 class="card-title mb-4">Autenticación por Huella Dactilar</h2>
+                        <div id="fingerprint-icon" class="mb-4">
+                            <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 1a10 10 0 0 1 10 10c0 5.52-4.48 10-10 10S2 16.52 2 11"></path>
+                                <path d="M12 3a8 8 0 0 1 8 8c0 4.42-3.58 8-8 8s-8-3.58-8-8"></path>
+                                <path d="M12 5a6 6 0 0 1 6 6c0 3.31-2.69 6-6 6s-6-2.69-6-6"></path>
+                                <path d="M12 7a4 4 0 0 1 4 4c0 2.21-1.79 4-4 4s-4-1.79-4-4"></path>
+                                <path d="M12 9a2 2 0 0 1 2 2c0 1.1-.9 2-2 2s-2-.9-2-2"></path>
+                            </svg>
+                        </div>
+                        <p id="status-message" class="mb-4">Coloque su dedo en el sensor</p>
+                        <button id="start-scan" class="btn btn-primary btn-lg">Iniciar Escaneo</button>
                     </div>
-                    <p id="status-message" class="mb-4">Coloque su dedo en el sensor</p>
-                    <button id="start-scan" class="btn btn-primary btn-lg">Iniciar Escaneo</button>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-@section scripts {
-    <script>
-        $(function () {
-            var isScanning = false;
-            var fingerprintIcon = $("#fingerprint-icon");
-            var statusMessage = $("#status-message");
-            var startScanButton = $("#start-scan");
+    @section scripts {
+        <script>
+            $(function () {
+                var isScanning = false;
+                var fingerprintIcon = $("#fingerprint-icon");
+                var statusMessage = $("#status-message");
+                var startScanButton = $("#start-scan");
 
-            startScanButton.click(function () {
-                if (!isScanning) {
-                    isScanning = true;
-                    fingerprintIcon.addClass("scanning");
-                    statusMessage.text("Escaneando...");
-                    startScanButton.prop("disabled", true);
+                startScanButton.click(function () {
+                    if (!isScanning) {
+                        isScanning = true;
+                        fingerprintIcon.addClass("scanning");
+                        statusMessage.text("Escaneando...");
+                        startScanButton.prop("disabled", true);
 
-                    setTimeout(function () {
-                        $.post("/Huella/Authenticate", function (data) {
-                            isScanning = false;
-                            fingerprintIcon.removeClass("scanning");
-                            statusMessage.text(data.message);
-                            startScanButton.prop("disabled", false);
+                        setTimeout(function () {
+                            $.post("/Huella/Authenticate", function (data) {
+                                isScanning = false;
+                                fingerprintIcon.removeClass("scanning");
+                                statusMessage.text(data.message);
+                                startScanButton.prop("disabled", false);
 
-                            if (data.success) {
-                                fingerprintIcon.addClass("success");
-                            } else {
-                                fingerprintIcon.addClass("failure");
-                                setTimeout(function () {
-                                    fingerprintIcon.removeClass("failure");
-                                }, 2000);
-                            }
-                        });
-                    }, 3000);
-                }
+                                if (data.success) {
+                                    fingerprintIcon.addClass("success");
+                                } else {
+                                    fingerprintIcon.addClass("failure");
+                                    setTimeout(function () {
+                                        fingerprintIcon.removeClass("failure");
+                                    }, 2000);
+                                }
+                            });
+                        }, 3000);
+                    }
+                });
             });
-        });
-    </script>
-    <style>
-        #fingerprint-icon {
-            transition: all 0.3s ease;
-        }
-
-            #fingerprint-icon.scanning {
-                animation: pulse 1s infinite;
+        </script>
+        <style>
+            #fingerprint-icon {
+                transition: all 0.3s ease;
             }
 
-            #fingerprint-icon.success {
-                color: green;
-            }
+                #fingerprint-icon.scanning {
+                    animation: pulse 1s infinite;
+                }
 
-            #fingerprint-icon.failure {
-                color: red;
-            }
+                #fingerprint-icon.success {
+                    color: green;
+                }
 
-        @@keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
+                #fingerprint-icon.failure {
+                    color: red;
+                }
 
-            50% {
-                transform: scale(1.1);
-            }
+            @@keyframes pulse {
+                0% {
+                    transform: scale(1);
+                }
 
-            100% {
-                transform: scale(1);
+                50% {
+                    transform: scale(1.1);
+                }
+
+                100% {
+                    transform: scale(1);
+                }
             }
-        }
-    </style>
-}
+        </style>
+    }

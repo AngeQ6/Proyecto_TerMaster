@@ -7,13 +7,7 @@ using System.Web.Mvc;
 using Capa_entidad;
 using ConexionMongoDB;
 using MongoDB.Driver;
-<<<<<<< HEAD
-//using QRCoder;
-=======
 using QRCoder;
->>>>>>> 1bf7e240fcb36336a4e986c54d2f83dcb828f6fb
-//using SendGrid;
-//using SendGrid.Helpers.Mail;
 
 namespace TerMasterr.Controllers
 {
@@ -45,28 +39,17 @@ namespace TerMasterr.Controllers
         #endregion
 
         /////////////////////////// METODOS /////////////////////////////////////////////
-<<<<<<< HEAD
 
-        //public ActionResult Generar_QR()
-        //{
-        //    string qrContent = "https://192.168.1.4:45455/Conductor/RegistrarAsistencia";
-        //    QRCodeGenerator qrGenerator = new QRCodeGenerator();
-        //    QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrContent, QRCodeGenerator.ECCLevel.Q);
-        //    BitmapByteQRCode qrCode = new BitmapByteQRCode(qrCodeData);
-        //    byte[] qrCodeImage = qrCode.GetGraphic(15);
-=======
         #region
         public ActionResult Generar_QR()
         {
-            string qrContent = "https://goodaquadog63.conveyor.cloud/Conductor/RegistrarAsistencia";
+            string qrContent = "https://192.168.1.4:45455/Conductor/RegistrarAsistencia";
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
             QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrContent, QRCodeGenerator.ECCLevel.Q);
             BitmapByteQRCode qrCode = new BitmapByteQRCode(qrCodeData);
             byte[] qrCodeImage = qrCode.GetGraphic(15);
->>>>>>> 1bf7e240fcb36336a4e986c54d2f83dcb828f6fb
-
-        //    return File(qrCodeImage, "image/png");
-        //}
+            return File(qrCodeImage, "image/png");
+        }
 
         
 
@@ -140,9 +123,6 @@ namespace TerMasterr.Controllers
         //    var response = await cliente.SendEmailAsync(msg);
 
         //}
-<<<<<<< HEAD
-=======
         #endregion
->>>>>>> 1bf7e240fcb36336a4e986c54d2f83dcb828f6fb
     }
 }

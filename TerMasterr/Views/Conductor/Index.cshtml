@@ -5,193 +5,507 @@
 }
 
 <h2>Escanear Código QR para Registrar Asistencia</h2>
-<button id="scanQrButton">Escanear Código QR</button>
+@*<button id="scanQrButton">Escanear Código QR</button>
 
-<div id="full-screen-container" style="display: none;">
-    <video id="qr-video" playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>
-    <canvas id="qr-canvas" style="display: none;"></canvas>
-    <div id="overlay">
-        <div class="scan-frame"></div>
-        <div class="scan-text">Escanee el QR dentro del cuadro</div>
+    <div id="full-screen-container" style="display: none;">
+        <video id="qr-video" playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>
+        <canvas id="qr-canvas" style="display: none;"></canvas>
+        <div id="overlay">
+            <div class="scan-frame"></div>
+            <div class="scan-text">Escanee el QR dentro del cuadro</div>
+        </div>
     </div>
-</div>
 
-@section Scripts {
-    <script src="https://unpkg.com/jsqr/dist/jsQR.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        $(document).ready(function () {
-            $('#scanQrButton').click(function () {
-                const fullScreenContainer = document.getElementById('full-screen-container');
-                const video = document.getElementById('qr-video');
-                const canvasElement = document.getElementById('qr-canvas');
-                const canvas = canvasElement.getContext('2d');
-                const overlay = document.getElementById('overlay');
-                const scanFrame = document.querySelector('.scan-frame');
+    @section Scripts {
+        <script src="https://unpkg.com/jsqr/dist/jsQR.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            $(document).ready(function () {
+                $('#scanQrButton').click(function () {
+                    const fullScreenContainer = document.getElementById('full-screen-container');
+                    const video = document.getElementById('qr-video');
+                    const canvasElement = document.getElementById('qr-canvas');
+                    const canvas = canvasElement.getContext('2d');
+                    const overlay = document.getElementById('overlay');
+                    const scanFrame = document.querySelector('.scan-frame');
 
-                fullScreenContainer.style.display = 'flex';
-                fullScreenContainer.requestFullscreen();
+                    fullScreenContainer.style.display = 'flex';
+                    fullScreenContainer.requestFullscreen();
 
-                navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }).then(function (stream) {
-                    video.srcObject = stream;
-                    video.play();
-                    overlay.style.display = 'block';
-                    requestAnimationFrame(tick);
-                })
-                .catch (function (err) {
-                    console.error("Error al acceder a la cámara: ", err);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'No se pudo acceder a la cámara. Por favor, asegúrate de que los permisos estén configurados correctamente.'
-                    });
-                });
-
-                function tick() {
-                    if (video.readyState === video.HAVE_ENOUGH_DATA) {
-                        canvasElement.height = video.videoHeight;
-                        canvasElement.width = video.videoWidth;
-                        canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
-                        const imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
-                        const code = jsQR(imageData.data, imageData.width, imageData.height, {
-                            inversionAttempts: "dontInvert",
+                    navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }).then(function (stream) {
+                        video.srcObject = stream;
+                        video.play();
+                        overlay.style.display = 'block';
+                        requestAnimationFrame(tick);
+                    })
+                    .catch (function (err) {
+                        console.error("Error al acceder a la cámara: ", err);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'No se pudo acceder a la cámara. Por favor, asegúrate de que los permisos estén configurados correctamente.'
                         });
-                        if (code) {
-                            const codeLocation = code.location;
-                            const scanFrameBounds = scanFrame.getBoundingClientRect();
-                            const videoBounds = video.getBoundingClientRect();
+                    });
 
-                            const frameTop = (scanFrameBounds.top - videoBounds.top) * (canvasElement.height / videoBounds.height);
-                            const frameLeft = (scanFrameBounds.left - videoBounds.left) * (canvasElement.width / videoBounds.width);
-                            const frameBottom = (scanFrameBounds.bottom - videoBounds.top) * (canvasElement.height / videoBounds.height);
-                            const frameRight = (scanFrameBounds.right - videoBounds.left) * (canvasElement.width / videoBounds.width);
+                    function tick() {
+                        if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                            canvasElement.height = video.videoHeight;
+                            canvasElement.width = video.videoWidth;
+                            canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+                            const imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
+                            const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                                inversionAttempts: "dontInvert",
+                            });
+                            if (code) {
+                                const codeLocation = code.location;
+                                const scanFrameBounds = scanFrame.getBoundingClientRect();
+                                const videoBounds = video.getBoundingClientRect();
 
-                            if (
-                                codeLocation.topLeftCorner.x >= frameLeft &&
-                                codeLocation.topLeftCorner.y >= frameTop &&
-                                codeLocation.bottomRightCorner.x <= frameRight &&
-                                codeLocation.bottomRightCorner.y <= frameBottom
-                            ) {
-                                stopScan();
-                                registrarAsistencia(code.data); // Envía el contenido del QR escaneado
+                                const frameTop = (scanFrameBounds.top - videoBounds.top) * (canvasElement.height / videoBounds.height);
+                                const frameLeft = (scanFrameBounds.left - videoBounds.left) * (canvasElement.width / videoBounds.width);
+                                const frameBottom = (scanFrameBounds.bottom - videoBounds.top) * (canvasElement.height / videoBounds.height);
+                                const frameRight = (scanFrameBounds.right - videoBounds.left) * (canvasElement.width / videoBounds.width);
+
+                                if (
+                                    codeLocation.topLeftCorner.x >= frameLeft &&
+                                    codeLocation.topLeftCorner.y >= frameTop &&
+                                    codeLocation.bottomRightCorner.x <= frameRight &&
+                                    codeLocation.bottomRightCorner.y <= frameBottom
+                                ) {
+                                    stopScan();
+                                    registrarAsistencia(code.data); // Envía el contenido del QR escaneado
+                                }
                             }
                         }
+                        requestAnimationFrame(tick);
                     }
-                    requestAnimationFrame(tick);
+
+                    function stopScan() {
+                        const stream = video.srcObject;
+                        const tracks = stream.getTracks();
+
+                        tracks.forEach(function (track) {
+                            track.stop();
+                        });
+
+                        video.srcObject = null;
+                        document.exitFullscreen();
+                        fullScreenContainer.style.display = 'none';
+                    }
+
+                    function registrarAsistencia(qrContent) {
+                        $.ajax({
+                            url: '@Url.Action("RegistrarAsistencia", "Conductor")', // Actualiza el controlador a "Conductor"
+                            type: 'GET',
+                            data: { qrContent: qrContent },
+                            success: function (response) {
+                                if (response.success) {
+                                    let hora = response.hora % 12 || 12; // Convierte a formato 12 horas
+                                    let minuto = response.minuto.toString().padStart(2, '0');
+                                    let ampm = response.esPM ? 'p.m.' : 'a.m.';
+                                    let horaFormateada = `${hora}:${minuto} ${ampm}`;
+                                    let mensaje = `${response.message} a las ${horaFormateada}`;
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: '¡Éxito!',
+                                        text: mensaje
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: response.message
+                                    });
+                                }
+                            },
+                            error: function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'Ocurrió un error al registrar la asistencia.'
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+        </script>
+    }
+
+    <style>
+        #full-screen-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .scan-frame {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 280px;
+            height: 280px;
+            border: 4px solid #00ff00;
+            box-sizing: border-box;
+            animation: scan-anim 2s infinite;
+        }
+
+        .scan-text {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 18px;
+            text-align: center;
+            width: 90%;
+        }
+
+        @@keyframes scan-anim {
+            0% {
+                border-color: #00ff00;
+            }
+
+            50% {
+                border-color: #ff0000;
+            }
+
+            100% {
+                border-color: #00ff00;
+            }
+        }
+    </style>*@
+
+
+
+
+
+<div class="button-container">
+    <button id="scanQrButton" class="qr-scanner-button">
+        <div class="qr-scanner-image">
+            <svg viewBox="0 0 100 100">
+                <rect x="0" y="0" width="100" height="100" fill="#f0f0f0" />
+
+                <!-- Código QR simplificado -->
+                <rect x="20" y="20" width="60" height="60" fill="#333" />
+                <rect x="25" y="25" width="50" height="50" fill="#fff" />
+                <rect x="30" y="30" width="10" height="10" fill="#333" />
+                <rect x="60" y="30" width="10" height="10" fill="#333" />
+                <rect x="30" y="60" width="10" height="10" fill="#333" />
+                <rect x="45" y="45" width="10" height="10" fill="#333" />
+
+                <!-- Marco del escáner -->
+                <path d="M5,20 L20,20 L20,5" fill="none" stroke="#00a0e9" stroke-width="3" />
+                <path d="M80,5 L80,20 L95,20" fill="none" stroke="#00a0e9" stroke-width="3" />
+                <path d="M95,80 L80,80 L80,95" fill="none" stroke="#00a0e9" stroke-width="3" />
+                <path d="M20,95 L20,80 L5,80" fill="none" stroke="#00a0e9" stroke-width="3" />
+
+                <!-- Línea de escaneo -->
+                <line id="scanLine" x1="10" y1="10" x2="90" y2="10" stroke="#00a0e9" stroke-width="2" />
+            </svg>
+        </div>
+        <span>Escanear QR</span>
+    </button>
+</div>
+
+<div id="full-screen-container" style="display: none;">
+        <video id="qr-video" playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>
+        <canvas id="qr-canvas" style="display: none;"></canvas>
+        <div id="overlay">
+            <div class="scan-frame"></div>
+        </div>
+        <button id="close-scanner" class="close-button">&times;</button>
+    </div>
+
+    @section Scripts {
+        <script src="https://unpkg.com/jsqr/dist/jsQR.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            $(document).ready(function () {
+                // Animación de la línea de escaneo
+                var scanLine = document.getElementById('scanLine');
+                var position = 10;
+                var direction = 1;
+
+                function animateScanLine() {
+                    position += direction;
+                    if (position >= 90 || position <= 10) {
+                        direction *= -1;
+                    }
+                    scanLine.setAttribute('y1', position);
+                    scanLine.setAttribute('y2', position);
+                    requestAnimationFrame(animateScanLine);
                 }
 
-                function stopScan() {
-                    const stream = video.srcObject;
-                    const tracks = stream.getTracks();
+                animateScanLine();
 
-                    tracks.forEach(function (track) {
-                        track.stop();
+                $('#scanQrButton').click(function () {
+                    const fullScreenContainer = document.getElementById('full-screen-container');
+                    const video = document.getElementById('qr-video');
+                    const canvasElement = document.getElementById('qr-canvas');
+                    const canvas = canvasElement.getContext('2d');
+                    const overlay = document.getElementById('overlay');
+                    const scanFrame = document.querySelector('.scan-frame');
+
+                    fullScreenContainer.style.display = 'flex';
+                    fullScreenContainer.requestFullscreen();
+
+                    navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }).then(function (stream) {
+                        video.srcObject = stream;
+                        video.play();
+                        overlay.style.display = 'block';
+                        requestAnimationFrame(tick);
+                    })
+                    .catch (function (err) {
+                        console.error("Error al acceder a la cámara: ", err);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'No se pudo acceder a la cámara. Por favor, asegúrate de que los permisos estén configurados correctamente.'
+                        });
                     });
+
+                    function tick() {
+                        if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                            canvasElement.height = video.videoHeight;
+                            canvasElement.width = video.videoWidth;
+                            canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+                            const imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
+                            const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                                inversionAttempts: "dontInvert",
+                            });
+                            if (code) {
+                                const codeLocation = code.location;
+                                const scanFrameBounds = scanFrame.getBoundingClientRect();
+                                const videoBounds = video.getBoundingClientRect();
+
+                                const frameTop = (scanFrameBounds.top - videoBounds.top) * (canvasElement.height / videoBounds.height);
+                                const frameLeft = (scanFrameBounds.left - videoBounds.left) * (canvasElement.width / videoBounds.width);
+                                const frameBottom = (scanFrameBounds.bottom - videoBounds.top) * (canvasElement.height / videoBounds.height);
+                                const frameRight = (scanFrameBounds.right - videoBounds.left) * (canvasElement.width / videoBounds.width);
+
+                                if (
+                                    codeLocation.topLeftCorner.x >= frameLeft &&
+                                    codeLocation.topLeftCorner.y >= frameTop &&
+                                    codeLocation.bottomRightCorner.x <= frameRight &&
+                                    codeLocation.bottomRightCorner.y <= frameBottom
+                                ) {
+                                    stopScan();
+                                    registrarAsistencia(code.data); // Envía el contenido del QR escaneado
+                                }
+                            }
+                        }
+                        requestAnimationFrame(tick);
+                    }
+
+                    function stopScan() {
+                        const stream = video.srcObject;
+                        const tracks = stream.getTracks();
+
+                        tracks.forEach(function (track) {
+                            track.stop();
+                        });
+
+                        video.srcObject = null;
+                        document.exitFullscreen();
+                        fullScreenContainer.style.display = 'none';
+                    }
+
+                    function registrarAsistencia(qrContent) {
+                        $.ajax({
+                            url: '@Url.Action("RegistrarAsistencia", "Conductor")', // Actualiza el controlador a "Conductor"
+                            type: 'GET',
+                            data: { qrContent: qrContent },
+                            success: function (response) {
+                                if (response.success) {
+                                    let hora = response.hora % 12 || 12; // Convierte a formato 12 horas
+                                    let minuto = response.minuto.toString().padStart(2, '0');
+                                    let ampm = response.esPM ? 'p.m.' : 'a.m.';
+                                    let horaFormateada = `${hora}:${minuto} ${ampm}`;
+                                    let mensaje = `${response.message} a las ${horaFormateada}`;
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: '¡Éxito!',
+                                        text: mensaje
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: response.message
+                                    });
+                                }
+                            },
+                            error: function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'Ocurrió un error al registrar la asistencia.'
+                                });
+                            }
+                        });
+                    }
+                });
+                $('#close-scanner').click(function () {
+                    const fullScreenContainer = document.getElementById('full-screen-container');
+                    const video = document.getElementById('qr-video');
+
+                    if (video.srcObject) {
+                        const tracks = video.srcObject.getTracks();
+                        tracks.forEach(function (track) {
+                            track.stop();
+                        });
+                    }
 
                     video.srcObject = null;
                     document.exitFullscreen();
                     fullScreenContainer.style.display = 'none';
-                }
-
-                function registrarAsistencia(qrContent) {
-                    $.ajax({
-                        url: '@Url.Action("RegistrarAsistencia", "Conductor")', // Actualiza el controlador a "Conductor"
-                        type: 'GET',
-                        data: { qrContent: qrContent },
-                        success: function (response) {
-                            if (response.success) {
-                                let hora = response.hora % 12 || 12; // Convierte a formato 12 horas
-                                let minuto = response.minuto.toString().padStart(2, '0');
-                                let ampm = response.esPM ? 'p.m.' : 'a.m.';
-                                let horaFormateada = `${hora}:${minuto} ${ampm}`;
-                                let mensaje = `${response.message} a las ${horaFormateada}`;
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: '¡Éxito!',
-                                    text: mensaje
-                                });
-                            } else {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error',
-                                    text: response.message
-                                });
-                            }
-                        },
-                        error: function () {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: 'Ocurrió un error al registrar la asistencia.'
-                            });
-                        }
-                    });
-                }
+                });
             });
-        });
-    </script>
-}
-
-<style>
-    #full-screen-container {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: black;
-        z-index: 1000;
-        display: none;
-        justify-content: center;
-        align-items: center;
+        </script>
     }
 
-    #overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-    }
-
-    .scan-frame {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 280px;
-        height: 280px;
-        border: 4px solid #00ff00;
-        box-sizing: border-box;
-        animation: scan-anim 2s infinite;
-    }
-
-    .scan-text {
-        position: absolute;
-        top: 10px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(0, 0, 0, 0.7);
-        color: white;
-        padding: 10px;
-        border-radius: 5px;
-        font-size: 18px;
-        text-align: center;
-        width: 90%;
-    }
-
-    @@keyframes scan-anim {
-        0% {
-            border-color: #00ff00;
+    <style>
+        #full-screen-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
         }
 
-        50% {
-            border-color: #ff0000;
+        #overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
         }
 
-        100% {
-            border-color: #00ff00;
+        .scan-frame {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 280px;
+            height: 280px;
+            border: 4px solid #00ff00;
+            box-sizing: border-box;
+            animation: scan-anim 2s infinite;
         }
-    }
-</style>
+
+        .scan-text {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 18px;
+            text-align: center;
+            width: 90%;
+        }
+
+        @@keyframes scan-anim {
+            0% {
+                border-color: #4723d9;
+            }
+
+            50% {
+                border-color: #00d2df;
+            }
+
+            100% {
+                border-color: #4723d9;
+            }
+        }
+        .scan-text {
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 18px;
+            text-align: center;
+        }
+        .close-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+        /* Nuevos estilos para centrar y ajustar el tamaño del botón */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px; /* Ajusta según sea necesario */
+        }
+
+        .qr-scanner-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+            background-color: white;
+            color: black;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: background-color 0.2s;
+            /* Ajusta el tamaño del botón aquí */
+            width: 180px; /* Ajustar el ancho */
+            height: auto; /* Altura automática basada en el contenido */
+        }
+        .qr-scanner-button:hover {
+            background-color: #f3f4f6;
+            }
+
+        .qr-scanner-image {
+            width: 100%; /* Ocupa todo el ancho del botón */
+            height: auto; /* Mantiene la proporción */
+            margin-bottom: 0.5rem;
+        }
+
+        .qr-scanner-button span {
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+    </style>
+
+
+
