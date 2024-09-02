@@ -30,21 +30,22 @@
                                 <p>Puedes restablecer tu contraseña aquí.</p>
                                 <div class="panel-body">
 
-                                    <form id="register-form" role="form" autocomplete="off" class="form" method="post">
-
-                                        
+                                    <form action="@Url.Action("Recp_contraseña", "Login")" id="register-form" role="form" autocomplete="off" method="post">
                                         <div class="form-group">
                                             <div class="input-group">
                                                 <span class="input-group-addon"><i class="glyphicon glyphicon-envelope color-blue"></i></span>
-                                                <input id="email" name="email" placeholder="email address" class="form-control" type="email">
+                                                <input id="id" name="id" placeholder="Número de identificación" class="form-control" type="number" required>
+                                            </div>
+                                            <br />
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="glyphicon glyphicon-lock color-blue"></i></span>
+                                                <input id="contraseña" name="contraseña" placeholder="Contraseña nueva" class="form-control" type="password" required minlength="8" maxlength="20" title="La contraseña debe tener entre 8 y 20 caracteres." disabled>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <input name="recover-submit" class="btn btn-lg btn-primary btn-block" value="Restablecer contraseña" type="submit">
                                             <a href="@Url.Action("Login", "Login")" class="btn btn-secondary submit_btn w-40 my-4">Atrás</a>
                                         </div>
-
-                                        <input type="hidden" class="hide" name="token" id="token" value="">
                                     </form>
 
                                 </div>
@@ -63,3 +64,54 @@
         padding-top: 70px;
     }
 </style>
+
+<script>
+        $(document).ready(function() {
+            // Función para verificar si el ID existe
+            function verificarId(id) {
+                return $.ajax({
+                    url: '@Url.Action("VerificarId", "Login")',
+                    type: 'GET',
+                    data: { id: id },
+                    dataType: 'json'
+                });
+            }
+
+            $('#id').on('input', function() {
+                var id = $(this).val();
+
+                if (id) {
+                    verificarId(id).done(function(data) {
+                        if (data.existe) {
+                            $('#contraseña').prop('disabled', false);
+                        } else {
+                            $('#contraseña').prop('disabled', true);
+                        }
+                    }).fail(function() {
+                        $('#contraseña').prop('disabled', true);
+                    });
+                } else {
+                    $('#contraseña').prop('disabled', true);
+                }
+            });
+
+            var successMessage = '@TempData["SuccessMessage"]';
+            var errorMessage = '@TempData["ErrorMessage"]';
+
+            if (successMessage) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Éxito',
+                    text: successMessage
+                });
+            }
+
+            if (errorMessage) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: errorMessage
+                });
+            }
+        });
+</script>
