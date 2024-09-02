@@ -60,6 +60,7 @@
     <Compile Include="AdminG.cs" />
     <Compile Include="Admin_local.cs" />
     <Compile Include="Asistencia.cs" />
+    <Compile Include="Bus.cs" />
     <Compile Include="Conductor.cs" />
     <Compile Include="Counter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

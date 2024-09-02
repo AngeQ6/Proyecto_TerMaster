@@ -1,0 +1,108 @@
+﻿Capa_entidad List<Bus>
+@{
+    ViewBag.Title = "Bus";
+    Layout = "~/Views/Shared/_Layout - admin_local.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>@ViewBag.Title</h1>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addBusModal">
+            <i class="bi bi-plus-circle me-2"></i> Agregar Bus
+        </button>
+    </div>
+
+    <div class="row">
+        @foreach (var bus in Model)
+        {
+<div class="col-md-4 mb-4">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-start">
+            <h5 class="card-title mb-0">Bus @bus.Number</h5>
+            <img src="@bus.ImageUrl" alt="Bus @bus.Number" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover; cursor: pointer;"
+                 data-bs-toggle="modal" data-bs-target="#imageModal" data-bs-img="@bus.ImageUrl" data-bs-bus="@bus.Number">
+        </div>
+        <div class="card-body">
+            <p><strong>Ruta:</strong> @bus.Route</p>
+            <p><strong>Capacidad:</strong> @bus.Capacity pasajeros</p>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <button class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-pencil"></i> Editar
+            </button>
+            <form asp-action="Delete" asp-route-id="@bus.Id" method="post" onsubmit="return confirm('¿Está seguro de que desea eliminar este bus?');">
+                <button type="submit" class="btn btn-outline-danger btn-sm">
+                    <i class="bi bi-trash"></i> Eliminar
+                </button>
+            </form>
+        </div>
+    </div>
+</div>}
+    </div>
+</div>
+
+<!-- Modal para agregar bus -->
+<div class="modal fade" id="addBusModal" tabindex="-1" aria-labelledby="addBusModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addBusModalLabel">Agregar Nuevo Bus</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="Add" method="post" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="Number" class="form-label">Número de Bus</label>
+                        <input type="text" class="form-control" id="Number" name="Number" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Route" class="form-label">Ruta</label>
+                        <input type="text" class="form-control" id="Route" name="Route" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Capacity" class="form-label">Capacidad</label>
+                        <input type="number" class="form-control" id="Capacity" name="Capacity" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="ImageUpload" class="form-label">Imagen del Bus</label>
+                        <input type="file" class="form-control" id="ImageUpload" name="ImageUpload">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Agregar Bus</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para mostrar imagen -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Imagen del Bus</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img src="" alt="Bus Image" class="img-fluid" id="modalImage">
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>document.addEventListener('DOMContentLoaded', function () {
+            var imageModal = document.getElementById('imageModal')
+            imageModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget
+                var imgSrc = button.getAttribute('data-bs-img')
+                var busNumber = button.getAttribute('data-bs-bus')
+                var modalImage = document.getElementById('modalImage')
+                var modalTitle = imageModal.querySelector('.modal-title')
+                modalImage.src = imgSrc
+                modalTitle.textContent = 'Imagen del Bus ' + busNumber
+            })
+        })</script>
+}
