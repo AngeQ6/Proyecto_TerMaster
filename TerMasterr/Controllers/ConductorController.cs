@@ -30,7 +30,8 @@ namespace TerMasterr.Controllers
             }
         }
         //////////////////////////////////////////////////////////////////////////////////
-        
+        #endregion
+
         ////////////////////////// VISAS /////////////////////////////////////////
         #region
         public ActionResult Index()
@@ -41,54 +42,8 @@ namespace TerMasterr.Controllers
         {
             return View();
         }
-        public ActionResult Reg_huella(int id_conductor)
-        {
-            ViewBag.IdConductor = id_conductor;
-            return View();
-        }
-        //////////////////////////////////////////////////////////////////////////////////
-
-
-        ///////////////////////////////////////// METODOS /////////////////////////////////////////
-
-        public class HuellaRequest
-        {
-            public byte[] HuellaDactilar { get; set; }
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> RegistrarHuella(int id_conductor, HuellaRequest request)
-        {
-            if (request?.HuellaDactilar == null)
-            {
-                return Json(new { success = false, message = "Datos de huella inválidos" });
-            }
-
-            try
-            {
-                var conductoresCollection = _context.GetCollection<Conductor>("Conductores");
-                var filter = Builders<Conductor>.Filter.Eq(c => c.id_conductor, id_conductor);
-                var update = Builders<Conductor>.Update.Set(c => c.huella_dactilar, request.HuellaDactilar);
-
-                var result = await conductoresCollection.UpdateOneAsync(filter, update);
-
-                if (result.ModifiedCount > 0)
-                {
-                    return Json(new { success = true, message = "Huella dactilar registrada con éxito" });
-                }
-                else
-                {
-                    return Json(new { success = false, message = "No se pudo actualizar la huella dactilar" });
-                }
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = "Error al registrar la huella: " + ex.Message });
-            }
-        }
         //////////////////////////////////////////////////////////////////////////////////
         #endregion
-
 
 
         ///////////////////////////////////////// METODOS /////////////////////////////////////////

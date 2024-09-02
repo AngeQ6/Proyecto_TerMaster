@@ -1472,3 +1472,21 @@ C:\Users\USER\Source\Repos\TerMaster\TerMasterr\obj\Debug\TerMasterr.dll
 C:\Users\USER\Source\Repos\TerMaster\TerMasterr\obj\Debug\TerMasterr.pdb
 C:\Users\USER\Source\Repos\TerMaster\TerMasterr\bin\QRCoder.dll
 >>>>>>> 1bf7e240fcb36336a4e986c54d2f83dcb828f6fb
+C:\Users\DELL\source\repos\Proyecto_TerMaster\TerMasterr\bin\CBOR.dll
+C:\Users\DELL\source\repos\Proyecto_TerMaster\TerMasterr\bin\Fido2NetLib.dll
+C:\Users\DELL\source\repos\Proyecto_TerMaster\TerMasterr\bin\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\DELL\source\repos\Proyecto_TerMaster\TerMasterr\bin\Microsoft.IdentityModel.Logging.dll
+C:\Users\DELL\source\repos\Proyecto_TerMaster\TerMasterr\bin\Microsoft.IdentityModel.Tokens.dll
+C:\Users\DELL\source\repos\Proyecto_TerMaster\TerMasterr\bin\Numbers.dll
+C:\Users\DELL\source\repos\Proyecto_TerMaster\TerMasterr\bin\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\DELL\source\repos\Proyecto_TerMaster\TerMasterr\bin\System.Security.Cryptography.Cng.dll
+C:\Users\DELL\source\repos\Proyecto_TerMaster\TerMasterr\bin\CBOR.xml
+C:\Users\DELL\source\repos\Proyecto_TerMaster\TerMasterr\bin\Microsoft.IdentityModel.JsonWebTokens.pdb
+C:\Users\DELL\source\repos\Proyecto_TerMaster\TerMasterr\bin\Microsoft.IdentityModel.JsonWebTokens.xml
+C:\Users\DELL\source\repos\Proyecto_TerMaster\TerMasterr\bin\Microsoft.IdentityModel.Logging.pdb
+C:\Users\DELL\source\repos\Proyecto_TerMaster\TerMasterr\bin\Microsoft.IdentityModel.Logging.xml
+C:\Users\DELL\source\repos\Proyecto_TerMaster\TerMasterr\bin\Microsoft.IdentityModel.Tokens.pdb
+C:\Users\DELL\source\repos\Proyecto_TerMaster\TerMasterr\bin\Microsoft.IdentityModel.Tokens.xml
+C:\Users\DELL\source\repos\Proyecto_TerMaster\TerMasterr\bin\Numbers.xml
+C:\Users\DELL\source\repos\Proyecto_TerMaster\TerMasterr\bin\System.IdentityModel.Tokens.Jwt.pdb
+C:\Users\DELL\source\repos\Proyecto_TerMaster\TerMasterr\bin\System.IdentityModel.Tokens.Jwt.xml

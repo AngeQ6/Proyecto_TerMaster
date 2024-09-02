@@ -158,7 +158,7 @@ namespace TerMasterr.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Registrar(string id_conductor, string nombre, string contraseña, string telefono, string correo)
+        public async Task<ActionResult> Registrar(string id_conductor, string nombre, string contraseña, string telefono, string correo, string confirmar_contraseña)
         {
             try
             {
@@ -172,6 +172,10 @@ namespace TerMasterr.Controllers
                     TempData["ErrorMessage"] = "El conductor con este ID ya existe. Por favor, use otro ID.";
                     return RedirectToAction("Registro_conductor", "Login");
                 }
+                else if(confirmar_contraseña != contraseña)
+                {
+                    TempData["ErrorMessage"] = "La contraseña confirmada no es la misma";
+                }
                 // Si el conductor no existe, proceder con el registro
                 var nuevo_conductor = new Conductor
                 {
@@ -181,6 +185,7 @@ namespace TerMasterr.Controllers
                     telefono = Convert.ToInt64(telefono),
                     correo = correo
                 };
+                
                 await coleccionConductores.InsertOneAsync(nuevo_conductor);
                 // Si la inserción es exitosa, almacenar un mensaje de éxito en TempData
                 TempData["SuccessMessage"] = "Registro exitoso. Ahora puedes iniciar sesión.";
