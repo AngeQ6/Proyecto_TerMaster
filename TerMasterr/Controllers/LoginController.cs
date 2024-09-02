@@ -195,6 +195,99 @@ namespace TerMasterr.Controllers
                 return RedirectToAction("Registro_conductor", "Login");
             }
         }
+
+        [HttpPost]
+        public async Task<ActionResult> Recp_contraseña(string id, string contraseña)
+        {
+            try
+            {
+                int userId = Convert.ToInt32(id);
+
+                // Intenta buscar en la colección de conductores
+                var filterConductor = Builders<Conductor>.Filter.Eq(c => c.id_conductor, userId);
+                var updateConductor = Builders<Conductor>.Update.Set("contraseña", contraseña);
+                var resultConductor = await _context.GetCollection<Conductor>("Conductor")
+                                        .UpdateOneAsync(filterConductor, updateConductor);
+
+                if (resultConductor.ModifiedCount > 0)
+                {
+                    TempData["SuccessMessage"] = "La contraseña ha sido restablecida exitosamente.";
+                    return RedirectToAction("Recp_contraseña", "Login");
+                }
+
+                // Intenta buscar en la colección de AdminG
+                var filterAdminG = Builders<AdminG>.Filter.Eq(a => a.id_admin_general, userId);
+                var updateAdminG = Builders<AdminG>.Update.Set("contraseña_admin_general", contraseña);
+                var resultAdminG = await _context.GetCollection<AdminG>("AdminG")
+                                        .UpdateOneAsync(filterAdminG, updateAdminG);
+
+                if (resultAdminG.ModifiedCount > 0)
+                {
+                    TempData["SuccessMessage"] = "La contraseña ha sido restablecida exitosamente.";
+                    return RedirectToAction("Recp_contraseña", "Login");
+                }
+
+                // Intenta buscar en la colección de Admin_local
+                var filterAdminLocal = Builders<Admin_local>.Filter.Eq(a => a.id_admin_local, userId);
+                var updateAdminLocal = Builders<Admin_local>.Update.Set("contraseña_admin_local", contraseña);
+                var resultAdminLocal = await _context.GetCollection<Admin_local>("Admin_local")
+                                        .UpdateOneAsync(filterAdminLocal, updateAdminLocal);
+
+                if (resultAdminLocal.ModifiedCount > 0)
+                {
+                    TempData["SuccessMessage"] = "La contraseña ha sido restablecida exitosamente.";
+                    return RedirectToAction("Recp_contraseña", "Login");
+                }
+
+                TempData["ErrorMessage"] = "No se encontró un usuario con el ID proporcionado.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Ocurrió un error al restablecer la contraseña: " + ex.Message;
+            }
+
+            return RedirectToAction("Recp_contraseña", "Login");
+        }
+        public JsonResult VerificarId(int id)
+        {
+            bool existe = false;
+
+            // Verificar en la colección de conductores
+            var conductor = _context.GetCollection<Conductor>("Conductor")
+                                    .Find(c => c.id_conductor == id)
+                                    .FirstOrDefault();
+
+            if (conductor != null)
+            {
+                existe = true;
+            }
+            else
+            {
+                // Verificar en AdminG
+                var adminG = _context.GetCollection<AdminG>("AdminG")
+                                     .Find(a => a.id_admin_general == id)
+                                     .FirstOrDefault();
+
+                if (adminG != null)
+                {
+                    existe = true;
+                }
+                else
+                {
+                    // Verificar en Admin_local
+                    var adminLocal = _context.GetCollection<Admin_local>("Admin_local")
+                                             .Find(a => a.id_admin_local == id)
+                                             .FirstOrDefault();
+
+                    if (adminLocal != null)
+                    {
+                        existe = true;
+                    }
+                }
+            }
+
+            return Json(new { existe = existe }, JsonRequestBehavior.AllowGet);
+        }
     }
         /////////////////////////////////////////////////////////////////////////////////////////////////
         #endregion
