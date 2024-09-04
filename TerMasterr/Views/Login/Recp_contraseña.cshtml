@@ -47,7 +47,28 @@
                                             <a href="@Url.Action("Login", "Login")" class="btn btn-secondary submit_btn w-40 my-4">Atrás</a>
                                         </div>
                                     </form>
-
+                                    @if (TempData["SuccessMessage"] != null)
+                                    {
+                                        <script>
+                                            Swal.fire({
+                                                icon: 'success',
+                                                title: '¡Éxito!',
+                                                text: '@Html.Raw(TempData["SuccessMessage"])'
+                                            }).then(function () {
+                                                window.location = '@Url.Action("Registrar_administrador_local", "Administrador_general")';
+                                            });
+                                        </script>
+                                    }
+                                    @if (TempData["ErrorMessage"] != null)
+                                    {
+                                        <script>
+                                            Swal.fire({
+                                                icon: 'error',
+                                                title: '¡Error!',
+                                                text: '@Html.Raw(TempData["ErrorMessage"])'
+                                            });
+                                        </script>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -95,23 +116,5 @@
                 }
             });
 
-            var successMessage = '@TempData["SuccessMessage"]';
-            var errorMessage = '@TempData["ErrorMessage"]';
-
-            if (successMessage) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Éxito',
-                    text: successMessage
-                });
-            }
-
-            if (errorMessage) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: errorMessage
-                });
-            }
         });
 </script>
