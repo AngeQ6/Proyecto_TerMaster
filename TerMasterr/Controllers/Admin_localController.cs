@@ -9,6 +9,30 @@ namespace TerMasterr.Controllers
 {
     public class Admin_localController : Controller
     {
+        public ActionResult Bus()
+        {
+            return View(_buses);
+        } 
+        
+        public ActionResult Conductores()
+        {
+            return View();
+        }
+        
+        public ActionResult Asignar_horarios()
+        {
+            return View();
+        }
+
+        public ActionResult Editar_datos_personales()
+        {
+            return View();
+        }
+        
+        public ActionResult Reportes()
+        {
+            return View();
+        }
         //private static List<Conductor> conductores = new List<Conductor>
         //{
         //    new Conductor { Id = 1, Nombre = "Juan Pérez", PlacaBus = "ABC123", Horario = "", Orden = 1 },
@@ -54,10 +78,7 @@ namespace TerMasterr.Controllers
             new Bus { Id = 2, Number = "002", Route = "Airport - City Center", Capacity = 40, ImageUrl = "/images/placeholder.jpg" },
             new Bus { Id = 3, Number = "003", Route = "University - Shopping Mall", Capacity = 30, ImageUrl = "/images/placeholder.jpg" }
         };
-        public ActionResult Bus()
-        {
-            return View(_buses);
-        }
+        
         [HttpPost]
         public ActionResult Add(Bus bus)
         {
