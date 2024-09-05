@@ -552,7 +552,6 @@
     <Content Include="Views\Administrador_general\Reportes.cshtml" />
     <Content Include="Views\Administrador_general\QR.cshtml" />
     <Content Include="Views\Administrador_general\Registrar_administrador_local.cshtml" />
-    <Content Include="Views\Admin_local\Index.cshtml" />
     <Content Include="Views\Admin_local\Bus.cshtml" />
     <Content Include="Views\Administrador_general\Buses.cshtml" />
     <Content Include="Views\Administrador_general\Editar_datos_personales.cshtml" />
