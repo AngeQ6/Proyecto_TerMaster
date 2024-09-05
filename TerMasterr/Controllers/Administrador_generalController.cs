@@ -35,6 +35,14 @@ namespace TerMasterr.Controllers
         {
             return View();
         }
+        public ActionResult Buses()
+        {
+            return View();
+        }
+        public ActionResult Editar_datos_personales()
+        {
+            return View();
+        }
         //////////////////////////////////////////////////////////////////////////////////////
         #endregion
 

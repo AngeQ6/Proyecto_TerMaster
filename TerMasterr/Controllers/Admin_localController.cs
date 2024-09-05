@@ -9,55 +9,37 @@ namespace TerMasterr.Controllers
 {
     public class Admin_localController : Controller
     {
-        private static List<Conductor> conductores = new List<Conductor>
+        public ActionResult Bus()
         {
-            new Conductor { Id = 1, Nombre = "Juan Pérez", PlacaBus = "ABC123", Horario = "", Orden = 1 },
-            new Conductor { Id = 2, Nombre = "María López", PlacaBus = "DEF456", Horario = "", Orden = 2 },
-            new Conductor { Id = 3, Nombre = "Carlos Rodríguez", PlacaBus = "GHI789", Horario = "", Orden = 3 },
-            new Conductor { Id = 4, Nombre = "Ana Martínez", PlacaBus = "JKL012", Horario = "", Orden = 4 },
-            new Conductor { Id = 5, Nombre = "Pedro Sánchez", PlacaBus = "MNO345", Horario = "", Orden = 5 }
-        };
-        // GET: Admin_local
-        public ActionResult Index()
+            return View(_buses);
+        } 
+        
+        public ActionResult Conductores()
         {
-            var conductoresOrdenados = conductores.OrderBy(c => c.Orden).ToList();
-            return View(conductoresOrdenados);
+            return View();
         }
-        [HttpPost]
-        public ActionResult ActualizarHorario(int id, string horario)
+        
+        public ActionResult Asignar_horarios()
         {
-            var conductor = conductores.FirstOrDefault(c => c.Id == id);
-            if (conductor != null)
-            {
-                conductor.Horario = horario;
-            }
-            return Json(new { success = true });
+            return View();
         }
 
-        [HttpPost]
-        public ActionResult ReordenarConductores(List<int> nuevoOrden)
+        public ActionResult Editar_datos_personales()
         {
-            for (int i = 0; i < nuevoOrden.Count; i++)
-            {
-                var conductor = conductores.FirstOrDefault(c => c.Id == nuevoOrden[i]);
-                if (conductor != null)
-                {
-                    conductor.Orden = i + 1;
-                }
-            }
-            return Json(new { success = true });
+            return View();
         }
-
+        
+        public ActionResult Reportes()
+        {
+            return View();
+        }
         private static List<Bus> _buses = new List<Bus>
         {
             new Bus { Id = 1, Number = "001", Route = "Downtown - Suburb", Capacity = 50, ImageUrl = "/images/placeholder.jpg" },
             new Bus { Id = 2, Number = "002", Route = "Airport - City Center", Capacity = 40, ImageUrl = "/images/placeholder.jpg" },
             new Bus { Id = 3, Number = "003", Route = "University - Shopping Mall", Capacity = 30, ImageUrl = "/images/placeholder.jpg" }
         };
-        public ActionResult Bus()
-        {
-            return View(_buses);
-        }
+        
         [HttpPost]
         public ActionResult Add(Bus bus)
         {
