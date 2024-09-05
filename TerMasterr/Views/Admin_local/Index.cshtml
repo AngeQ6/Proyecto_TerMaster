@@ -8,33 +8,34 @@
 
 @if (Model != null && Model.Any())
 {
-<table id="conductoresTable" class="table table-striped">
-    <thead>
-        <tr>
-            <th>Orden</th>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Placa del Bus</th>
-            <th>Horario</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var conductor in Model)
-        {
-<tr data-id="@conductor.Id">
-    <td class="orden">@conductor.Orden</td>
-    <td>@conductor.Id</td>
-    <td>@conductor.Nombre</td>
-    <td>@conductor.PlacaBus</td>
-    <td>
-        <input type="time" class="form-control horario-input" value="@conductor.Horario" data-id="@conductor.Id" />
-    </td>
-</tr>}
-    </tbody>
-</table> }
-            else
+    <table id="conductoresTable" class="table table-striped">
+        <thead>
+            <tr>
+                <th>Orden</th>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Placa del Bus</th>
+                <th>Horario</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var conductor in Model)
             {
-<p>No hay conductores para mostrar.</p>}
+                <tr data-id="@conductor.Id">
+                    <td class="orden">@conductor.Orden</td>
+                    <td>@conductor.Id</td>
+                    <td>@conductor.Nombre</td>
+                    <td>@conductor.PlacaBus</td>
+                    <td>
+                        <input type="time" class="form-control horario-input" value="@conductor.Horario" data-id="@conductor.Id" />
+                    </td>
+                </tr>
+}
+        </tbody>
+    </table> }
+else
+{
+    <p>No hay conductores para mostrar.</p>}
 
 @section scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

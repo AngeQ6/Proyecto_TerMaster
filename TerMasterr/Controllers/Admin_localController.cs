@@ -9,44 +9,44 @@ namespace TerMasterr.Controllers
 {
     public class Admin_localController : Controller
     {
-        //private static List<Conductor> conductores = new List<Conductor>
-        //{
-        //    new Conductor { Id = 1, Nombre = "Juan Pérez", PlacaBus = "ABC123", Horario = "", Orden = 1 },
-        //    new Conductor { Id = 2, Nombre = "María López", PlacaBus = "DEF456", Horario = "", Orden = 2 },
-        //    new Conductor { Id = 3, Nombre = "Carlos Rodríguez", PlacaBus = "GHI789", Horario = "", Orden = 3 },
-        //    new Conductor { Id = 4, Nombre = "Ana Martínez", PlacaBus = "JKL012", Horario = "", Orden = 4 },
-        //    new Conductor { Id = 5, Nombre = "Pedro Sánchez", PlacaBus = "MNO345", Horario = "", Orden = 5 }
-        //};
-        //// GET: Admin_local
-        //public ActionResult Index()
-        //{
-        //    var conductoresOrdenados = conductores.OrderBy(c => c.Orden).ToList();
-        //    return View(conductoresOrdenados);
-        //}
-        //[HttpPost]
-        //public ActionResult ActualizarHorario(int id, string horario)
-        //{
-        //    var conductor = conductores.FirstOrDefault(c => c.Id == id);
-        //    if (conductor != null)
-        //    {
-        //        conductor.Horario = horario;
-        //    }
-        //    return Json(new { success = true });
-        //}
+        private static List<Conductor> conductores = new List<Conductor>
+        {
+            new Conductor { Id = 1, Nombre = "Juan Pérez", PlacaBus = "ABC123", Horario = "", Orden = 1 },
+            new Conductor { Id = 2, Nombre = "María López", PlacaBus = "DEF456", Horario = "", Orden = 2 },
+            new Conductor { Id = 3, Nombre = "Carlos Rodríguez", PlacaBus = "GHI789", Horario = "", Orden = 3 },
+            new Conductor { Id = 4, Nombre = "Ana Martínez", PlacaBus = "JKL012", Horario = "", Orden = 4 },
+            new Conductor { Id = 5, Nombre = "Pedro Sánchez", PlacaBus = "MNO345", Horario = "", Orden = 5 }
+        };
+        // GET: Admin_local
+        public ActionResult Index()
+        {
+            var conductoresOrdenados = conductores.OrderBy(c => c.Orden).ToList();
+            return View(conductoresOrdenados);
+        }
+        [HttpPost]
+        public ActionResult ActualizarHorario(int id, string horario)
+        {
+            var conductor = conductores.FirstOrDefault(c => c.Id == id);
+            if (conductor != null)
+            {
+                conductor.Horario = horario;
+            }
+            return Json(new { success = true });
+        }
 
-        //[HttpPost]
-        //public ActionResult ReordenarConductores(List<int> nuevoOrden)
-        //{
-        //    for (int i = 0; i < nuevoOrden.Count; i++)
-        //    {
-        //        var conductor = conductores.FirstOrDefault(c => c.Id == nuevoOrden[i]);
-        //        if (conductor != null)
-        //        {
-        //            conductor.Orden = i + 1;
-        //        }
-        //    }
-        //    return Json(new { success = true });
-        //}
+        [HttpPost]
+        public ActionResult ReordenarConductores(List<int> nuevoOrden)
+        {
+            for (int i = 0; i < nuevoOrden.Count; i++)
+            {
+                var conductor = conductores.FirstOrDefault(c => c.Id == nuevoOrden[i]);
+                if (conductor != null)
+                {
+                    conductor.Orden = i + 1;
+                }
+            }
+            return Json(new { success = true });
+        }
 
         private static List<Bus> _buses = new List<Bus>
         {

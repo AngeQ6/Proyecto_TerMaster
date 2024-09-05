@@ -1,4 +1,4 @@
-﻿Capa_entidad List<Bus>
+﻿
 @{
     ViewBag.Title = "Bus";
     Layout = "~/Views/Shared/_Layout - admin_local.cshtml";
@@ -8,7 +8,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>@ViewBag.Title</h1>
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addBusModal">
-            <i class="bi bi-plus-circle me-2"></i> Agregar Bus
+            <i class="bi bi-plus-circle me-0,99"></i> 
         </button>
     </div>
 
@@ -28,11 +28,11 @@
         </div>
         <div class="card-footer d-flex justify-content-between">
             <button class="btn btn-outline-primary btn-sm">
-                <i class="bi bi-pencil"></i> Editar
+                <i class="bi bi-pencil"></i> 
             </button>
             <form asp-action="Delete" asp-route-id="@bus.Id" method="post" onsubmit="return confirm('¿Está seguro de que desea eliminar este bus?');">
                 <button type="submit" class="btn btn-outline-danger btn-sm">
-                    <i class="bi bi-trash"></i> Eliminar
+                    <i class="fa fa-trash"></i> 
                 </button>
             </form>
         </div>
