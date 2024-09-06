@@ -555,10 +555,10 @@
     <Content Include="Views\Admin_local\Bus.cshtml" />
     <Content Include="Views\Administrador_general\Buses.cshtml" />
     <Content Include="Views\Administrador_general\Editar_datos_personales.cshtml" />
-    <Content Include="Views\Admin_local\Conductores.cshtml" />
     <Content Include="Views\Admin_local\Asignar_horarios.cshtml" />
     <Content Include="Views\Admin_local\Reportes.cshtml" />
     <Content Include="Views\Admin_local\Editar_datos_personales.cshtml" />
+    <Content Include="Views\Admin_local\Gestion_conductor.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

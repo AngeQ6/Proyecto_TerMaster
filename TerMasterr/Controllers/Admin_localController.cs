@@ -4,11 +4,32 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Capa_entidad;
+using ConexionMongoDB;
 
 namespace TerMasterr.Controllers
 {
     public class Admin_localController : Controller
     {
+        ///////////////////////////////////////// CONEXION /////////////////////////////////////////
+        #region
+        private readonly Conexion _context;
+        public Admin_localController()
+        {
+            try
+            {
+                _context = new Conexion();
+            }
+            catch (ApplicationException ex)
+            {
+                // Captura cualquier error de conexión
+                ViewBag.ErrorMessage = "Error al conectar con la base de datos: " + ex.Message;
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////////////
+        #endregion
+
+        ////////////////////////// VISAS /////////////////////////////////////////
+        #region
         public ActionResult Bus()
         {
             return View(_buses);
@@ -33,6 +54,8 @@ namespace TerMasterr.Controllers
         {
             return View();
         }
+        ////////////////////////////////////////////////////////////////////////////
+        #endregion
         private static List<Bus> _buses = new List<Bus>
         {
             new Bus { Id = 1, Number = "001", Route = "Downtown - Suburb", Capacity = 50, ImageUrl = "/images/placeholder.jpg" },
@@ -64,6 +87,10 @@ namespace TerMasterr.Controllers
                 _buses.Remove(bus);
             }
             return RedirectToAction("Bus");
+        }
+        public ActionResult Gestion_conductor()
+        {
+            return View();
         }
     }
     
