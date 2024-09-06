@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using Capa_entidad;
 using ConexionMongoDB;
+using MongoDB.Driver;
 
 namespace TerMasterr.Controllers
 {
@@ -35,14 +36,14 @@ namespace TerMasterr.Controllers
             return View(_buses);
         } 
         
-        public ActionResult Conductores()
-        {
-            return View();
-        }
-        
         public ActionResult Asignar_horarios()
         {
             return View();
+        }
+        public ActionResult Gestion_conductor()
+        {
+            var conductor = _context.GetCollection<Conductor>("Conductor").Find(c => true).ToList();
+            return View(conductor);
         }
 
         public ActionResult Editar_datos_personales()
@@ -56,6 +57,7 @@ namespace TerMasterr.Controllers
         }
         ////////////////////////////////////////////////////////////////////////////
         #endregion
+        
         private static List<Bus> _buses = new List<Bus>
         {
             new Bus { Id = 1, Number = "001", Route = "Downtown - Suburb", Capacity = 50, ImageUrl = "/images/placeholder.jpg" },
@@ -88,10 +90,7 @@ namespace TerMasterr.Controllers
             }
             return RedirectToAction("Bus");
         }
-        public ActionResult Gestion_conductor()
-        {
-            return View();
-        }
+        
     }
     
 }
