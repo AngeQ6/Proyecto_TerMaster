@@ -20,6 +20,8 @@ namespace Capa_entidad
         public string correo { get; set; }
         public string contraseña { get; set; }
         public string placa_bus_asignado { get; set; }
-        public string ImagenUrl { get; set; } 
+        public string ImagenUrl { get; set; }
+        [BsonIgnoreIfNull]
+        public string Estado { get; set; } 
     }
 }

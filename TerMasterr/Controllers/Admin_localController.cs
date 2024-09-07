@@ -90,7 +90,27 @@ namespace TerMasterr.Controllers
             }
             return RedirectToAction("Bus");
         }
-        
+        [HttpPost]
+        public ActionResult Get_conductor(int id)
+        {
+            var conductor = _context.GetCollection<Conductor>("Conductor")
+                            .Find(c => c.id_conductor == id)
+                            .FirstOrDefault();
+
+            if (conductor == null)
+            {
+                return Json(new { success = false, message = "Conductor no encontrado" });
+            }
+
+            return Json(new
+            {
+                success = true,
+                id_conductor = conductor.id_conductor,
+                nombre = conductor.nombre,
+                Estado = conductor.Estado
+            });
+        }
+
     }
     
 }
