@@ -5,6 +5,8 @@ using System.Web;
 using System.Web.Mvc;
 using Capa_entidad;
 using ConexionMongoDB;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace TerMasterr.Controllers
 {
@@ -13,6 +15,7 @@ namespace TerMasterr.Controllers
         ///////////////////////////////////////// CONEXION /////////////////////////////////////////
         #region
         private readonly Conexion _context;
+
         public Admin_localController()
         {
             try
@@ -21,7 +24,6 @@ namespace TerMasterr.Controllers
             }
             catch (ApplicationException ex)
             {
-                // Captura cualquier error de conexión
                 ViewBag.ErrorMessage = "Error al conectar con la base de datos: " + ex.Message;
             }
         }
@@ -32,66 +34,59 @@ namespace TerMasterr.Controllers
         #region
         public ActionResult Bus()
         {
-            return View(_buses);
-        } 
-        
-        public ActionResult Conductores()
-        {
-            return View();
+            var buses = _context.GetCollection<Bus>("Bus").Find(c => true).ToList();
+            var conductores = _context.GetCollection<Conductor>("Conductor").Find(c => true).ToList();
+
+            ViewBag.Conductores = conductores; // Enviamos la lista de conductores a la vista
+            return View(buses); // Enviamos la lista de buses a la vista
         }
-        
-        public ActionResult Asignar_horarios()
+
+
+        public ActionResult Gestion_conductor()
         {
-            return View();
+            var conductor = _context.GetCollection<Conductor>("Conductor").Find(c => true).ToList();
+            return View(conductor);
         }
 
         public ActionResult Editar_datos_personales()
         {
             return View();
         }
-        
+
         public ActionResult Reportes()
         {
             return View();
         }
         ////////////////////////////////////////////////////////////////////////////
         #endregion
-        private static List<Bus> _buses = new List<Bus>
-        {
-            new Bus { Id = 1, Number = "001", Route = "Downtown - Suburb", Capacity = 50, ImageUrl = "/images/placeholder.jpg" },
-            new Bus { Id = 2, Number = "002", Route = "Airport - City Center", Capacity = 40, ImageUrl = "/images/placeholder.jpg" },
-            new Bus { Id = 3, Number = "003", Route = "University - Shopping Mall", Capacity = 30, ImageUrl = "/images/placeholder.jpg" }
-        };
-        
+
+
         [HttpPost]
-        public ActionResult Add(Bus bus)
+        public ActionResult AddBus(Bus bus)
         {
             if (ModelState.IsValid)
             {
-                bus.Id = _buses.Max(b => b.Id) + 1;
-                if (string.IsNullOrEmpty(bus.ImageUrl))
+                try
                 {
-                    bus.ImageUrl = "/images/placeholder.jpg";
+                    // Insertar el bus en la colección
+                    _context.GetCollection<Bus>("Bus").InsertOne(bus);
+                    TempData["SuccessMessage"] = "Bus agregado exitosamente.";
+                    return RedirectToAction("Bus");
                 }
-                _buses.Add(bus);
-                return RedirectToAction("Index");
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = "Error al agregar el bus: " + ex.Message;
+                    return RedirectToAction("Bus");
+                }
             }
-            return View("Bus", _buses);
+
+            // Si el modelo no es válido, devolver la vista con el modelo actual
+            return View(bus);
+
         }
-        [HttpPost]
-        public ActionResult Delete(int id)
-        {
-            var bus = _buses.FirstOrDefault(b => b.Id == id);
-            if (bus != null)
-            {
-                _buses.Remove(bus);
-            }
-            return RedirectToAction("Bus");
-        }
-        public ActionResult Gestion_conductor()
-        {
-            return View();
-        }
+
+
+
     }
-    
+
 }

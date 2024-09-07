@@ -1,43 +1,38 @@
-﻿
+﻿@model IEnumerable<Capa_entidad.Bus>
+
 @{
     ViewBag.Title = "Bus";
     Layout = "~/Views/Shared/_Layout - admin_local.cshtml";
 }
 
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>@ViewBag.Title</h1>
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addBusModal">
-            <i class="bi bi-plus-circle me-0,99"></i> 
+            <i class="bi bi-plus-circle me-0,99"></i>
         </button>
     </div>
 
     <div class="row">
         @foreach (var bus in Model)
         {
-<div class="col-md-4 mb-4">
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-start">
-            <h5 class="card-title mb-0">Bus @bus.Number</h5>
-            <img src="@bus.ImageUrl" alt="Bus @bus.Number" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover; cursor: pointer;"
-                 data-bs-toggle="modal" data-bs-target="#imageModal" data-bs-img="@bus.ImageUrl" data-bs-bus="@bus.Number">
-        </div>
-        <div class="card-body">
-            <p><strong>Ruta:</strong> @bus.Route</p>
-            <p><strong>Capacidad:</strong> @bus.Capacity pasajeros</p>
-        </div>
-        <div class="card-footer d-flex justify-content-between">
-            <button class="btn btn-outline-primary btn-sm">
-                <i class="bi bi-pencil"></i> 
-            </button>
-            <form asp-action="Delete" asp-route-id="@bus.Id" method="post" onsubmit="return confirm('¿Está seguro de que desea eliminar este bus?');">
-                <button type="submit" class="btn btn-outline-danger btn-sm">
-                    <i class="fa fa-trash"></i> 
-                </button>
-            </form>
-        </div>
-    </div>
-</div>}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-start">
+                        <h5 class="card-title mb-0">Placa: @bus.placa</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>ID del conductor:</strong> @bus.id_conductor</p>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Nombre del conductor:</strong> @bus.nombre</p>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 </div>
 
@@ -49,33 +44,61 @@
                 <h5 class="modal-title" id="addBusModalLabel">Agregar Nuevo Bus</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form asp-action="Add" method="post" enctype="multipart/form-data">
+            <form action="@Url.Action("AddBus","Admin_local")" method="post">
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="Number" class="form-label">Número de Bus</label>
-                        <input type="text" class="form-control" id="Number" name="Number" required>
+                        <label for="placa" class="form-label">Placa del bus</label>
+                        <input type="text" class="form-control" id="placa" name="placa" required>
                     </div>
                     <div class="mb-3">
-                        <label for="Route" class="form-label">Ruta</label>
-                        <input type="text" class="form-control" id="Route" name="Route" required>
+                        <label for="id_conductor" class="form-label">Asignar conductor</label>
+                        <select class="form-control" id="id_conductor" name="id_conductor" required>
+                            <option value="">Selecciona un conductor</option>
+                            @foreach (var conductor in ViewBag.Conductores)
+                            {
+                                <option value="@conductor.id_conductor">@conductor.id_conductor</option>
+                            }
+                        </select>
                     </div>
                     <div class="mb-3">
-                        <label for="Capacity" class="form-label">Capacidad</label>
-                        <input type="number" class="form-control" id="Capacity" name="Capacity" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="ImageUpload" class="form-label">Imagen del Bus</label>
-                        <input type="file" class="form-control" id="ImageUpload" name="ImageUpload">
+                        <label for="nombre" class="form-label">Nombre del conductor</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" disabled>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Agregar Bus</button>
                 </div>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <script>
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Éxito!',
+                                text: '@Html.Raw(TempData["SuccessMessage"])'
+                            }).then(function () {
+                                window.location = '@Url.Action("Bus", "Admin_local")';
+
+                            });
+                    </script>
+                }
+
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <script>
+                            Swal.fire({
+                                icon: 'error',
+                                title: '¡Error!',
+                                text: '@Html.Raw(TempData["ErrorMessage"])'
+                            });
+                    </script>
+                }
             </form>
         </div>
     </div>
 </div>
+
 
 <!-- Modal para mostrar imagen -->
 <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
@@ -93,16 +116,36 @@
 </div>
 
 @section Scripts {
-    <script>document.addEventListener('DOMContentLoaded', function () {
-            var imageModal = document.getElementById('imageModal')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var imageModal = document.getElementById('imageModal');
             imageModal.addEventListener('show.bs.modal', function (event) {
-                var button = event.relatedTarget
-                var imgSrc = button.getAttribute('data-bs-img')
-                var busNumber = button.getAttribute('data-bs-bus')
-                var modalImage = document.getElementById('modalImage')
-                var modalTitle = imageModal.querySelector('.modal-title')
-                modalImage.src = imgSrc
-                modalTitle.textContent = 'Imagen del Bus ' + busNumber
-            })
-        })</script>
+                var button = event.relatedTarget;
+                var imgSrc = button.getAttribute('data-bs-img');
+                var busNumber = button.getAttribute('data-bs-bus');
+                var modalImage = document.getElementById('modalImage');
+                var modalTitle = imageModal.querySelector('.modal-title');
+                modalImage.src = imgSrc;
+                modalTitle.textContent = 'Imagen del Bus ' + busNumber;
+            });
+
+            var conductores = @Html.Raw(Json.Encode(ViewBag.Conductores)); // Lista de conductores
+
+            document.getElementById('id_conductor').addEventListener('change', function () {
+                var idSeleccionado = this.value;
+                var nombreConductor = '';
+
+                // Busca el conductor correspondiente al ID seleccionado
+                for (var i = 0; i < conductores.length; i++) {
+                    if (conductores[i].id_conductor.toString() === idSeleccionado) {
+                        nombreConductor = conductores[i].nombre;
+                        break;
+                    }
+                }
+
+                // Llena el campo de nombre
+                document.getElementById('nombre').value = nombreConductor;
+            });
+        });
+    </script>
 }
