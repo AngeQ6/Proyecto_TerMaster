@@ -1491,3 +1491,4 @@ C:\Users\DELL\source\repos\Proyecto_TerMaster\TerMasterr\bin\Numbers.xml
 C:\Users\DELL\source\repos\Proyecto_TerMaster\TerMasterr\bin\System.IdentityModel.Tokens.Jwt.pdb
 C:\Users\DELL\source\repos\Proyecto_TerMaster\TerMasterr\bin\System.IdentityModel.Tokens.Jwt.xml
 C:\Users\Usuario\Source\Repos\Proyecto_TerMaster\TerMasterr\bin\QRCoder.dll
+C:\Users\DELL\source\repos\TerMaster\TerMasterr\bin\QRCoder.dll

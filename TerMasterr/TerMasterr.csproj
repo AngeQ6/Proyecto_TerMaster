@@ -337,6 +337,7 @@
     <Content Include="Content\bootstrap-icons.min.css" />
     <Content Include="Content\brands.css" />
     <Content Include="Content\brands.min.css" />
+    <Content Include="Content\css\styles.css" />
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\fontawesome.css" />
