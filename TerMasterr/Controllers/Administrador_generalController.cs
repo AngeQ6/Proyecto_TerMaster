@@ -13,6 +13,19 @@ namespace TerMasterr.Controllers
 {
     public class Administrador_generalController : Controller
     {
+        private readonly Conexion _context;
+
+        public Administrador_generalController()
+        {
+            try
+            {
+                _context = new Conexion();
+            }
+            catch (ApplicationException ex)
+            {
+                ViewBag.ErrorMessage = "Error al conectar con la base de datos: " + ex.Message;
+            }
+        }
         ///////////////////////////////////// VISTAS ///////////////////////////////////
         #region
         public ActionResult Index()
@@ -25,7 +38,8 @@ namespace TerMasterr.Controllers
         }
         public ActionResult Pueblos()
         {
-            return View();
+            var pueblos = _context.GetCollection<Pueblo>("Pueblo").Find(c => true).ToList();
+            return View(pueblos);
         }
         public ActionResult Reportes()
         {
@@ -60,8 +74,6 @@ namespace TerMasterr.Controllers
         }
 
         
-
-
 
         [HttpPost]
         public async Task<ActionResult> Registrar_administrador_local(int id_admin_local, string nombre_admin_local, string apellido_admin_local, string correo_admin_local, long telefono_admin_local)
@@ -131,6 +143,39 @@ namespace TerMasterr.Controllers
         //    var response = await cliente.SendEmailAsync(msg);
 
         //}
+
+        public ActionResult Agregar_pueblo(Pueblo pueblo)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    // Verificar si ya existe un bus con la misma placa
+                    var pueblo_existente = _context.GetCollection<Pueblo>("Pueblo")
+                        .Find(b => b.id_pueblo == pueblo.id_pueblo)
+                        .FirstOrDefault();
+
+                    if (pueblo_existente != null)
+                    {
+                        TempData["ErrorMessage"] = "Ya existe un pueblo registrado con ese ID.";
+                        return RedirectToAction("Pueblos");
+                    }
+
+                    // Insertar el nuevo bus en la colección
+                    _context.GetCollection<Pueblo>("Pueblo").InsertOne(pueblo);
+                    TempData["SuccessMessage"] = "Pueblo agregado exitosamente.";
+                    return RedirectToAction("Pueblos");
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = "Error al agregar el peublo: " + ex.Message;
+                    return RedirectToAction("Pueblos");
+                }
+            }
+
+            // Si el modelo no es válido, devolver la vista con el modelo actual
+            return View(pueblo);
+        }
         #endregion
     }
 }

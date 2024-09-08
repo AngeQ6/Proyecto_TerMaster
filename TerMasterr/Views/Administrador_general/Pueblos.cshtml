@@ -1,8 +1,99 @@
-﻿
+﻿@model IEnumerable<Capa_entidad.Pueblo>
+
 @{
     ViewBag.Title = "Pueblos";
     Layout = "~/Views/Shared/_Layout - admin_general.cshtml";
 }
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<style>
+    .header_2 {
+        background: -webkit-linear-gradient(315deg, #4723D9 0%, #00D2Df 100%);
+        padding: 10px;
+        border-radius: 10px 10px 0 0;
+        
+    }
+</style>
 
-<h2>Pueblos</h2>
+<div class="header_2">
+    <h2 style="color: white">Gestionar Pueblos</h2>
+</div>
+<br />
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPuebloModal">
+        <i class="bi bi-plus-circle me-0.99 "></i>
+    </button>
+</div>
 
+<div class="row">
+    @foreach (var pueblos in Model)
+    {
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body d-flex align-items-center">
+                    <!--<div class="me-3">-->
+                    <!-- Aquí puedes poner un ícono o una imagen relacionada, si es necesario -->
+                    <!--<img src="~/assets/maria_labaja.jpeg" alt="Icon" class="img-fluid">
+                    </div>-->
+                    <div>
+                        <h5 class="card-title">ID del pueblo: @pueblos.id_pueblo</h5>
+                        <p class="card-text">Nombre del pueblo: @pueblos.nombre_pueblo</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Modal para agregar bus -->
+<div class="modal fade" id="addPuebloModal" tabindex="-1" aria-labelledby="addBusModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-light">
+                <h5 class="modal-title text-white" id="addBusModalLabel">Agregar Nuevo Pueblo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="@Url.Action("Agregar_pueblo", "Administrador_general")" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="id_pueblo" class="form-label">ID del pueblo</label>
+                        <input type="text" class="form-control" id="id_pueblo" name="id_pueblo" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="nombre_pueblo" class="form-label">Nombre del pueblo: </label>
+                        <input type="text" class="form-control" id="nombre_pueblo" name="nombre_pueblo" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Agregar Pueblo</button>
+                </div>
+            </form>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <script>
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Éxito!',
+                                text: '@Html.Raw(TempData["SuccessMessage"])'
+                            }).then(function () {
+                                window.location = '@Url.Action("Pueblos", "Administrador_general")';
+
+                            });
+                </script>
+            }
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <script>
+                            Swal.fire({
+                                icon: 'error',
+                                title: '¡Error!',
+                                text: '@Html.Raw(TempData["ErrorMessage"])'
+                            });
+                </script>
+            }
+        </div>
+    </div>
+</div>
