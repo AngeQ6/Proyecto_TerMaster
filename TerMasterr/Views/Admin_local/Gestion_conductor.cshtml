@@ -18,15 +18,16 @@
             foreach (var conductor in Model)
             {
 <div class="col-md-5 mb-3">
-    <div class="card mecanico-card">
+    <div class="card car-conductor">
         <div class="card-body d-flex align-items-center">
             <div class="flex-grow-1">
                 <h5 class="card-title">@conductor.nombre</h5>
                 <p class="card-text"><strong>Número de Documento:</strong> @conductor.id_conductor</p>
                 <p class="card-text"><strong>Teléfono:</strong> @conductor.telefono</p>
                 <p class="card-text"><strong>Correo:</strong> @conductor.correo</p>
+                <p class="card-text"><strong>Estado:</strong> @conductor.Estado</p>
                 <div class="mt-3">
-                    <a class="btn btn-info" id="editar" data-bs-toggle="modal" data-bs-target="#addBusModal">
+                    <a class="btn btn-info" id="editar" data-bs-toggle="modal" data-bs-target="#editar_conductor" data-id="@conductor.id_conductor">
                         <i class="bi bi-pencil"></i>
                     </a>
                     <a href="@Url.Action("Eliminar", "Inicio", new { id = conductor.id_conductor })" class="btn btn-danger" onclick="return handleDelete(event, '@Url.Action("Eliminar", "Inicio", new { id = conductor.id_conductor })')">
@@ -34,7 +35,7 @@
                     </a>
                 </div>
             </div>
-            <div class="ms-3 text-center mecanico-img-container">
+            <div class="ms-3 text-center conductor-img-container">
                 <img src="@conductor.ImagenUrl" alt="@conductor.nombre" class="img-fluid" style="width: 80px; height: 80px; object-fit: cover;">
                 <!-- Botón para abrir el formulario de carga de imagen -->
                 <a href="#" class="btn btn-cargar-foto mt-2 small-btn" data-bs-toggle="modal" data-bs-target="#modalCargarFoto" data-id="@conductor.id_conductor">
@@ -45,9 +46,9 @@
         </div>
     </div>
 </div> }
-            }
-            else
-            {
+}
+else
+{
 <div class="col">
     <p>No hay mecánicos registrados.</p>
 </div>}
@@ -55,31 +56,37 @@
 </div>
 
 <!-- Modal para editar estado de conductor -->
-<div class="modal fade" id="addBusModal" tabindex="-1" aria-labelledby="addBusModalLabel" aria-hidden="true">
+<div class="modal fade" id="editar_conductor" tabindex="-1" aria-labelledby="editar_conductorLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addBusModalLabel">Editar estado de conductor</h5>
+                <h5 class="modal-title" id="editar_conductorLabel">Editar estado de conductor</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="@Url.Action("Get_conductor", "Admin_local")" method="get">
+            <form enctype="multipart/form-data" action="@Url.Action("EditarConductor", "Admin_local")" method="post">
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="Number" class="form-label">Número de documento</label>
-                        <input type="text" class="form-control" id="Number" name="Number" required>
+                        <input type="text" class="form-control" id="id_conductor" name="id_conductor" required disabled>
                     </div>
+                    <!-- Campo oculto para enviar el ID del conductor -->
+                    <input type="hidden" id="id_conductor_hidden" name="id_conductor">
                     <div class="mb-3">
                         <label for="Route" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="Route" name="Route" required>
+                        <input type="text" class="form-control" id="nombre" name="nombre" required disabled>
                     </div>
+
                     <div class="mb-3">
                         <label for="Capacity" class="form-label">Estado</label>
-                        <select class="form-control" id="Capacity" name="Capacity" required></select>
+                        <select class="form-control" id="Estado" name="Estado" required>
+                            <option value="Activo">Activo</option>
+                            <option value="No activo">No activo</option>
+                        </select>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Agregar Bus</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
             </form>
         </div>
@@ -100,7 +107,7 @@
                 @using (Html.BeginForm("SubirFoto", "Inicio", FormMethod.Post, new { enctype = "multipart/form-data" }))
                 {
     @Html.AntiForgeryToken()
-                    <input type="hidden" id="modalMecanicoId" name="numeroDocumento" />
+                    <input type="hidden" id="modalConductorId" name="numeroDocumento" />
                                     <div class="form-group">
                                         <label for="archivo">Seleccionar foto:</label>
                                         <input type="file" name="archivo" id="archivo" />
@@ -112,51 +119,64 @@
 </div>
 
 @section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <script>
+        /////////////////// Manejo del botón para abrir el modal para cargar foto /////////////////////
+        document.querySelectorAll('.btn-cargar-foto').forEach(button => {
+            button.addEventListener('click', function () {
+                const id = this.getAttribute('data-id');
+                document.getElementById('modalConductorId').value = id;
+            });
+        });
+
+        //////////////////////// Función para eliminar coductor //////////////////////////////////
+        function handleDelete(event, url) {
+            event.preventDefault(); // Previene el comportamiento por defecto del enlace
+
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡Esta acción no se puede deshacer!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: 'secundary',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Si el usuario confirma, redirige a la URL
+                    window.location.href = url;
+                }
+            });
+        };
+
+        /////////////////////////Función para editar el estado del conductor/////////////////////////////
         document.addEventListener('DOMContentLoaded', function () {
-            var imageModal = document.getElementById('imageModal')
-            imageModal.addEventListener('show.bs.modal', function (event) {
-                var button = event.relatedTarget
-                var imgSrc = button.getAttribute('data-bs-img')
-                var busNumber = button.getAttribute('editar')
-                var modalImage = document.getElementById('modalImage')
-                var modalTitle = imageModal.querySelector('.modal-title')
-                modalImage.src = imgSrc
-                modalTitle.textContent = 'Imagen del Bus ' + busNumber
-            })
-        })</script>
+            var editar_conductor = document.getElementById('editar_conductor');
+            editar_conductor.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget; // Botón que abrió el modal
+                var conductorId = button.getAttribute('data-id'); // Extraer el ID del conductor
+
+                // Hacer una solicitud AJAX para obtener los datos del conductor
+                fetch(`/Admin_local/Get_ConductorById?id=${conductorId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Rellenar los campos del modal con los datos del conductor
+                        document.getElementById('id_conductor').value = data.id_conductor; // Campo visible del id_conductor, no se envía al formulario
+                        document.getElementById('id_conductor_hidden').value = data.id_conductor; //Campo invisible del id_conductor, este se enviará en el formulario
+                        document.getElementById('nombre').value = data.nombre;
+                        document.getElementById('Estado').value = data.estado; // Estado actual del conductor
+                        
+                    })
+                    .catch(error => console.error('Error al obtener los datos del conductor:', error));
+            });
+        });
+
+    </script>
 }
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
-<script>
-    // Manejo del botón para abrir el modal
-    document.querySelectorAll('.btn-cargar-foto').forEach(button => {
-        button.addEventListener('click', function () {
-            const id = this.getAttribute('data-id');
-            document.getElementById('modalMecanicoId').value = id;
-        });
-    });
 
-    function handleDelete(event, url) {
-        event.preventDefault(); // Previene el comportamiento por defecto del enlace
-
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: "¡Esta acción no se puede deshacer!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: 'secundary',
-            confirmButtonText: 'Sí, eliminar',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Si el usuario confirma, redirige a la URL
-                window.location.href = url;
-            }
-        });
-    }
-</script>
 
 <style>
     /* Google Poppins Font CDN Link */
@@ -186,7 +206,7 @@
         min-height: 100vh;
     }
 
-    .mecanico-card {
+    .car-conductor {
         width: 100%;
         display: flex;
         flex-direction: column;
@@ -203,13 +223,13 @@
         margin: 0; /* Asegúrate de que no haya margen adicional */
     }
 
-    .mecanico-card .card-body {
+    .car-conductor .card-body {
         display: flex;
         flex-direction: row;
         align-items: center;
     }
 
-    .mecanico-img-container {
+    .conductor-img-container {
         width: 100px; /*Ancho fijo para el contenedor de la imagen y el botón*/
         display: flex;
         flex-direction: column;
@@ -218,7 +238,7 @@
         margin: 0; /* Asegúrate de que no haya margen adicional */
     }
 
-        .mecanico-img-container img {
+        .conductor-img-container img {
             margin-bottom: 10px;
             width: 80px;
             height: 80px;
