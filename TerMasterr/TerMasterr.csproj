@@ -560,6 +560,7 @@
     <Content Include="Views\Admin_local\Reportes.cshtml" />
     <Content Include="Views\Admin_local\Editar_datos_personales.cshtml" />
     <Content Include="Views\Admin_local\Gestion_conductor.cshtml" />
+    <Content Include="Views\Admin_local\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

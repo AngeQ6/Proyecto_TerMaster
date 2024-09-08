@@ -294,6 +294,11 @@ namespace TerMasterr.Controllers
 
             return Json(new { existe = existe }, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult Cerrar_sesion()
+        {
+            return RedirectToAction("Login", "Login");
+        }
     }
         /////////////////////////////////////////////////////////////////////////////////////////////////
         #endregion
