@@ -46,6 +46,8 @@ namespace TerMasterr.Controllers
             return View(buses); // Enviamos la lista de buses a la vista
         }
 
+        
+        
         public ActionResult Asignar_horarios()
 
         {
@@ -69,6 +71,10 @@ namespace TerMasterr.Controllers
         }
         ////////////////////////////////////////////////////////////////////////////
         #endregion
+
+
+        ////////////////////////////////////// METODOS /////////////////////////////
+        #region
 
         public ActionResult AddBus(Bus bus)
         {
@@ -177,28 +183,73 @@ namespace TerMasterr.Controllers
 
             return RedirectToAction("Bus");
         }
-
-
-        [HttpPost]
-        public ActionResult Get_conductor(int id)
-        {
+        [HttpGet]
+        public ActionResult Get_ConductorById(int id)
+        { 
+            //Método de edición de estado de conductor completo
             var conductor = _context.GetCollection<Conductor>("Conductor")
-                            .Find(c => c.id_conductor == id)
-                            .FirstOrDefault();
-
+                                    .Find(c => c.id_conductor == id)
+                                    .FirstOrDefault();
             if (conductor == null)
             {
-                return Json(new { success = false, message = "Conductor no encontrado" });
+                return HttpNotFound();
             }
 
             return Json(new
             {
-                success = true,
                 id_conductor = conductor.id_conductor,
                 nombre = conductor.nombre,
-                Estado = conductor.Estado
-            });
+                estado = conductor.Estado
+            }, JsonRequestBehavior.AllowGet); 
         }
+        [HttpPost]
+        public ActionResult EditarConductor(Conductor conductor)
+        {
+            var conductorExistente = _context.GetCollection<Conductor>("Conductor")
+                                              .Find(c => c.id_conductor == conductor.id_conductor)
+                                              .FirstOrDefault();
+
+            if (conductorExistente != null)
+            {
+                //Campos que se van a editar
+                conductorExistente.Estado = conductor.Estado;
+
+                _context.GetCollection<Conductor>("Conductor").ReplaceOne(c => c.id_conductor == conductor.id_conductor, conductorExistente);
+            }
+            TempData["SuccessMessage"] = "Actualización de datos exitosa";
+            return RedirectToAction("Gestion_conductor");
+        }
+        //public ActionResult EliminarConductor(int id)
+        //{
+        //    try
+        //    {
+        //        // Obtener la colección de conductores de la base de datos
+        //        var conductorCollection = _context.GetCollection<Conductor>("Conductor");
+
+        //        // Intentar eliminar el conductor por el campo id_conductor
+        //        var result = conductorCollection.DeleteOne(c => c.id_conductor == id);
+
+        //        // Verificar si se eliminó algún documento
+        //        if (result.DeletedCount > 0)
+        //        {
+        //            TempData["SuccessMessage"] = "Conductor eliminado correctamente.";
+        //        }
+        //        else
+        //        {
+        //            TempData["ErrorMessage"] = "No se encontró el conductor con el ID especificado.";
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        TempData["ErrorMessage"] = "Error al eliminar el conductor: " + ex.Message;
+        //    }
+
+        //    // Redirigir a la acción para gestionar conductores
+        //    return RedirectToAction("Gestion_conductor");
+        //}
+
+        /////////////////////////////////////////////////////////////////////////////
+        #endregion
 
         public JsonResult Obtener_datos_admin_local()
         {

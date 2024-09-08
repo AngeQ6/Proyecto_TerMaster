@@ -52,14 +52,17 @@
                     <div class="form-floating mb-3">
                         <input type="password" class="form-control" id="floatingcontraseña" name="contraseña" placeholder="Contraseña" required>
                         <label for="floatingPassword">Contraseña</label>
-                        <span class="password-info mt-2">Use 8 or more characters with a mix of letters, numbers & symbols.</span>
+                        @*<span class="password-info mt-2">Use 8 or more characters with a mix of letters, numbers & symbols.</span>*@
                         
                     </div>
-                    <div class="form-floating mb-3">
+                    <div class="mb-3">
+                        <input type="hidden" id="Esado" name="Estado" value="Activo">
+                    </div>
+                    @*<div class="form-floating mb-3">
                         <input type="password" class="form-control" id="floatingcontraseña" name="confirmar_contraseña" placeholder="Contraseña" required>
                         <label for="floatingPassword">Confirmar contraseña</label>
                         
-                    </div>
+                    </div>*@
 
                     <button type="submit" class="btn btn-primary submit_btn w-100 my-4">Registrarse</button>
                     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
