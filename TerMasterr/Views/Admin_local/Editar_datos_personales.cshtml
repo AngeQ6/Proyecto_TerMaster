@@ -4,5 +4,159 @@
     Layout = "~/Views/Shared/_Layout - admin_local.cshtml";
 }
 
-<h2>Editar_datos_personales</h2>
+<form>
+    <div class="header_2">
+        <h2>Modificar datos personales</h2>
+    </div>
+    <br />
+    <div class="form-group">
+        <label for="id">ID</label>
+        <input type="text" class="form-control" id="id_admin_local" name="id_admin_local" value="@ViewBag.id_admin_local" readonly />
+    </div>
+    <br />
+    <div class="form-group">
+        <label for="nombre">Nombre</label>
+        <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre" value="@ViewBag.nombre" required />
+    </div>
+    <br />
+    <div class="form-group">
+        <label for="nombre">Apellido</label>
+        <input type="text" class="form-control" id="apellido" name="apellido" placeholder="Apellido" value="@ViewBag.apellido" required />
+    </div>
+    <br />
+    <div class="form-group">
+        <label for="correo">Correo Electrónico</label>
+        <input type="email" class="form-control" id="correo" name="correo" placeholder="Correo electrónico" value="@ViewBag.correo" required />
+    </div>
+    <br />
+    <div class="form-group">
+        <label for="telefono">Teléfono</label>
+        <input type="tel" class="form-control" id="telefono" name="telefono" placeholder="Número de teléfono" value="@ViewBag.telefono" required />
+    </div>
+    <br />
+
+    <button type="submit" class="btn btn-primary btn-block">Modificar</button>
+</form>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<style>
+    body {
+        background-color: #f4f4f4; /* Color de fondo */
+        font-family: Arial, sans-serif; /* Fuente general */
+    }
+
+    .container {
+        max-width: 800px; /* Ancho máximo del contenedor */
+        margin: 50px auto; /* Centrado vertical y horizontal */
+        padding: 30px; /* Espaciado interno */
+        border-radius: 10px; /* Bordes redondeados */
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Sombra */
+    }
+
+    .header_2 {
+        background: -webkit-linear-gradient(315deg, #4723D9 0%, #00D2Df 100%);
+        padding: 10px;
+        border-radius: 10px 10px 0 0;
+    }
+
+    h2 {
+        color: #ffffff;
+    }
+
+    .btn-primary {
+        background-color: #6f42c1; /* Color del botón */
+        border: none; /* Sin borde */
+    }
+
+        .btn-primary:hover {
+            background-color: #5a32a1; /* Color del botón al pasar el mouse */
+        }
+</style>
+
+@section scripts{
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: "@Url.Action("Obtener_datos_admin_local", "Admin_local")",
+                type: 'GET',
+                success: function (data) {
+                    console.log("Datos recibidos:", data);
+                    if (data.success) {
+                        // Asignación correcta de valores
+                        $('#id_admin_local').val(data.id_admin_local);
+                        $('#nombre').val(data.nombre_admin_local);
+                        $('#apellido').val(data.apellido_admin_local);
+                        $('#correo').val(data.correo_admin_local);
+                        $('#telefono').val(data.telefono_admin_local);
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: data.message || 'Error al obtener los datos.'
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error en la solicitud AJAX:", status, error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error en la solicitud AJAX',
+                        text: error
+                    });
+                }
+            });
+        });
+
+        $('form').submit(function (e) {
+            e.preventDefault(); // Evita el envío tradicional del formulario
+
+            var datosUsuario = {
+                nombre_admin_local: $('#nombre').val(),
+                apellido_admin_local: $('#apellido').val(),
+                correo_admin_local: $('#correo').val(),
+                telefono_admin_local: $('#telefono').val()
+            };
+
+            console.log("Datos a enviar:", datosUsuario);
+
+            $.ajax({
+                url: '@Url.Action("Modificar_datos_admin_local", "Admin_local")',
+                type: 'POST',
+                data: JSON.stringify(datosUsuario),
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+
+                    console.log("Respuesta del servidor:", response);
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Actualización exitosa',
+                            text: 'Los datos se han modificado correctamente.'
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'No se pudieron actualizar los datos.'
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error en la solicitud AJAX:", status, error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error en la solicitud AJAX',
+                        text: error
+                    });
+                }
+            });
+        });
+
+    </script>
+}
 

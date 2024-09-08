@@ -21,8 +21,13 @@
 <br />
 <div class="d-flex justify-content-between align-items-center mb-4">
     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addBusModal">
-        <i class="bi bi-plus-circle me-0.99 text-end"></i> Agregar Bus
+        <i class="bi bi-plus-circle me-0.99 text-end"></i>
     </button>
+    <div class=" text-end">
+        <label>Frecuencia de salida:</label>
+        <input class="form-control" id="frencuencia" name="frecuencia" />
+    </div>
+    
 </div>
 
 <div class="row">
@@ -38,7 +43,7 @@
                             <button type="submit" class="btn btn-danger text-end"><i class="bi bi-trash"></i></button>
                         </form>
                         <button class="btn btn-primary" data-id="@bus.id_conductor" data-bs-toggle="modal" data-bs-target="#editBusModal">
-                            <i class="bi bi-pencil"></i> Editar
+                            <i class="bi bi-pencil"></i>
                         </button>
                     </div>
                     <div class="card-body">
