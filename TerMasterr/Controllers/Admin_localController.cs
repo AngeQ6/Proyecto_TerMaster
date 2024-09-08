@@ -35,6 +35,7 @@ namespace TerMasterr.Controllers
         #region
         public ActionResult Bus()
         {
+<<<<<<< HEAD
             var buses = _context.GetCollection<Bus>("Bus").Find(c => true).ToList();
             var conductores = _context.GetCollection<Conductor>("Conductor").Find(c => true).ToList();
 
@@ -42,6 +43,11 @@ namespace TerMasterr.Controllers
             return View(buses); // Enviamos la lista de buses a la vista
         }
 
+=======
+            return View();
+        } 
+        
+>>>>>>> 6de307b (Método de edición de estado del conductor)
         public ActionResult Asignar_horarios()
 
         {
@@ -65,6 +71,7 @@ namespace TerMasterr.Controllers
         }
         ////////////////////////////////////////////////////////////////////////////
         #endregion
+<<<<<<< HEAD
 
         public ActionResult AddBus(Bus bus)
         {
@@ -173,6 +180,9 @@ namespace TerMasterr.Controllers
 
             return RedirectToAction("Bus");
         }
+=======
+        
+>>>>>>> 6de307b (Método de edición de estado del conductor)
         [HttpGet]
         public ActionResult Get_ConductorById(int id)
             (Método de edición de estado de conductor completo)
