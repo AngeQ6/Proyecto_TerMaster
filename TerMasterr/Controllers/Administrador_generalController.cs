@@ -150,25 +150,36 @@ namespace TerMasterr.Controllers
             {
                 try
                 {
-                    // Verificar si ya existe un bus con la misma placa
+                    // Verificar si ya existe un pueblo con el mismo nombre
                     var pueblo_existente = _context.GetCollection<Pueblo>("Pueblo")
-                        .Find(b => b.id_pueblo == pueblo.id_pueblo)
+                        .Find(b => b.nombre_pueblo == pueblo.nombre_pueblo)
                         .FirstOrDefault();
 
                     if (pueblo_existente != null)
                     {
-                        TempData["ErrorMessage"] = "Ya existe un pueblo registrado con ese ID.";
+                        TempData["ErrorMessage"] = "Ya existe un pueblo registrado con ese nombre.";
                         return RedirectToAction("Pueblos");
                     }
 
-                    // Insertar el nuevo bus en la colección
-                    _context.GetCollection<Pueblo>("Pueblo").InsertOne(pueblo);
+                    // Generar nuevo ID para el pueblo
+                    int nuevoidpueblo = _context.GetNextSequenceValue("Pueblo");
+
+                    // Crear el nuevo pueblo
+                    var nuevopueblo = new Pueblo
+                    {
+                        id_pueblo = nuevoidpueblo,
+                        nombre_pueblo = pueblo.nombre_pueblo
+                    };
+
+                    // Insertar el nuevo pueblo en la colección
+                    _context.GetCollection<Pueblo>("Pueblo").InsertOne(nuevopueblo);
+
                     TempData["SuccessMessage"] = "Pueblo agregado exitosamente.";
                     return RedirectToAction("Pueblos");
                 }
                 catch (Exception ex)
                 {
-                    TempData["ErrorMessage"] = "Error al agregar el peublo: " + ex.Message;
+                    TempData["ErrorMessage"] = "Error al agregar el pueblo: " + ex.Message;
                     return RedirectToAction("Pueblos");
                 }
             }
@@ -176,6 +187,8 @@ namespace TerMasterr.Controllers
             // Si el modelo no es válido, devolver la vista con el modelo actual
             return View(pueblo);
         }
+
+
         #endregion
     }
 }
