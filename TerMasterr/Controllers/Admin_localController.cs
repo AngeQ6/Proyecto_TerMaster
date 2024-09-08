@@ -212,7 +212,6 @@ namespace TerMasterr.Controllers
 
                 _context.GetCollection<Conductor>("Conductor").ReplaceOne(c => c.id_conductor == conductor.id_conductor, conductorExistente);
             }
-            TempData["SuccessMessage"] = "Actualización de datos exitosa";
             return RedirectToAction("Gestion_conductor");
         }
         //public ActionResult EliminarConductor(int id)

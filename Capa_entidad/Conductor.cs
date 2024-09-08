@@ -19,7 +19,8 @@ namespace Capa_entidad
         public Int64 telefono { get; set; }
         public string correo { get; set; }
         public string contraseña { get; set; }
-        public string placa_bus_asignado { get; set; }
+        public string placa_bus_asignado { get; set; } // Placa del bus que se le haya asignado al conductor
+        public int código_pueblo { get; set; } // Código del pueblo en el que va a quedar registrado el conductor 
         public string ImagenUrl { get; set; }
         public string Estado { get; set; } 
     }
