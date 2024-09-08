@@ -7,7 +7,6 @@
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-
 <style>
     .header_2 {
         background: -webkit-linear-gradient(315deg, #4723D9 0%, #00D2Df 100%);
@@ -21,9 +20,8 @@
 </div>
 <br />
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <!-- Botón para agregar nuevo bus -->
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addBusModal" onclick="resetModal()">
-        <i class="bi bi-plus-circle me-0.99 text-end"></i>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addBusModal">
+        <i class="bi bi-plus-circle me-0.99 text-end"></i> Agregar Bus
     </button>
 </div>
 
@@ -39,9 +37,8 @@
                         <form action="@Url.Action("Eliminar_bus", "Admin_local", new { id = bus.id_conductor })" method="post" class="d-inline-block" onsubmit="return confirmDeleteBus(event, '@bus.id_conductor');">
                             <button type="submit" class="btn btn-danger text-end"><i class="bi bi-trash"></i></button>
                         </form>
-                        <!-- Botón para editar un bus -->
-                        <button class="btn btn-primary" onclick="editarBus('@bus.placa', '@bus.id_conductor', '@bus.nombre')">
-                            <i class="bi bi-pencil me-0.99"></i>
+                        <button class="btn btn-primary" data-id="@bus.id_conductor" data-bs-toggle="modal" data-bs-target="#editBusModal">
+                            <i class="bi bi-pencil"></i> Editar
                         </button>
                     </div>
                     <div class="card-body">
@@ -58,24 +55,62 @@
     }
 </div>
 
-<!-- Modal para agregar/editar bus -->
+<!-- Modal para agregar bus -->
 <div class="modal fade" id="addBusModal" tabindex="-1" aria-labelledby="addBusModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addBusModalLabel">Agregar Bus</h5>
+                <h5 class="modal-title" id="addBusModalLabel">Agregar Nuevo Bus</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="@Url.Action("AddBus", "Admin_local")" method="post">
                 <div class="modal-body">
-                    <input type="hidden" id="placaHidden" name="placaHidden" value="">
                     <div class="mb-3">
                         <label for="placa" class="form-label">Placa del bus</label>
                         <input type="text" class="form-control" id="placa" name="placa" required>
                     </div>
                     <div class="mb-3">
                         <label for="id_conductor" class="form-label">Asignar conductor</label>
-                        <select class="form-control" id="id_conductor" name="id_conductor" required>
+                        <select class="form-control" id="id_conductor_add" name="id_conductor" required>
+                            <option value="">Selecciona un conductor</option>
+                            @foreach (var conductor in ViewBag.Conductores)
+                            {
+                                <option value="@conductor.id_conductor">@conductor.nombre</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre del conductor</label>
+                        <input type="text" class="form-control" id="nombre_add" name="nombre" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Agregar Bus</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para editar bus -->
+<div class="modal fade" id="editBusModal" tabindex="-1" aria-labelledby="editBusModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editBusModalLabel">Editar Bus</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="@Url.Action("EditBus", "Admin_local")" method="post">
+                <div class="modal-body">
+                    <input type="hidden" id="id_conductor_hidden" name="id_conductor">
+                    <div class="mb-3">
+                        <label for="placa_edit" class="form-label">Placa del bus</label>
+                        <input type="text" class="form-control" id="placa_edit" name="placa" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_conductor_edit" class="form-label">Asignar conductor</label>
+                        <select class="form-control" id="id_conductor_edit" name="id_conductor" required>
                             <option value="">Selecciona un conductor</option>
                             @foreach (var conductor in ViewBag.Conductores)
                             {
@@ -84,13 +119,13 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="nombre" class="form-label">Nombre del conductor</label>
-                        <input type="text" class="form-control" id="nombre" name="nombre" disabled>
+                        <label for="nombre_edit" class="form-label">Nombre del conductor</label>
+                        <input type="text" class="form-control" id="nombre_edit" name="nombre" required disabled>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Guardar Bus</button>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                 </div>
             </form>
         </div>
@@ -100,57 +135,62 @@
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            var conductores = @Html.Raw(Json.Encode(ViewBag.Conductores));
+            var conductores = @Html.Raw(Json.Encode(ViewBag.Conductores)); // Lista de conductores
 
-            // Manejo del cambio en el select para actualizar el nombre del conductor
-            document.getElementById('id_conductor').addEventListener('change', function () {
+            // Manejo del cambio en el select del modal de agregar bus
+            document.getElementById('id_conductor_add').addEventListener('change', function () {
                 var idSeleccionado = this.value;
                 var nombreConductor = '';
+
+                // Busca el conductor correspondiente al ID seleccionado
                 for (var i = 0; i < conductores.length; i++) {
                     if (conductores[i].id_conductor.toString() === idSeleccionado) {
                         nombreConductor = conductores[i].nombre;
                         break;
                     }
                 }
-                document.getElementById('nombre').value = nombreConductor;
+
+                // Llena el campo de nombre
+                document.getElementById('nombre_add').value = nombreConductor;
             });
 
-            // Función para cargar los datos en el modal al editar
-            window.editarBus = function (placa, id_conductor, nombre) {
-                // Llenar los campos del modal con los datos del bus
-                document.getElementById('placa').value = placa;
-                document.getElementById('placaHidden').value = placa;
-                document.getElementById('id_conductor').value = id_conductor;
+            // Manejo del modal de edición
+            var editBusModal = document.getElementById('editBusModal');
+            editBusModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget; // Botón que abrió el modal
+                var id_conductor = button.getAttribute('data-id'); // Extraer el ID del conductor
 
-                // Actualizar el nombre del conductor en el campo correspondiente
+                // Hacer una solicitud AJAX para obtener los datos del bus
+                fetch(`/Admin_local/Get_busById?id=${id_conductor}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Rellenar los campos del modal con los datos del bus
+                        document.getElementById('id_conductor_hidden').value = data.id_conductor;
+                        document.getElementById('placa_edit').value = data.placa;
+                        document.getElementById('id_conductor_edit').value = data.id_conductor;
+
+                        // Buscar el nombre del conductor para el campo correspondiente
+                        document.getElementById('nombre_edit').value = data.nombre;
+                    })
+                    .catch(error => console.error('Error al obtener los datos del bus:', error));
+            });
+
+            // Manejo del cambio en el select del modal de edición
+            document.getElementById('id_conductor_edit').addEventListener('change', function () {
+                var idSeleccionado = this.value;
                 var nombreConductor = '';
+
+                // Busca el conductor correspondiente al ID seleccionado
                 for (var i = 0; i < conductores.length; i++) {
-                    if (conductores[i].id_conductor.toString() === id_conductor) {
+                    if (conductores[i].id_conductor.toString() === idSeleccionado) {
                         nombreConductor = conductores[i].nombre;
                         break;
                     }
                 }
-                document.getElementById('nombre').value = nombreConductor;
 
-                // Cambiar el título del modal
-                document.getElementById('addBusModalLabel').innerText = 'Editar Bus';
-
-                // Abrir el modal
-                var modal = new bootstrap.Modal(document.getElementById('addBusModal'));
-                modal.show();
-            };
-
-            // Función para resetear el modal al agregar un nuevo bus
-            window.resetModal = function () {
-                // Limpiar todos los campos del modal
-                document.getElementById('placa').value = '';
-                document.getElementById('placaHidden').value = '';
-                document.getElementById('id_conductor').value = '';
-                document.getElementById('nombre').value = '';
-
-                // Cambiar el título del modal
-                document.getElementById('addBusModalLabel').innerText = 'Agregar Bus';
-            };
+                // Llena el campo de nombre
+                document.getElementById('nombre_edit').value = nombreConductor;
+            });
         });
     </script>
 }

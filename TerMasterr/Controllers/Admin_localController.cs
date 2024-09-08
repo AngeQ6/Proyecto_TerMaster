@@ -135,47 +135,43 @@ namespace TerMasterr.Controllers
                 return RedirectToAction("Bus");
             }
         }
-        public ActionResult GetBus(int id)
+        [HttpGet]
+        public ActionResult Get_busById(int id)
         {
-            // Busca el bus por su ID
-            var bus = _context.GetCollection<Bus>("Bus").Find(x => x.id_conductor == id).FirstOrDefault();
-
-            if (bus != null)
+            var bus = _context.GetCollection<Bus>("Bus")
+                                    .Find(c => c.id_conductor == id)
+                                    .FirstOrDefault();
+            if (bus == null)
             {
-                // Devuelve los datos del bus en formato JSON
-                return Json(bus, JsonRequestBehavior.AllowGet);
+                return HttpNotFound();
             }
 
-            return HttpNotFound("Bus no encontrado");
+            return Json(new
+            {
+                placa = bus.placa,
+                id_conductor = bus.id_conductor,
+                nombre = bus.nombre
+            }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public ActionResult EditBus(Bus bus)
+        public ActionResult Edit_bus(Bus bus)
         {
-            if (ModelState.IsValid)
+            var bus_existente = _context.GetCollection<Bus>("Bus")
+                                              .Find(c => c.id_conductor == bus.id_conductor)
+                                              .FirstOrDefault();
+
+            if (bus_existente != null)
             {
-                try
-                {
-                    // Actualizar los datos del bus
-                    var filter = Builders<Bus>.Filter.Eq("id_conductor", bus.id_conductor);
-                    var update = Builders<Bus>.Update
-                        .Set("placa", bus.placa)
-                        .Set("id_conductor", bus.id_conductor)
-                        .Set("nombre", bus.nombre);
+                //Campos que se van a editar
+                bus_existente.id_conductor = bus.id_conductor;
+                bus_existente.placa = bus.placa;
+                bus_existente.nombre = bus.nombre;
 
-                    _context.GetCollection<Bus>("Bus").UpdateOne(filter, update);
-
-                    TempData["SuccessMessage"] = "Bus editado exitosamente.";
-                    return RedirectToAction("Bus");
-                }
-                catch (Exception ex)
-                {
-                    TempData["ErrorMessage"] = "Error al editar el bus: " + ex.Message;
-                    return RedirectToAction("Bus");
-                }
+                _context.GetCollection<Bus>("Bus").ReplaceOne(c => c.id_conductor == bus.id_conductor, bus_existente);
             }
 
-            return View(bus);
+            return RedirectToAction("Bus");
         }
 
 
