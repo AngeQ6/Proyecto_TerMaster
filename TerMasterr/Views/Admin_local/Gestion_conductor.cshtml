@@ -17,7 +17,7 @@
         {
             foreach (var conductor in Model)
             {
-<div class="col-md-5 mb-3">
+<div class="col-md-5 col-lg-6 mb-3">
     <div class="card car-conductor">
         <div class="card-body d-flex align-items-center">
             <div class="flex-grow-1">
@@ -30,18 +30,18 @@
                     <a class="btn btn-info" id="editar" data-bs-toggle="modal" data-bs-target="#editar_conductor" data-id="@conductor.id_conductor">
                         <i class="bi bi-pencil"></i>
                     </a>
-                    <a href="@Url.Action("Eliminar", "Inicio", new { id = conductor.id_conductor })" class="btn btn-danger" onclick="return handleDelete(event, '@Url.Action("Eliminar", "Inicio", new { id = conductor.id_conductor })')">
+                    @*<a href="@Url.Action("EliminarConductor", "Admin_local", new { id = conductor.id_conductor })" class="btn btn-danger" onclick="return Eliminar_conductor(event, '@Url.Action("EliminarConductor", "Admin_local", new { id = conductor.id_conductor })')">
                         <i class="fa fa-trash"></i>
-                    </a>
+                    </a>*@
                 </div>
             </div>
             <div class="ms-3 text-center conductor-img-container">
                 <img src="@conductor.ImagenUrl" alt="@conductor.nombre" class="img-fluid" style="width: 80px; height: 80px; object-fit: cover;">
                 <!-- Botón para abrir el formulario de carga de imagen -->
-                <a href="#" class="btn btn-cargar-foto mt-2 small-btn" data-bs-toggle="modal" data-bs-target="#modalCargarFoto" data-id="@conductor.id_conductor">
+                @*<a href="#" class="btn btn-cargar-foto mt-2 small-btn" data-bs-toggle="modal" data-bs-target="#modalCargarFoto" data-id="@conductor.id_conductor">
                     <span class="material-icons">add_circle</span>
                     <span>Cargar foto</span>
-                </a>
+                </a>*@
             </div>
         </div>
     </div>
@@ -131,7 +131,7 @@ else
         });
 
         //////////////////////// Función para eliminar coductor //////////////////////////////////
-        function handleDelete(event, url) {
+        @*function Eliminar_conductor(event, url) {
             event.preventDefault(); // Previene el comportamiento por defecto del enlace
 
             Swal.fire({
@@ -146,17 +146,21 @@ else
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Si el usuario confirma, redirige a la URL
+                    Swal.fire({
+                        icon: 'succes',
+                        title: '@Html.Raw(TempData["SuccessMessage"])'
+                    });
                     window.location.href = url;
                 }
             });
-        };
+        };*@
 
         /////////////////////////Función para editar el estado del conductor/////////////////////////////
         document.addEventListener('DOMContentLoaded', function () {
             var editar_conductor = document.getElementById('editar_conductor');
             editar_conductor.addEventListener('show.bs.modal', function (event) {
                 var button = event.relatedTarget; // Botón que abrió el modal
-                var conductorId = button.getAttribute('data-id'); // Extraer el ID del conductor
+                var conductorId = button.getAttribute('data-id'); // Extraer el ID del conductor 
 
                 // Hacer una solicitud AJAX para obtener los datos del conductor
                 fetch(`/Admin_local/Get_ConductorById?id=${conductorId}`)
@@ -167,7 +171,7 @@ else
                         document.getElementById('id_conductor_hidden').value = data.id_conductor; //Campo invisible del id_conductor, este se enviará en el formulario
                         document.getElementById('nombre').value = data.nombre;
                         document.getElementById('Estado').value = data.estado; // Estado actual del conductor
-                        
+
                     })
                     .catch(error => console.error('Error al obtener los datos del conductor:', error));
             });

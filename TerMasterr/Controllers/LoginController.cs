@@ -158,7 +158,7 @@ namespace TerMasterr.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Registrar(string id_conductor, string nombre, string contraseña, string telefono, string correo, string confirmar_contraseña)
+        public async Task<ActionResult> Registrar(string id_conductor, string nombre, string contraseña, string telefono, string correo, string confirmar_contraseña, string Estado)
         {
             try
             {
@@ -183,7 +183,8 @@ namespace TerMasterr.Controllers
                     nombre = nombre,
                     contraseña = contraseña,
                     telefono = Convert.ToInt64(telefono),
-                    correo = correo
+                    correo = correo,
+                    Estado = Estado
                 };
                 
                 await coleccionConductores.InsertOneAsync(nuevo_conductor);

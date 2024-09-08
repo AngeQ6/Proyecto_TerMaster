@@ -35,7 +35,6 @@ namespace TerMasterr.Controllers
         #region
         public ActionResult Bus()
         {
-<<<<<<< HEAD
             var buses = _context.GetCollection<Bus>("Bus").Find(c => true).ToList();
             var conductores = _context.GetCollection<Conductor>("Conductor").Find(c => true).ToList();
 
@@ -43,11 +42,8 @@ namespace TerMasterr.Controllers
             return View(buses); // Enviamos la lista de buses a la vista
         }
 
-=======
-            return View();
-        } 
         
->>>>>>> 6de307b (Método de edición de estado del conductor)
+        
         public ActionResult Asignar_horarios()
 
         {
@@ -71,7 +67,10 @@ namespace TerMasterr.Controllers
         }
         ////////////////////////////////////////////////////////////////////////////
         #endregion
-<<<<<<< HEAD
+
+
+        ////////////////////////////////////// METODOS /////////////////////////////
+        #region
 
         public ActionResult AddBus(Bus bus)
         {
@@ -180,13 +179,10 @@ namespace TerMasterr.Controllers
 
             return RedirectToAction("Bus");
         }
-=======
-        
->>>>>>> 6de307b (Método de edición de estado del conductor)
         [HttpGet]
         public ActionResult Get_ConductorById(int id)
-            (Método de edición de estado de conductor completo)
-        {
+        { 
+            //Método de edición de estado de conductor completo
             var conductor = _context.GetCollection<Conductor>("Conductor")
                                     .Find(c => c.id_conductor == id)
                                     .FirstOrDefault();
@@ -219,6 +215,38 @@ namespace TerMasterr.Controllers
             TempData["SuccessMessage"] = "Actualización de datos exitosa";
             return RedirectToAction("Gestion_conductor");
         }
+        //public ActionResult EliminarConductor(int id)
+        //{
+        //    try
+        //    {
+        //        // Obtener la colección de conductores de la base de datos
+        //        var conductorCollection = _context.GetCollection<Conductor>("Conductor");
+
+        //        // Intentar eliminar el conductor por el campo id_conductor
+        //        var result = conductorCollection.DeleteOne(c => c.id_conductor == id);
+
+        //        // Verificar si se eliminó algún documento
+        //        if (result.DeletedCount > 0)
+        //        {
+        //            TempData["SuccessMessage"] = "Conductor eliminado correctamente.";
+        //        }
+        //        else
+        //        {
+        //            TempData["ErrorMessage"] = "No se encontró el conductor con el ID especificado.";
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        TempData["ErrorMessage"] = "Error al eliminar el conductor: " + ex.Message;
+        //    }
+
+        //    // Redirigir a la acción para gestionar conductores
+        //    return RedirectToAction("Gestion_conductor");
+        //}
+
+        /////////////////////////////////////////////////////////////////////////////
+        #endregion
+
 
     }
 
