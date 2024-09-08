@@ -33,6 +33,10 @@ namespace TerMasterr.Controllers
 
         ////////////////////////// VISAS /////////////////////////////////////////
         #region
+        public ActionResult Index()
+        {
+            return View();
+        }
         public ActionResult Bus()
         {
             var buses = _context.GetCollection<Bus>("Bus").Find(c => true).ToList();
@@ -194,6 +198,95 @@ namespace TerMasterr.Controllers
                 nombre = conductor.nombre,
                 Estado = conductor.Estado
             });
+        }
+
+        public JsonResult Obtener_datos_admin_local()
+        {
+            try
+            {
+                // Verificar si el ID del admin local está en la sesión
+                if (Session["id_admin_local"] == null)
+                {
+                    return Json(new { success = false, message = "No se encontró el ID del administrador local en la sesión." }, JsonRequestBehavior.AllowGet);
+                }
+
+                // Obtener el ID del admin local desde la sesión
+                int id_admin_local = (int)Session["id_admin_local"];
+
+                // Crear una instancia de la clase Conexion
+                Conexion conexion = new Conexion();
+
+                // Obtener la colección de administradores locales
+                var coleccionAdminLocal = conexion.GetCollection<Admin_local>("Admin_local");
+
+                // Buscar el administrador local por ID
+                var admin_local = coleccionAdminLocal.Find(c => c.id_admin_local == id_admin_local).FirstOrDefault();
+
+                if (admin_local == null)
+                {
+                    return Json(new { success = false, message = "Administrador local no encontrado." }, JsonRequestBehavior.AllowGet);
+                }
+
+                // Devolver los datos del administrador local como JSON
+                return Json(new
+                {
+                    success = true,
+                    id_admin_local = admin_local.id_admin_local,
+                    nombre_admin_local = admin_local.nombre_admin_local,
+                    apellido_admin_local = admin_local.apellido_admin_local,
+                    correo_admin_local = admin_local.correo_admin_local,
+                    telefono_admin_local = admin_local.telefono_admin_local
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                // Manejar excepciones y devolver un mensaje de error
+                return Json(new { success = false, message = "Error al obtener los datos del administrador local: " + ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+        [HttpPost]
+        public JsonResult Modificar_datos_admin_local(Admin_local updatedAdminLocal)
+        {
+            try
+            {
+                // Verificar si el ID del admin local está en la sesión
+                if (Session["id_admin_local"] == null)
+                {
+                    return Json(new { success = false, message = "No se encontró el ID del administrador local en la sesión." });
+                }
+
+                int id_admin_local = (int)Session["id_admin_local"];
+
+                // Crear filtro para buscar el administrador local
+                var filter = Builders<Admin_local>.Filter.Eq(c => c.id_admin_local, id_admin_local);
+
+                // Crear la actualización
+                var update = Builders<Admin_local>.Update
+                                                  .Set(c => c.nombre_admin_local, updatedAdminLocal.nombre_admin_local)
+                                                  .Set(c => c.apellido_admin_local, updatedAdminLocal.apellido_admin_local)
+                                                  .Set(c => c.correo_admin_local, updatedAdminLocal.correo_admin_local)
+                                                  .Set(c => c.telefono_admin_local, updatedAdminLocal.telefono_admin_local);
+
+                // Ejecutar la actualización
+                var result = _context.GetCollection<Admin_local>("Admin_local").UpdateOne(filter, update);
+
+                // Verificar si se realizó la actualización
+                if (result.ModifiedCount > 0)
+                {
+                    return Json(new { success = true, message = "Datos actualizados correctamente." });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "No se realizaron modificaciones." });
+                }
+            }
+            catch (Exception ex)
+            {
+                // Manejar excepciones y devolver un mensaje de error
+                return Json(new { success = false, message = "Error al modificar los datos: " + ex.Message });
+            }
         }
 
 

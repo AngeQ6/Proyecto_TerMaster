@@ -83,7 +83,7 @@ namespace TerMasterr.Controllers
                     {
                        
 
-                        Session["IdAdminG"] = adminGeneral.id_admin_general;
+                        Session["id_adminG"] = adminGeneral.id_admin_general;
                         return RedirectToAction("Index", "Administrador_general");
                     }
 
@@ -96,7 +96,7 @@ namespace TerMasterr.Controllers
                     if (adminLocal != null)
                     {
 
-                        Session["IdAdmin_local"] = adminLocal.id_admin_local;
+                        Session["id_admin_local"] = adminLocal.id_admin_local;
                         return RedirectToAction("Index", "Admin_local");
                     }
 
