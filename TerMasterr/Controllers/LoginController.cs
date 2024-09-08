@@ -139,9 +139,9 @@ namespace TerMasterr.Controllers
 
                 if (isValid)
                 {
-                    TempData["Mensaje_exito"] = "Codigo validado";
-                    // Devolver a la vista para mostrar el mensaje
-                    return View("Validar_cod_conductor");
+                    TempData["Mensaje_exito"] = $"Código válido para el pueblo {resultado.nombre_pueblo}"; //Mensaje con el nombre del pueblo al que se le validó el código
+                    TempData["codigo_pueblo_validado"] = resultado.id_pueblo; // Guardar el código del pueblo validado en TempData
+                    return View("Validar_cod_conductor"); // Devolver a la vista para mostrar el mensaje
                 }
                 else
                 {
@@ -158,7 +158,7 @@ namespace TerMasterr.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Registrar(string id_conductor, string nombre, string contraseña, string telefono, string correo, string confirmar_contraseña, string Estado)
+        public async Task<ActionResult> Registrar(string id_conductor, string nombre, string contraseña, string telefono, string correo, string Estado)
         {
             try
             {
@@ -169,13 +169,17 @@ namespace TerMasterr.Controllers
                 if (conductorExistente != null)
                 {
                     // Si el conductor ya existe, mostrar un mensaje de error
-                    TempData["ErrorMessage"] = "El conductor con este ID ya existe. Por favor, use otro ID.";
+                    TempData["ErrorMessage_reg_conducor"] = "El conductor con este ID ya existe. Por favor, use otro ID.";
                     return RedirectToAction("Registro_conductor", "Login");
                 }
-                else if(confirmar_contraseña != contraseña)
+                // Verificar que el código del pueblo esté validado
+                if (TempData["codigo_pueblo_validado"] == null)
                 {
-                    TempData["ErrorMessage"] = "La contraseña confirmada no es la misma";
+                    TempData["ErrorMessage_reg_conducor"] = "Debes validar un código de pueblo antes de registrarte.";
+                    return RedirectToAction("Registro_conductor", "Login");
                 }
+                // Obtener el código del pueblo validado
+                int codigoPueblo = Convert.ToInt32(TempData["codigo_pueblo_validado"]);
                 // Si el conductor no existe, proceder con el registro
                 var nuevo_conductor = new Conductor
                 {
@@ -184,19 +188,20 @@ namespace TerMasterr.Controllers
                     contraseña = contraseña,
                     telefono = Convert.ToInt64(telefono),
                     correo = correo,
-                    Estado = Estado
+                    Estado = Estado,
+                    código_pueblo = codigoPueblo // Asociar el conductor con el pueblo validado
                 };
                 
                 await coleccionConductores.InsertOneAsync(nuevo_conductor);
                 // Si la inserción es exitosa, almacenar un mensaje de éxito en TempData
-                TempData["SuccessMessage"] = "Registro exitoso. Ahora puedes iniciar sesión.";
+                TempData["SuccessMessage_reg_conducor"] = "Registro exitoso. Ahora puedes iniciar sesión.";
                 // Devolver la vista de registro para mostrar el mensaje
                 return View("Registro_conductor");
             }
             catch (Exception ex)
             {
                 // Manejo de errores: almacenar el mensaje de error en TempData
-                TempData["ErrorMessage"] = "Ocurrió un error al registrar el conductor: " + ex.Message;
+                TempData["ErrorMessage_reg_conducor"] = "Ocurrió un error al registrar el conductor: " + ex.Message;
                 // Redirigir al usuario de vuelta al formulario de registro para que intente nuevamente
                 return RedirectToAction("Registro_conductor", "Login");
             }
