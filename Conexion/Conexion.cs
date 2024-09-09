@@ -66,6 +66,22 @@ namespace ConexionMongoDB
             }
         }
         // Método para obtener el siguiente valor del contador
+        //public int GetNextSequenceValue(string collectionName)
+        //{
+        //    var countersCollection = db.GetCollection<Counter>("Counters");
+        //    var filter = Builders<Counter>.Filter.Eq(c => c.CollectionName, collectionName);
+        //    var update = Builders<Counter>.Update.Inc(c => c.CurrentValue, 1);
+        //    var options = new FindOneAndUpdateOptions<Counter>
+        //    {
+        //        ReturnDocument = ReturnDocument.After,
+        //        IsUpsert = true // Crea el documento si no existe
+        //    };
+
+        //    var updatedCounter = countersCollection.FindOneAndUpdate(filter, update, options);
+        //    return updatedCounter.CurrentValue;
+        //}
+
+
         public int GetNextSequenceValue(string collectionName)
         {
             var countersCollection = db.GetCollection<Counter>("Counters");
@@ -80,6 +96,7 @@ namespace ConexionMongoDB
             var updatedCounter = countersCollection.FindOneAndUpdate(filter, update, options);
             return updatedCounter.CurrentValue;
         }
+
 
     }
 }
