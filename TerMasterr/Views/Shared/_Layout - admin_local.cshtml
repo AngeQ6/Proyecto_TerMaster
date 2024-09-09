@@ -32,10 +32,10 @@
         .side-img {
             position: fixed;
             top: 50%;
-            width: 8%; /* Ajusta el tamaño de la imagen según sea necesario */
+            width: 8%;
             height: auto;
-            transform: translateY(-50%); /* Centra verticalmente la imagen */
-            z-index: 1000; /* Asegura que las imágenes estén encima del contenido */
+            transform: translateY(-50%);
+            z-index: 1000;
         }
 
         .left-img {
@@ -49,7 +49,7 @@
         /* Estilo para el contenido */
         .main {
             margin: 0 auto;
-            max-width: calc(100% - 16%); /* Ajusta el espacio del contenido para no solaparse con las imágenes laterales */
+            max-width: calc(100% - 16%);
             padding: 0;
         }
 
@@ -59,24 +59,62 @@
         }
 
             .logo img {
-                max-width: 100px; /* Ajusta el tamaño máximo del logo */
+                max-width: 100px;
                 height: auto;
             }
 
         .sitename {
-            margin-left: 10px; /* Espacio entre el logo y el texto */
+            margin-left: 10px;
         }
 
         body {
-            font-family: Arial, sans-serif; /* Fuente general */
+            font-family: Arial, sans-serif;
         }
 
         .container {
-            max-width: 800px; /* Ancho máximo del contenedor */
-            margin: 50px auto; /* Centrado vertical y horizontal */
-            padding: 30px; /* Espaciado interno */
-            border-radius: 10px; /* Bordes redondeados */
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Sombra */
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Estilos para el avatar y el menú desplegable */
+        .avatar-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+            .dropdown-menu a {
+                color: black;
+                padding: 12px 16px;
+                text-decoration: none;
+                display: block;
+            }
+
+                .dropdown-menu a:hover {
+                    background-color: #f1f1f1;
+                }
+
+        .show {
+            display: block;
         }
     </style>
 
@@ -85,12 +123,9 @@
 <body class="index-page">
 
     <header id="header" class="header d-flex align-items-center fixed-top">
-
-
         <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
-
             <a class="logo d-flex align-items-center">
-                <img src="~/Content/Images/Logo.png" width="70" height="70">
+                <img src="~/Content/Images/nuevo_logo_redondo.png" width="70" height="70">
                 <h1 class="sitename">TerMaster</h1>
             </a>
 
@@ -102,27 +137,29 @@
                     <li><a href="@Url.Action("Conductores", "Admin_local")">Conductores</a></li>
                     <li><a href="@Url.Action("Bus", "Admin_local")">Buses</a></li>
                     <li><a href="@Url.Action("Reportes", "Admin_local")">Reportes</a></li>
-                    <li><a href="@Url.Action("Cerrar_sesion", "Login")" class="active">Cerrar Sesion</a></li>
                 </ul>
 
                 <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
             </nav>
-
+            <div class="avatar-dropdown">
+                <img src="@Url.Content("~/Content/Images/perfil-del-usuario.png")" alt="Avatar" class="avatar" onclick="toggleDropdown()">
+                <div id="userDropdown" class="dropdown-menu">
+                    <a href="#">@User.Identity.Name</a>
+                    <a href="@Url.Action("Cerrar_sesion", "Login")">Cerrar Sesión</a>
+                </div>
+            </div>
         </div>
     </header>
 
     <section id="about" class="about section">
-            <div class="container" data-aos="fade-up" data-aos-delay="100">
-                @RenderBody()
-            </div>
+        <div class="container" data-aos="fade-up" data-aos-delay="100">
+            @RenderBody()
+        </div>
     </section>
 
     <!-- Scroll Top -->
     <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
-    <!-- Imágenes laterales -->
-    <!--<img src="@Url.Content("~/Content/Images/Logo_azul.png")" alt="Left Image" class="side-img left-img">
-    <img src="@Url.Content("~/Content/Images/Logo_azul.png")" alt="Right Image" class="side-img right-img">-->
     <!-- Vendor JS Files -->
     <script src="@Url.Content("~/assets/vendor/bootstrap/js/bootstrap.bundle.min.js")"></script>
     <script src="@Url.Content("~/assets/vendor/php-email-form/validate.js")"></script>
@@ -139,5 +176,22 @@
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
 
+    <script>
+        function toggleDropdown() {
+            document.getElementById("userDropdown").classList.toggle("show");
+        }
+
+        window.onclick = function (event) {
+            if (!event.target.matches('.avatar')) {
+                var dropdowns = document.getElementsByClassName("dropdown-menu");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+    </script>
 </body>
 </html>
