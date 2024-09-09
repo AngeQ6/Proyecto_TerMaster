@@ -135,7 +135,7 @@ namespace TerMasterr.Controllers
                 // Convertir id_pueblo a entero si es necesario
                 if (!int.TryParse(id_pueblo, out int codigoInt))
                 {
-                    TempData["Mensaje"] = "Código inválido";
+                    TempData["MensajeError_CodPueblo"] = "Código inválido";
                     return RedirectToAction("Error", "Login");
                 }
 
@@ -157,14 +157,14 @@ namespace TerMasterr.Controllers
                 }
                 else
                 {
-                    TempData["Mensaje"] = "Código inválido";
+                    TempData["MensajeError_CodPueblo"] = "Código inválido";
                     return RedirectToAction("Validar_cod_conductor", "Login");
                 }
             }
             catch (Exception ex)
             {
                 // Manejar errores
-                TempData["Mensaje"] = $"Error: {ex.Message}";
+                TempData["MensajeError_CodPueblo"] = $"Error: {ex.Message}";
                 return RedirectToAction("Validar_cod_conductor", "Login");
             }
         }

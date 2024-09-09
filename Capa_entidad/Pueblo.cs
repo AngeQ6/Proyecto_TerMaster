@@ -16,5 +16,9 @@ namespace Capa_entidad
         public ObjectId _id { get; set; }
         public int id_pueblo { get; set; }
         public string nombre_pueblo { get; set; }
+        [BsonIgnoreIfNull]
+        public int id_admin_local { get; set; }
+        [BsonIgnoreIfNull]
+        public string nombre_admin_local { get; set; }
     }
 }
