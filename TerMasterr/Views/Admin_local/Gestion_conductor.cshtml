@@ -17,41 +17,41 @@
         {
             foreach (var conductor in Model)
             {
-<div class="col-md-5 col-lg-6 mb-3">
-    <div class="card car-conductor">
-        <div class="card-body d-flex align-items-center">
-            <div class="flex-grow-1">
-                <h5 class="card-title">@conductor.nombre</h5>
-                <p class="card-text"><strong>Número de Documento:</strong> @conductor.id_conductor</p>
-                <p class="card-text"><strong>Teléfono:</strong> @conductor.telefono</p>
-                <p class="card-text"><strong>Correo:</strong> @conductor.correo</p>
-                <p class="card-text"><strong>Estado:</strong> @conductor.Estado</p>
-                <div class="mt-3">
-                    <a class="btn btn-info" id="editar" data-bs-toggle="modal" data-bs-target="#editar_conductor" data-id="@conductor.id_conductor">
-                        <i class="bi bi-pencil"></i>
-                    </a>
-                    @*<a href="@Url.Action("EliminarConductor", "Admin_local", new { id = conductor.id_conductor })" class="btn btn-danger" onclick="return Eliminar_conductor(event, '@Url.Action("EliminarConductor", "Admin_local", new { id = conductor.id_conductor })')">
-                        <i class="fa fa-trash"></i>
-                    </a>*@
-                </div>
-            </div>
-            <div class="ms-3 text-center conductor-img-container">
-                <img src="@conductor.ImagenUrl" alt="@conductor.nombre" class="img-fluid" style="width: 80px; height: 80px; object-fit: cover;">
-                <!-- Botón para abrir el formulario de carga de imagen -->
-                @*<a href="#" class="btn btn-cargar-foto mt-2 small-btn" data-bs-toggle="modal" data-bs-target="#modalCargarFoto" data-id="@conductor.id_conductor">
-                    <span class="material-icons">add_circle</span>
-                    <span>Cargar foto</span>
-                </a>*@
-            </div>
-        </div>
-    </div>
-</div> }
-}
-else
-{
-<div class="col">
-    <p>No hay mecánicos registrados.</p>
-</div>}
+                <div class="col-md-5 col-lg-6 mb-3">
+                    <div class="card car-conductor">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h5 class="card-title">@conductor.nombre</h5>
+                                <p class="card-text"><strong>Número de Documento:</strong> @conductor.id_conductor</p>
+                                <p class="card-text"><strong>Teléfono:</strong> @conductor.telefono</p>
+                                <p class="card-text"><strong>Correo:</strong> @conductor.correo</p>
+                                <p class="card-text"><strong>Estado:</strong> @conductor.Estado</p>
+                                <div class="mt-3">
+                                    <a class="btn btn-info" id="editar" data-bs-toggle="modal" data-bs-target="#editar_conductor" data-id="@conductor.id_conductor">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    @*<a href="@Url.Action("EliminarConductor", "Admin_local", new { id = conductor.id_conductor })" class="btn btn-danger" onclick="return Eliminar_conductor(event, '@Url.Action("EliminarConductor", "Admin_local", new { id = conductor.id_conductor })')">
+                                            <i class="fa fa-trash"></i>
+                                        </a>*@
+                                </div>
+                            </div>
+                            <div class="ms-3 text-center conductor-img-container">
+                                <img src="@conductor.ImagenUrl" alt="@conductor.nombre" class="img-fluid conductor-image" style="width: 150px; height: 150px; object-fit: cover;" data-bs-toggle="modal" data-bs-target="#imageModal">
+                                <!-- Botón para abrir el formulario de carga de imagen -->
+                                @*<a href="#" class="btn btn-cargar-foto mt-2 small-btn" data-bs-toggle="modal" data-bs-target="#modalCargarFoto" data-id="@conductor.id_conductor">
+                                        <span class="material-icons">add_circle</span>
+                                        <span>Cargar foto</span>
+                                    </a>*@
+                            </div>
+                        </div>
+                    </div>
+                </div> }
+        }
+        else
+        {
+            <div class="col">
+                <p>No hay conductores registrados.</p>
+            </div>}
     </div>
 </div>
 
@@ -93,26 +93,16 @@ else
     </div>
 </div>
 
-<!-- Modal de Cargar Foto -->
-<div class="modal fade" id="modalCargarFoto" tabindex="-1" role="dialog" aria-labelledby="modalCargarFotoLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+<!-- Modal para mostrar imagen -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalCargarFotoLabel">Cargar Foto</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <h5 class="modal-title" id="imageModalLabel">Imagen del Conductor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                @using (Html.BeginForm("SubirFoto", "Inicio", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                {
-    @Html.AntiForgeryToken()
-                    <input type="hidden" id="modalConductorId" name="numeroDocumento" />
-                                    <div class="form-group">
-                                        <label for="archivo">Seleccionar foto:</label>
-                                        <input type="file" name="archivo" id="archivo" />
-                                    </div>
-                                                    <button type="submit" class="btn btn-primary">Subir</button>}
+            <div class="modal-body text-center">
+                <img src="" alt="Imagen del Conductor" class="img-fluid" id="modalImage">
             </div>
         </div>
     </div>
@@ -122,11 +112,11 @@ else
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <script>
-        /////////////////// Manejo del botón para abrir el modal para cargar foto /////////////////////
-        document.querySelectorAll('.btn-cargar-foto').forEach(button => {
-            button.addEventListener('click', function () {
-                const id = this.getAttribute('data-id');
-                document.getElementById('modalConductorId').value = id;
+        /////////////////// Función para abrir el modal de imagen en tamaño completo /////////////////////
+        document.querySelectorAll('.conductor-image').forEach(image => {
+            image.addEventListener('click', function () {
+                const imgSrc = this.getAttribute('src'); // Obtener la URL de la imagen
+                document.getElementById('modalImage').setAttribute('src', imgSrc); // Asignar la URL al modal
             });
         });
 
@@ -160,7 +150,7 @@ else
             var editar_conductor = document.getElementById('editar_conductor');
             editar_conductor.addEventListener('show.bs.modal', function (event) {
                 var button = event.relatedTarget; // Botón que abrió el modal
-                var conductorId = button.getAttribute('data-id'); // Extraer el ID del conductor 
+                var conductorId = button.getAttribute('data-id'); // Extraer el ID del conductor
 
                 // Hacer una solicitud AJAX para obtener los datos del conductor
                 fetch(`/Admin_local/Get_ConductorById?id=${conductorId}`)

@@ -247,9 +247,7 @@ namespace TerMasterr.Controllers
         //    return RedirectToAction("Gestion_conductor");
         //}
 
-        /////////////////////////////////////////////////////////////////////////////
-        #endregion
-
+        
         public JsonResult Obtener_datos_admin_local()
         {
             try
@@ -294,8 +292,7 @@ namespace TerMasterr.Controllers
                 return Json(new { success = false, message = "Error al obtener los datos del administrador local: " + ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
-
-
+        
         [HttpPost]
         public JsonResult Modificar_datos_admin_local(Admin_local updatedAdminLocal)
         {
@@ -338,6 +335,8 @@ namespace TerMasterr.Controllers
                 return Json(new { success = false, message = "Error al modificar los datos: " + ex.Message });
             }
         }
+        /////////////////////////////////////////////////////////////////////////////
+        #endregion
 
 
     }

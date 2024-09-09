@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_Layout - conductor.cshtml";
 }
 
-<form>
+<form enctype="multipart/form-data">
     <div class="header_2">
         <h2>Modificar datos personales</h2>
     </div>
@@ -21,12 +21,17 @@
     <br />
     <div class="form-group">
         <label for="correo">Correo Electrónico</label>
-        <input type="email" class="form-control" id="correo" name="correo" placeholder="Ingrese su correo electrónico" value="@ViewBag.correo" required/>
+        <input type="email" class="form-control" id="correo" name="correo" placeholder="Ingrese su correo electrónico" value="@ViewBag.correo" required />
     </div>
     <br />
     <div class="form-group">
         <label for="telefono">Teléfono</label>
-        <input type="tel" class="form-control" id="telefono" name="telefono" placeholder="Ingrese su número de teléfono" value="@ViewBag.telefono" required/>
+        <input type="tel" class="form-control" id="telefono" name="telefono" placeholder="Ingrese su número de teléfono" value="@ViewBag.telefono" required />
+    </div>
+    <br />
+    <div class="form-group">
+        <label for="imagen">Imagen</label>
+        <input type="file" class="form-control" id="imagenUrl" name="imagenUrl" />
     </div>
     <br />
 
@@ -75,7 +80,7 @@
 @section scripts{
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script>
-        
+
 $(document).ready(function () {
     $.ajax({
         url: "@Url.Action("Obtener_datos_conductor", "Conductor")",
@@ -99,45 +104,40 @@ $(document).ready(function () {
     });
 });
 
-$('form').submit(function (e) {
-    e.preventDefault(); // Evita que el formulario se envíe de forma tradicional
+ // Enviar datos del formulario
+            $('form').submit(function (e) {
+                e.preventDefault(); // Evita el envío del formulario tradicional
 
-    var datosUsuario = {
-        nombre: $('#nombre').val(),
-        correo: $('#correo').val(),
-        telefono: $('#telefono').val()
-    };
+                var formData = new FormData(this); // Crear un objeto FormData con los datos del formulario
 
-    console.log("Datos a enviar:", datosUsuario); // Verifica los datos antes de enviarlos
-
-    $.ajax({
-        url: '@Url.Action("Modificar_datos_conductor", "Conductor")',
-        type: 'POST',
-        data: JSON.stringify(datosUsuario),
-        contentType: "application/json; charset=utf-8",
-        success: function (response) {
-            console.log("Respuesta del servidor:", response); // Verifica la respuesta del servidor
-            if (response && response.success) {
-                Swal.fire({
-                    icon: "success",
-                    title: "Actualización exitosa"
+                $.ajax({
+                    url: '@Url.Action("Modificar_datos_conductor", "Conductor")',
+                    type: 'POST',
+                    data: formData,
+                    processData: false, // No procesar los datos, FormData lo hace por nosotros
+                    contentType: false, // No establecer el tipo de contenido, FormData lo gestiona
+                    success: function (response) {
+                        if (response && response.success) {
+                            Swal.fire({
+                                icon: "success",
+                                title: "Actualización exitosa"
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error al actualizar los datos"
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error en la solicitud AJAX",
+                            text: error
+                        });
+                    }
                 });
-            } else {
-                Swal.fire({
-                    icon: "error",
-                    title: "Error al actualizar los datos"
-                });
-            }
-        },
-        error: function (xhr, status, error) {
-            console.error("Error en la solicitud AJAX:", status, error); // Imprime el error en la consola
-            Swal.fire({
-                icon: "error",
-                title: "Error en la solicitud AJAX" + error
             });
-        }
-    });
-});
 
 
     </script>

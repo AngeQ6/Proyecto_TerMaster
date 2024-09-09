@@ -125,7 +125,7 @@
     <header id="header" class="header d-flex align-items-center fixed-top">
         <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
             <a class="logo d-flex align-items-center">
-                <img src="~/Content/Images/nuevo_logo_redondo.png" width="70" height="70">
+                <img src="~/Content/Images/nuevo_logo_redondo.png">
                 <h1 class="sitename">TerMaster</h1>
             </a>
 
@@ -144,7 +144,7 @@
             <div class="avatar-dropdown">
                 <img src="@Url.Content("~/Content/Images/perfil-del-usuario.png")" alt="Avatar" class="avatar" onclick="toggleDropdown()">
                 <div id="userDropdown" class="dropdown-menu">
-                    <a href="#">@User.Identity.Name</a>
+                    <a href="#">@Session["nombre_usuario"]</a>
                     <a href="@Url.Action("Cerrar_sesion", "Login")">Cerrar Sesión</a>
                 </div>
             </div>

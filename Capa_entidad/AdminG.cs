@@ -14,6 +14,7 @@ namespace Capa_entidad
         [BsonRepresentation(BsonType.ObjectId)]
         public ObjectId Id { get; set; }
         public int id_admin_general { get; set; }
+        public int nombre { get; set; }
         public string contraseña_admin_general { get; set; }
     }
 }

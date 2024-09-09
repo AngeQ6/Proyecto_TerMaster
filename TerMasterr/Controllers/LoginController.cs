@@ -8,6 +8,7 @@ using Capa_entidad;
 using ConexionMongoDB;
 using MongoDB.Bson;
 using System.Threading.Tasks;
+using System.Web.Security;
 
 namespace TerMasterr.Controllers
 {
@@ -71,6 +72,7 @@ namespace TerMasterr.Controllers
                     {
 
                         Session["id_conductor"] = conductor.id_conductor;
+                        Session["nombre_usuario"] = conductor.nombre;
                         return RedirectToAction("Index", "Conductor");
                     }
 
@@ -84,6 +86,7 @@ namespace TerMasterr.Controllers
                        
 
                         Session["id_adminG"] = adminGeneral.id_admin_general;
+                        Session["nombre_usuario"] = adminGeneral.nombre;
                         return RedirectToAction("Index", "Administrador_general");
                     }
 
@@ -97,6 +100,7 @@ namespace TerMasterr.Controllers
                     {
 
                         Session["id_admin_local"] = adminLocal.id_admin_local;
+                        Session["nombre_usuario"] = adminLocal.nombre_admin_local;
                         return RedirectToAction("Index", "Admin_local");
                     }
 
@@ -113,6 +117,14 @@ namespace TerMasterr.Controllers
             ViewBag.Error = "ModelState no es válido";
             return View();
         }
+        public ActionResult Cerrar_sesion()
+        {
+            FormsAuthentication.SignOut(); // Cerrar sesión
+            Session.Abandon();
+            
+            return RedirectToAction("Login", "Login"); // Redirigir al login
+        }
+
 
         [HttpPost]
         public ActionResult Validar_cod_conductor(string id_pueblo)
@@ -298,11 +310,6 @@ namespace TerMasterr.Controllers
             }
 
             return Json(new { existe = existe }, JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult Cerrar_sesion()
-        {
-            return RedirectToAction("Login", "Login");
         }
     }
         /////////////////////////////////////////////////////////////////////////////////////////////////

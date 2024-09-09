@@ -8,6 +8,7 @@ using Capa_entidad;
 using ConexionMongoDB;
 using MongoDB.Bson;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace TerMasterr.Controllers
 {
@@ -88,32 +89,83 @@ namespace TerMasterr.Controllers
             }
         }
 
+        //[HttpPost]
+        //public JsonResult Modificar_datos_conductor(Conductor updatedConductor)
+        //{
+        //    if (Session["id_conductor"] != null)
+        //    {
+        //        int id_conductor = (int)Session["id_conductor"];
 
+        //        var filter = Builders<Conductor>.Filter.Eq(c => c.id_conductor, id_conductor);
+        //        var update = Builders<Conductor>.Update
+        //                                        .Set(c => c.nombre, updatedConductor.nombre)
+        //                                        .Set(c => c.correo, updatedConductor.correo)
+        //                                        .Set(c => c.telefono, updatedConductor.telefono);
 
+        //        var result = _context.GetCollection<Conductor>("Conductor").UpdateOne(filter, update);
 
+        //        if (result.ModifiedCount > 0)
+        //        {
+        //            return Json(new { success = true });
+        //        }
+        //    }
+
+        //    return Json(new { success = false });
+        //}
         [HttpPost]
-        public JsonResult Modificar_datos_conductor(Conductor updatedConductor)
+        public ActionResult Modificar_datos_conductor(Conductor updatedConductor, HttpPostedFileBase imagenUrl)
         {
-            if (Session["id_conductor"] != null)
+            try
             {
-                int id_conductor = (int)Session["id_conductor"];
-
-                var filter = Builders<Conductor>.Filter.Eq(c => c.id_conductor, id_conductor);
-                var update = Builders<Conductor>.Update
-                                                .Set(c => c.nombre, updatedConductor.nombre)
-                                                .Set(c => c.correo, updatedConductor.correo)
-                                                .Set(c => c.telefono, updatedConductor.telefono);
-
-                var result = _context.GetCollection<Conductor>("Conductor").UpdateOne(filter, update);
-
-                if (result.ModifiedCount > 0)
+                if (Session["id_conductor"] != null)
                 {
-                    return Json(new { success = true });
-                }
-            }
+                    int id_conductor = (int)Session["id_conductor"];
 
-            return Json(new { success = false });
+                    // Guardar la imagenUrl si fue cargada
+                    string imageUrl = null;
+                    if (imagenUrl != null && imagenUrl.ContentLength > 0)
+                    {
+                        // Definir la ruta para guardar la imagenUrl
+                        string fileName = Path.GetFileName(imagenUrl.FileName);
+                        string path = Path.Combine(Server.MapPath("~/Content/Images/"), fileName);
+
+                        // Guardar el archivo en el servidor
+                        imagenUrl.SaveAs(path);
+
+                        // Guardar la URL de la imagenUrl
+                        imageUrl = Url.Content(Path.Combine("~/Content/Images/", fileName));
+                    }
+
+                    // Crear filtro para identificar al conductor
+                    var filter = Builders<Conductor>.Filter.Eq(c => c.id_conductor, id_conductor);
+
+                    // Actualizar los datos del conductor
+                    var update = Builders<Conductor>.Update
+                        .Set(c => c.nombre, updatedConductor.nombre)
+                        .Set(c => c.correo, updatedConductor.correo)
+                        .Set(c => c.telefono, updatedConductor.telefono);
+
+                    // Si se subió una nueva imagenUrl, actualizar el campo imagenUrlUrl
+                    if (!string.IsNullOrEmpty(imageUrl))
+                    {
+                        update = update.Set(c => c.ImagenUrl, imageUrl);
+                    }
+
+                    var result = _context.GetCollection<Conductor>("Conductor").UpdateOne(filter, update);
+
+                    if (result.ModifiedCount > 0)
+                    {
+                        return Json(new { success = true, message = "Datos modificados correctamente" });
+                    }
+                }
+                return Json(new { success = false, message = "No se pudo modificar los datos" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error: " + ex.Message });
+            }
         }
+
 
         [HttpGet]
         public JsonResult RegistrarAsistencia(string qrContent)
