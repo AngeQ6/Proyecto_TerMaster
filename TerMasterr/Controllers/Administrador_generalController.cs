@@ -192,7 +192,7 @@ namespace TerMasterr.Controllers
                     // Insertar el nuevo pueblo en la colección
                     _context.GetCollection<Pueblo>("Pueblo").InsertOne(nuevopueblo);
 
-                    TempData["SuccessMessage"] = "Pueblo agregado exitosamente.";
+                    TempData["SuccessMessage_RegPueblo"] = "Pueblo agregado exitosamente.";
                     return RedirectToAction("Pueblos");
                 }
                 catch (Exception ex)
@@ -244,9 +244,10 @@ namespace TerMasterr.Controllers
                 puelo_existente.id_admin_local = pueblo.id_admin_local;
                 puelo_existente.nombre_admin_local = pueblo.nombre_admin_local;
 
+                TempData["ErrorMessage_EditPueblo"] = "Error.";
                 _context.GetCollection<Pueblo>("Pueblo").ReplaceOne(c => c.id_pueblo == pueblo.id_pueblo, puelo_existente);
             }
-
+            TempData["SuccessMessage_EditPueblo"] = "Actualizacion exitosa.";
             return RedirectToAction("Pueblos");
         }
 

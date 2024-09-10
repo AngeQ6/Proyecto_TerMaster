@@ -78,6 +78,30 @@
                     <button type="submit" class="btn btn-primary">Agregar Pueblo</button>
                 </div>
             </form>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            @if (TempData["SuccessMessage_RegPueblo"] != null)
+            {
+                <script>
+
+                    Swal.fire({
+                    icon: 'success',
+                    title: 'Éxito',
+                    text: '@TempData["SuccessMessage_RegPueblo"]'
+                    });
+                </script>
+            }
+            @if (TempData["errorMessage"] != null)
+            {
+                <script>
+                    Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: '@TempData["errorMessage"]',
+                    timer: 3000,
+                    showConfirmButton: false
+                    });
+                </script>
+            }
         </div>
     </div>
 </div>
@@ -124,6 +148,28 @@
                     <button type="submit" class="btn btn-primary">Guardar cambios</button>
                 </div>
             </form>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            @if (TempData["SuccessMessage_EditPueblo"] != null)
+            {
+                <script>
+
+                    Swal.fire({
+                    icon: 'success',
+                    title: 'Éxito',
+                    text: '@TempData["SuccessMessage_EditPueblo"]'
+                    });
+                </script>
+            }
+            @if (TempData["ErrorMessage_EditPueblo"] != null)
+            {
+                <script>
+                    Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: '@TempData["ErrorMessage_EditPueblo"]'
+                    });
+                </script>
+            }
         </div>
     </div>
 </div>
@@ -181,33 +227,24 @@
                     console.error('Error al cargar los datos del pueblo:', error);
                 });
         });
+
+        // Actualización del nombre del administrador local cuando se cambia el select en el modal de edición
+        document.getElementById('id_admin_local_edit').addEventListener('change', function () {
+            var idSeleccionado = this.value;
+            var nombreAdminLocal = '';
+
+            // Busca el administrador local correspondiente al id seleccionado
+            var adminLocal = adminLocales.find(admin => admin.id_admin_local.toString() === idSeleccionado);
+            if (adminLocal) {
+                nombreAdminLocal = adminLocal.nombre_admin_local;
+                document.getElementById('nombre_admin_local_edit').value = nombreAdminLocal;
+            } else {
+                document.getElementById('nombre_admin_local_edit').value = '';
+            }
+        });
     });
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    @if (TempData["successMessage"] != null)
-    {
-        <text>
-            Swal.fire({
-                icon: 'success',
-                title: 'Éxito',
-                text: '@TempData["successMessage"]',
-                timer: 3000,
-                showConfirmButton: false
-            });
-        </text>
-    }
-    @if (TempData["errorMessage"] != null)
-    {
-        <text>
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: '@TempData["errorMessage"]',
-                timer: 3000,
-                showConfirmButton: false
-            });
-        </text>
-    }
-</script>
+
+
+
