@@ -27,7 +27,7 @@
         <label>Frecuencia de salida:</label>
         <input class="form-control" id="frencuencia" name="frecuencia" />
     </div>
-    
+
 </div>
 
 <div class="row">
@@ -68,15 +68,16 @@
                 <h5 class="modal-title" id="addBusModalLabel">Agregar Nuevo Bus</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="@Url.Action("AddBus", "Admin_local")" method="post">
+            <form id="editBusForm" action="@Url.Action("Edit_bus", "Admin_local")" method="post">
                 <div class="modal-body">
+                    <input type="hidden" id="busId" name="Id">
                     <div class="mb-3">
-                        <label for="placa" class="form-label">Placa del bus</label>
-                        <input type="text" class="form-control" id="placa" name="placa" required>
+                        <label for="placa_edit" class="form-label">Placa del bus</label>
+                        <input type="text" class="form-control" id="placa_edit" name="placa" required>
                     </div>
                     <div class="mb-3">
-                        <label for="id_conductor" class="form-label">Asignar conductor</label>
-                        <select class="form-control" id="id_conductor_add" name="id_conductor" required>
+                        <label for="id_conductor_edit" class="form-label">Asignar conductor</label>
+                        <select class="form-control" id="id_conductor_edit" name="id_conductor" required>
                             <option value="">Selecciona un conductor</option>
                             @foreach (var conductor in ViewBag.Conductores)
                             {
@@ -85,13 +86,13 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="nombre" class="form-label">Nombre del conductor</label>
-                        <input type="text" class="form-control" id="nombre_add" name="nombre" required>
+                        <label for="nombre_edit" class="form-label">Nombre del conductor</label>
+                        <input type="text" class="form-control" id="nombre_edit" name="nombre" required disabled>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Agregar Bus</button>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                 </div>
             </form>
         </div>
@@ -166,7 +167,7 @@
                 var id_conductor = button.getAttribute('data-id'); // Extraer el ID del conductor
 
                 // Hacer una solicitud AJAX para obtener los datos del bus
-                fetch(`/Admin_local/Get_busById?id=${id_conductor}`)
+                fetch(/Admin_local/Get_busById?id=${id_conductor})
                     .then(response => response.json())
                     .then(data => {
                         // Rellenar los campos del modal con los datos del bus

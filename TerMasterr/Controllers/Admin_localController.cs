@@ -167,22 +167,32 @@ namespace TerMasterr.Controllers
         [HttpPost]
         public ActionResult Edit_bus(Bus bus)
         {
-            var bus_existente = _context.GetCollection<Bus>("Bus")
-                                              .Find(c => c.id_conductor == bus.id_conductor)
-                                              .FirstOrDefault();
-
-            if (bus_existente != null)
+            try
             {
-                //Campos que se van a editar
-                bus_existente.id_conductor = bus.id_conductor;
-                bus_existente.placa = bus.placa;
-                bus_existente.nombre = bus.nombre;
+                var busExistente = _context.GetCollection<Bus>("Bus")
+                                           .Find(b => b.Id == bus.Id)  // Buscar el bus por su ObjectId
+                                           .FirstOrDefault();
 
-                _context.GetCollection<Bus>("Bus").ReplaceOne(c => c.id_conductor == bus.id_conductor, bus_existente);
+                if (busExistente != null)
+                {
+                    // Actualizar los campos del bus
+                    var update = Builders<Bus>.Update
+                                              .Set(b => b.placa, bus.placa)
+                                              .Set(b => b.id_conductor, bus.id_conductor)
+                                              .Set(b => b.nombre, bus.nombre);
+
+                    _context.GetCollection<Bus>("Bus").UpdateOne(b => b.Id == bus.Id, update);
+                }
+
+                return RedirectToAction("Bus", "Admin_local");
             }
-
-            return RedirectToAction("Bus");
+            catch (Exception ex)
+            {
+                // Manejar el error
+                return RedirectToAction("ErrorPage", new { message = ex.Message });
+            }
         }
+
         [HttpGet]
         public ActionResult Get_ConductorById(int id)
         { 
