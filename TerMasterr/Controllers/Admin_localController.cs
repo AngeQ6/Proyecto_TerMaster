@@ -193,7 +193,6 @@ namespace TerMasterr.Controllers
                 return RedirectToAction("ErrorPage", new { message = ex.Message });
             }
         }
-
         [HttpGet]
         public ActionResult Get_ConductorById(int id)
         { 
