@@ -5,12 +5,12 @@
     Layout = "~/Views/Shared/_Layout - admin_general.cshtml";
 }
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
 <style>
     .header_2 {
         background: -webkit-linear-gradient(315deg, #4723D9 0%, #00D2Df 100%);
         padding: 10px;
         border-radius: 10px 10px 0 0;
-        
     }
 </style>
 
@@ -20,44 +20,57 @@
 <br />
 <div class="d-flex justify-content-between align-items-center mb-4">
     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPuebloModal">
-        <i class="bi bi-plus-circle me-0.99 "></i>
+        <i class="bi bi-plus-circle me-0.99"></i>
     </button>
 </div>
 
 <div class="row">
-    @foreach (var pueblos in Model)
+    @foreach (var pueblo in Model)
     {
         <div class="col-md-6 mb-4">
             <div class="card">
-                <div class="card-body d-flex align-items-center">
-                    <!--<div class="me-3">-->
-                    <!-- Aquí puedes poner un ícono o una imagen relacionada, si es necesario -->
-                    <!--<img src="~/assets/maria_labaja.jpeg" alt="Icon" class="img-fluid">
-                    </div>-->
+                <div class="card-body d-flex justify-content-between align-items-center">
                     <div>
-                        <h5 class="card-title">ID del pueblo: @pueblos.id_pueblo</h5>
-                        <p class="card-text">Nombre del pueblo: @pueblos.nombre_pueblo</p>
+                        <h5 class="card-title">ID del pueblo: @pueblo.id_pueblo</h5>
+                        <p class="card-text">Nombre del pueblo: @pueblo.nombre_pueblo</p>
+                        <p class="card-text">Nombre del administrador: @pueblo.nombre_admin_local</p>
                     </div>
+                    <button class="btn btn-primary ms-auto" data-id="@pueblo.id_pueblo" data-bs-toggle="modal" data-bs-target="#editPuebloModal">
+                        <i class="bi bi-pencil"></i>
+                    </button>
                 </div>
             </div>
         </div>
     }
 </div>
 
-<!-- Modal para agregar bus -->
-<div class="modal fade" id="addPuebloModal" tabindex="-1" aria-labelledby="addBusModalLabel" aria-hidden="true">
+<!-- Modal para agregar pueblo -->
+<div class="modal fade" id="addPuebloModal" tabindex="-1" aria-labelledby="addPuebloModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-primary text-light">
-                <h5 class="modal-title text-white" id="addBusModalLabel">Agregar Nuevo Pueblo</h5>
+                <h5 class="modal-title text-white" id="addPuebloModalLabel">Agregar Nuevo Pueblo</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="@Url.Action("Agregar_pueblo", "Administrador_general")" method="post">
                 <div class="modal-body">
-                    
                     <div class="mb-3">
-                        <label for="nombre_pueblo" class="form-label">Nombre del pueblo: </label>
+                        <label for="nombre_pueblo" class="form-label">Nombre del pueblo:</label>
                         <input type="text" class="form-control" id="nombre_pueblo" name="nombre_pueblo" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_admin_local" class="form-label">Asignar administrador local</label>
+                        <select class="form-control" id="id_admin_local" name="id_admin_local" style="width: 100%;" required>
+                            <option value="">Selecciona un administrador local</option>
+                            @foreach (var adminlocal in ViewBag.adminlocales)
+                            {
+                                <option value="@adminlocal.id_admin_local">@adminlocal.id_admin_local</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nombre_admin_local" class="form-label">Nombre del administrador</label>
+                        <input type="text" class="form-control" id="nombre_admin_local" name="nombre_admin_local" required disabled>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -65,31 +78,136 @@
                     <button type="submit" class="btn btn-primary">Agregar Pueblo</button>
                 </div>
             </form>
-            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-            @if (TempData["SuccessMessage"] != null)
-            {
-                <script>
-                            Swal.fire({
-                                icon: 'success',
-                                title: '¡Éxito!',
-                                text: '@Html.Raw(TempData["SuccessMessage"])'
-                            }).then(function () {
-                                window.location = '@Url.Action("Pueblos", "Administrador_general")';
-
-                            });
-                </script>
-            }
-
-            @if (TempData["ErrorMessage"] != null)
-            {
-                <script>
-                            Swal.fire({
-                                icon: 'error',
-                                title: '¡Error!',
-                                text: '@Html.Raw(TempData["ErrorMessage"])'
-                            });
-                </script>
-            }
         </div>
     </div>
 </div>
+
+<!-- Modal para editar pueblo -->
+<div class="modal fade" id="editPuebloModal" tabindex="-1" aria-labelledby="editPuebloModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-light">
+                <h5 class="modal-title text-white" id="editPuebloModalLabel">Editar pueblo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="@Url.Action("Editar_pueblo", "Administrador_general")" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="id_pueblo_edit" class="form-label">ID del pueblo:</label>
+                        <input type="text" class="form-control" id="id_pueblo_edit" name="id_pueblo_edit" disabled>
+                        <input type="hidden" id="id_edit" name="id_edit" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="nombre_pueblo_edit" class="form-label">Nombre del pueblo:</label>
+                        <input type="text" class="form-control" id="nombre_pueblo_edit" name="nombre_pueblo_edit" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_admin_local_edit" class="form-label">Administrador local</label>
+                        <select class="form-control" id="id_admin_local_edit" name="id_admin_local_edit" required>
+                            <option value="">Selecciona un administrador local</option>
+                            @foreach (var adminlocal in ViewBag.adminlocales)
+                            {
+                                <option value="@adminlocal.id_admin_local">@adminlocal.id_admin_local</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="nombre_admin_local_edit" class="form-label">Nombre del administrador:</label>
+                        <input type="text" class="form-control" id="nombre_admin_local_edit" name="nombre_admin_local_edit" disabled>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var adminLocales = @Html.Raw(Json.Encode(ViewBag.adminlocales)); // lista de administradores
+
+        // Manejo del cambio en el select del modal de agregar pueblo
+        document.getElementById('id_admin_local').addEventListener('change', function () {
+            var idSeleccionado = this.value;
+            var nombreAdminLocal = '';
+
+            // Busca el administrador local correspondiente al id seleccionado
+            var adminLocal = adminLocales.find(admin => admin.id_admin_local.toString() === idSeleccionado);
+            if (adminLocal) {
+                nombreAdminLocal = adminLocal.nombre_admin_local;
+                document.getElementById('nombre_admin_local').value = nombreAdminLocal;
+            } else {
+                document.getElementById('nombre_admin_local').value = '';
+            }
+        });
+
+        // Habilitar el campo deshabilitado antes de enviar el formulario
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function () {
+                document.getElementById('nombre_admin_local').disabled = false;
+            });
+        });
+
+        // Manejo del modal de edición
+        var editPuebloModal = document.getElementById('editPuebloModal');
+        editPuebloModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget; // botón que abrió el modal
+            var idPueblo = button.getAttribute('data-id'); // extraer el id del pueblo
+
+            // Hacer una solicitud AJAX para obtener los datos del pueblo
+            fetch(`/administrador_general/get_puebloById?id=${idPueblo}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.id_pueblo) {
+                        // Rellenar los campos del modal con los datos del pueblo
+                        document.getElementById('id_pueblo_edit').value = data.id_pueblo;
+                        document.getElementById('nombre_pueblo_edit').value = data.nombre_pueblo;
+                        document.getElementById('id_edit').value = data.id_pueblo;
+
+                        var adminLocal = adminLocales.find(admin => admin.id_admin_local.toString() === data.id_admin_local.toString());
+                        if (adminLocal) {
+                            document.getElementById('id_admin_local_edit').value = adminLocal.id_admin_local;
+                            document.getElementById('nombre_admin_local_edit').value = adminLocal.nombre_admin_local;
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al cargar los datos del pueblo:', error);
+                });
+        });
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    @if (TempData["successMessage"] != null)
+    {
+        <text>
+            Swal.fire({
+                icon: 'success',
+                title: 'Éxito',
+                text: '@TempData["successMessage"]',
+                timer: 3000,
+                showConfirmButton: false
+            });
+        </text>
+    }
+    @if (TempData["errorMessage"] != null)
+    {
+        <text>
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: '@TempData["errorMessage"]',
+                timer: 3000,
+                showConfirmButton: false
+            });
+        </text>
+    }
+</script>

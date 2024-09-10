@@ -39,6 +39,9 @@ namespace TerMasterr.Controllers
         public ActionResult Pueblos()
         {
             var pueblos = _context.GetCollection<Pueblo>("Pueblo").Find(c => true).ToList();
+            var adminlocal = _context.GetCollection<Admin_local>("Admin_local").Find(c => true).ToList();
+
+            ViewBag.adminlocales = adminlocal;
             return View(pueblos);
         }
         public ActionResult Reportes()
@@ -144,6 +147,8 @@ namespace TerMasterr.Controllers
 
         //}
 
+        
+        [HttpPost]
         public ActionResult Agregar_pueblo(Pueblo pueblo)
         {
             if (ModelState.IsValid)
@@ -161,6 +166,17 @@ namespace TerMasterr.Controllers
                         return RedirectToAction("Pueblos");
                     }
 
+                    // Verificar si el administrador ya tiene un pueblo asignado
+                    var administradorConPueblo = _context.GetCollection<Pueblo>("Pueblo")
+                        .Find(p => p.id_admin_local == pueblo.id_admin_local)
+                        .FirstOrDefault();
+
+                    if (administradorConPueblo != null)
+                    {
+                        TempData["ErrorMessage"] = "El administrador ya tiene un pueblo asignado.";
+                        return RedirectToAction("Pueblos");
+                    }
+
                     // Generar nuevo ID para el pueblo
                     int nuevoidpueblo = _context.GetNextSequenceValue("Pueblo");
 
@@ -168,7 +184,9 @@ namespace TerMasterr.Controllers
                     var nuevopueblo = new Pueblo
                     {
                         id_pueblo = nuevoidpueblo,
-                        nombre_pueblo = pueblo.nombre_pueblo
+                        nombre_pueblo = pueblo.nombre_pueblo,
+                        id_admin_local = pueblo.id_admin_local,
+                        nombre_admin_local = pueblo.nombre_admin_local
                     };
 
                     // Insertar el nuevo pueblo en la colección
@@ -184,10 +202,53 @@ namespace TerMasterr.Controllers
                 }
             }
 
-            // Si el modelo no es válido, devolver la vista con el modelo actual
-            return View(pueblo);
+            // Si el modelo no es válido, redirigir a la vista 'Pueblos' con el modelo actual
+            TempData["ErrorMessage"] = "Datos inválidos. Por favor, verifica la información ingresada.";
+            return RedirectToAction("Pueblos");
         }
 
+
+
+        [HttpGet]
+        public ActionResult Get_puebloById(int id)
+        {
+            var pueblo = _context.GetCollection<Pueblo>("Pueblo")
+                                    .Find(c => c.id_pueblo == id)
+                                    .FirstOrDefault();
+            if (pueblo == null)
+            {
+                return HttpNotFound();
+            }
+
+            return Json(new
+            {
+                id_pueblo = pueblo.id_pueblo,
+                nombre_pueblo = pueblo.nombre_pueblo,
+                id_admin_local = pueblo.id_admin_local,
+                nombre_admin_local = pueblo.nombre_admin_local
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+
+        [HttpPost]
+        public ActionResult Editar_pueblo(Pueblo pueblo)
+        {
+            var puelo_existente = _context.GetCollection<Pueblo>("Pueblo")
+                                              .Find(c => c.id_pueblo == pueblo.id_pueblo)
+                                              .FirstOrDefault();
+
+            if (puelo_existente != null)
+            {
+                //Campos que se van a editar
+                puelo_existente.nombre_pueblo = pueblo.nombre_pueblo;
+                puelo_existente.id_admin_local = pueblo.id_admin_local;
+                puelo_existente.nombre_admin_local = pueblo.nombre_admin_local;
+
+                _context.GetCollection<Pueblo>("Pueblo").ReplaceOne(c => c.id_pueblo == pueblo.id_pueblo, puelo_existente);
+            }
+
+            return RedirectToAction("Pueblos");
+        }
 
         #endregion
     }

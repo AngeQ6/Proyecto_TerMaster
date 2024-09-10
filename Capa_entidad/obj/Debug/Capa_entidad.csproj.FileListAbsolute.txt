@@ -65,7 +65,6 @@ C:\Users\USER\Source\Repos\Proyecto_TerMaster\Capa_entidad\bin\Debug\System.Buff
 C:\Users\USER\Source\Repos\Proyecto_TerMaster\Capa_entidad\bin\Debug\System.Memory.xml
 C:\Users\USER\Source\Repos\Proyecto_TerMaster\Capa_entidad\bin\Debug\System.Numerics.Vectors.xml
 C:\Users\USER\Source\Repos\Proyecto_TerMaster\Capa_entidad\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
-C:\Users\USER\Source\Repos\Proyecto_TerMaster\Capa_entidad\obj\Debug\Capa_entidad.csproj.AssemblyReference.cache
 C:\Users\USER\Source\Repos\Proyecto_TerMaster\Capa_entidad\obj\Debug\Capa_entidad.csproj.CoreCompileInputs.cache
 C:\Users\USER\Source\Repos\Proyecto_TerMaster\Capa_entidad\obj\Debug\Capa_entidad.csproj.CopyComplete
 C:\Users\USER\Source\Repos\Proyecto_TerMaster\Capa_entidad\obj\Debug\Capa_entidad.dll

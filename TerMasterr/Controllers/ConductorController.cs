@@ -198,7 +198,7 @@ namespace TerMasterr.Controllers
                 return Json(new { success = false, message = "Conductor no encontrado en la base de datos." }, JsonRequestBehavior.AllowGet);
             }
 
-            var placaBus = conductor.placa_bus_asignado;  // Asegúrate de tener este campo en tu modelo Conductor
+            /*var placaBus = conductor.placa_bus_asignado; */ // Asegúrate de tener este campo en tu modelo Conductor
 
             // Obtener la zona horaria de Colombia
             TimeZoneInfo colombiaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
@@ -228,7 +228,7 @@ namespace TerMasterr.Controllers
                     IdAsistencia = nuevoIdAsistencia,
                     FechaIngreso = fechaActualUTC,  // Usar la fecha ajustada a Colombia
                     IdConductor = idConductor,
-                    PlacaBus = placaBus
+                    //PlacaBus = placaBus
                 };
 
                 asistenciasCollection.InsertOne(nuevaAsistencia);
