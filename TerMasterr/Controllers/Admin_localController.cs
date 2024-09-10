@@ -164,6 +164,7 @@ namespace TerMasterr.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
+
         [HttpPost]
         public ActionResult Edit_bus(Bus bus)
         {

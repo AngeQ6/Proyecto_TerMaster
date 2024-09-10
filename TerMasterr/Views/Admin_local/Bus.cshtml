@@ -51,13 +51,11 @@
                         <p><strong>Nombre del conductor:</strong> @bus.nombre</p>
                     </div>
                 </div>
-            </div>
-        }
+            </div> }
     }
     else
     {
-        <p>No hay buses disponibles.</p>
-    }
+        <p>No hay buses disponibles.</p>}
 </div>
 
 <!-- Modal para agregar bus -->
@@ -68,31 +66,29 @@
                 <h5 class="modal-title" id="addBusModalLabel">Agregar Nuevo Bus</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="editBusForm" action="@Url.Action("Edit_bus", "Admin_local")" method="post">
+            <form action="@Url.Action("AddBus", "Admin_local")" method="post">
                 <div class="modal-body">
-                    <input type="hidden" id="busId" name="Id">
                     <div class="mb-3">
-                        <label for="placa_edit" class="form-label">Placa del bus</label>
-                        <input type="text" class="form-control" id="placa_edit" name="placa" required>
+                        <label for="placa" class="form-label">Placa del bus</label>
+                        <input type="text" class="form-control" id="placa" name="placa" required>
                     </div>
                     <div class="mb-3">
-                        <label for="id_conductor_edit" class="form-label">Asignar conductor</label>
-                        <select class="form-control" id="id_conductor_edit" name="id_conductor" required>
+                        <label for="id_conductor" class="form-label">Asignar conductor</label>
+                        <select class="form-control" id="id_conductor_add" name="id_conductor" required>
                             <option value="">Selecciona un conductor</option>
                             @foreach (var conductor in ViewBag.Conductores)
                             {
-                                <option value="@conductor.id_conductor">@conductor.nombre</option>
-                            }
+                <option value="@conductor.id_conductor">@conductor.id_conductor</option>}
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="nombre_edit" class="form-label">Nombre del conductor</label>
-                        <input type="text" class="form-control" id="nombre_edit" name="nombre" required disabled>
+                        <label for="nombre" class="form-label">Nombre del conductor</label>
+                        <input type="text" class="form-control" id="nombre_add" name="nombre" required>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    <button type="submit" class="btn btn-primary">Agregar Bus</button>
                 </div>
             </form>
         </div>
@@ -121,7 +117,7 @@
                             @foreach (var conductor in ViewBag.Conductores)
                             {
                                 <option value="@conductor.id_conductor">@conductor.id_conductor</option>
-                            }
+}
                         </select>
                     </div>
                     <div class="mb-3">
@@ -140,63 +136,43 @@
 
 @section Scripts {
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var conductores = @Html.Raw(Json.Encode(ViewBag.Conductores)); // Lista de conductores
+        // Manejo del modal de edición
+        var editBusModal = document.getElementById('editBusModal');
+        editBusModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget; // Botón que abrió el modal
+            var id_conductor = button.getAttribute('data-id'); // Extraer el ID del conductor
 
-            // Manejo del cambio en el select del modal de agregar bus
-            document.getElementById('id_conductor_add').addEventListener('change', function () {
-                var idSeleccionado = this.value;
-                var nombreConductor = '';
+            // Hacer una solicitud AJAX para obtener los datos del bus
+            fetch(/Admin_local/Get_busById ? id = ${ id_conductor })
+                .then(response => response.json())
+                .then(data => {
+                    // Rellenar los campos del modal con los datos del bus
+                    document.getElementById('id_conductor_hidden').value = data.id_conductor;
+                    document.getElementById('placa_edit').value = data.placa;
+                    document.getElementById('id_conductor_edit').value = data.id_conductor;
 
-                // Busca el conductor correspondiente al ID seleccionado
-                for (var i = 0; i < conductores.length; i++) {
-                    if (conductores[i].id_conductor.toString() === idSeleccionado) {
-                        nombreConductor = conductores[i].nombre;
-                        break;
-                    }
-                }
-
-                // Llena el campo de nombre
-                document.getElementById('nombre_add').value = nombreConductor;
-            });
-
-            // Manejo del modal de edición
-            var editBusModal = document.getElementById('editBusModal');
-            editBusModal.addEventListener('show.bs.modal', function (event) {
-                var button = event.relatedTarget; // Botón que abrió el modal
-                var id_conductor = button.getAttribute('data-id'); // Extraer el ID del conductor
-
-                // Hacer una solicitud AJAX para obtener los datos del bus
-                fetch(/Admin_local/Get_busById?id=${id_conductor})
-                    .then(response => response.json())
-                    .then(data => {
-                        // Rellenar los campos del modal con los datos del bus
-                        document.getElementById('id_conductor_hidden').value = data.id_conductor;
-                        document.getElementById('placa_edit').value = data.placa;
-                        document.getElementById('id_conductor_edit').value = data.id_conductor;
-
-                        // Buscar el nombre del conductor para el campo correspondiente
-                        document.getElementById('nombre_edit').value = data.nombre;
-                    })
-                    .catch(error => console.error('Error al obtener los datos del bus:', error));
-            });
-
-            // Manejo del cambio en el select del modal de edición
-            document.getElementById('id_conductor_edit').addEventListener('change', function () {
-                var idSeleccionado = this.value;
-                var nombreConductor = '';
-
-                // Busca el conductor correspondiente al ID seleccionado
-                for (var i = 0; i < conductores.length; i++) {
-                    if (conductores[i].id_conductor.toString() === idSeleccionado) {
-                        nombreConductor = conductores[i].nombre;
-                        break;
-                    }
-                }
-
-                // Llena el campo de nombre
-                document.getElementById('nombre_edit').value = nombreConductor;
-            });
+                    // Buscar el nombre del conductor para el campo correspondiente
+                    document.getElementById('nombre_edit').value = data.nombre;
+                })
+                .catch(error => console.error('Error al obtener los datos del bus:', error))
         });
+
+        // Manejo del cambio en el select del modal de edición
+        document.getElementById('id_conductor_edit').addEventListener('change', function () {
+            var idSeleccionado = this.value;
+            var nombreConductor = '';
+
+            // Busca el conductor correspondiente al ID seleccionado
+            for (var i = 0; i < conductores.length; i++) {
+                if (conductores[i].id_conductor.toString() === idSeleccionado) {
+                    nombreConductor = conductores[i].nombre;
+                    break;
+                }
+            }
+
+            // Llena el campo de nombre
+            document.getElementById('nombre_edit').value = nombreConductor;
+        });
+
     </script>
 }
