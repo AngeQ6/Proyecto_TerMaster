@@ -19,5 +19,6 @@ namespace Capa_entidad
         public long telefono_admin_local { get; set; }
         public string correo_admin_local { get; set; }
         public string contraseña_admin_local { get; set; }
+        public int id_pueblo { get; set; }
     }
 }
