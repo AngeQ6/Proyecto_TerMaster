@@ -79,7 +79,7 @@ namespace TerMasterr.Controllers
         
 
         [HttpPost]
-        public async Task<ActionResult> Registrar_administrador_local(int id_admin_local, string nombre_admin_local, string apellido_admin_local, string correo_admin_local, long telefono_admin_local)
+        public async Task<ActionResult> Registrar_administrador_local(int id_admin_local, string nombre_admin_local, string apellido_admin_local, string correo_admin_local, long telefono_admin_local, int id_pueblo)
         {
             try
             {
@@ -104,7 +104,8 @@ namespace TerMasterr.Controllers
                     apellido_admin_local = apellido_admin_local,
                     correo_admin_local = correo_admin_local,
                     telefono_admin_local = telefono_admin_local,
-                    contraseña_admin_local = contraseñaGenerada
+                    contraseña_admin_local = contraseñaGenerada, 
+                    id_pueblo = id_pueblo
                 };
 
                 await coleccion_admi_local.InsertOneAsync(nuevo_admin_local);
@@ -122,6 +123,50 @@ namespace TerMasterr.Controllers
                 return RedirectToAction("Registrar_administrador_local", "Administrador_general");
             }
         }
+
+        [HttpPost]
+        public ActionResult Validar_cod_pueblo(string id_pueblo)
+        {
+            bool isValid = false;
+            try
+            {
+                // Convertir id_pueblo a entero si es necesario
+                if (!int.TryParse(id_pueblo, out int codigoInt))
+                {
+                    TempData["MensajeError_CodPueblo"] = "Código inválido";
+                    return RedirectToAction("Error", "Login");
+                }
+
+                // Obtener la colección desde MongoDB
+                var collection = _context.GetCollection<Pueblo>("Pueblo");
+
+                // Construir el filtro usando Builders<T>.Filter
+                var filtro = Builders<Pueblo>.Filter.Eq("id_pueblo", codigoInt);
+                var resultado = collection.Find(filtro).FirstOrDefault();
+
+                // Verificar si el documento existe
+                isValid = resultado != null;
+
+                if (isValid)
+                {
+                    TempData["Mensaje_exito"] = $"Código válido para el pueblo {resultado.nombre_pueblo}"; //Mensaje con el nombre del pueblo al que se le validó el código
+                    TempData["codigo_pueblo_validado"] = resultado.id_pueblo; // Guardar el código del pueblo validado en TempData
+                    return View("Validar_cod_conductor"); // Devolver a la vista para mostrar el mensaje
+                }
+                else
+                {
+                    TempData["MensajeError_CodPueblo"] = "Código inválido";
+                    return RedirectToAction("Validar_cod_conductor", "Login");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Manejar errores
+                TempData["MensajeError_CodPueblo"] = $"Error: {ex.Message}";
+                return RedirectToAction("Validar_cod_conductor", "Login");
+            }
+        }
+
 
         private string GenerarContraseña(int longitud = 12)
         {
