@@ -89,29 +89,7 @@ namespace TerMasterr.Controllers
             }
         }
 
-        //[HttpPost]
-        //public JsonResult Modificar_datos_conductor(Conductor updatedConductor)
-        //{
-        //    if (Session["id_conductor"] != null)
-        //    {
-        //        int id_conductor = (int)Session["id_conductor"];
-
-        //        var filter = Builders<Conductor>.Filter.Eq(c => c.id_conductor, id_conductor);
-        //        var update = Builders<Conductor>.Update
-        //                                        .Set(c => c.nombre, updatedConductor.nombre)
-        //                                        .Set(c => c.correo, updatedConductor.correo)
-        //                                        .Set(c => c.telefono, updatedConductor.telefono);
-
-        //        var result = _context.GetCollection<Conductor>("Conductor").UpdateOne(filter, update);
-
-        //        if (result.ModifiedCount > 0)
-        //        {
-        //            return Json(new { success = true });
-        //        }
-        //    }
-
-        //    return Json(new { success = false });
-        //}
+        
         [HttpPost]
         public ActionResult Modificar_datos_conductor(Conductor updatedConductor, HttpPostedFileBase imagenUrl)
         {
@@ -167,7 +145,6 @@ namespace TerMasterr.Controllers
         }
 
 
-        [HttpGet]
         public JsonResult RegistrarAsistencia(string qrContent)
         {
             // Verificar que el contenido del QR sea el correcto
@@ -198,7 +175,7 @@ namespace TerMasterr.Controllers
                 return Json(new { success = false, message = "Conductor no encontrado en la base de datos." }, JsonRequestBehavior.AllowGet);
             }
 
-            /*var placaBus = conductor.placa_bus_asignado; */ // Asegúrate de tener este campo en tu modelo Conductor
+            var placaBus = conductor.placa_bus_asignado; // Obtén la placa asignada
 
             // Obtener la zona horaria de Colombia
             TimeZoneInfo colombiaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
@@ -226,9 +203,9 @@ namespace TerMasterr.Controllers
                 var nuevaAsistencia = new Asistencia
                 {
                     IdAsistencia = nuevoIdAsistencia,
-                    FechaIngreso = fechaActualUTC,  // Usar la fecha ajustada a Colombia
+                    FechaIngreso = fechaActualUTC,
                     IdConductor = idConductor,
-                    //PlacaBus = placaBus
+                    placa_bus_asignado = placaBus // Agregar la placa del bus
                 };
 
                 asistenciasCollection.InsertOne(nuevaAsistencia);
@@ -238,12 +215,17 @@ namespace TerMasterr.Controllers
             else
             {
                 // Actualizar el registro existente con la fecha de salida
-                var update = Builders<Asistencia>.Update.Set(a => a.FechaSalida, fechaActualUTC);  // Usar la fecha ajustada a Colombia
+                var update = Builders<Asistencia>.Update
+                    .Set(a => a.FechaSalida, fechaActualUTC);
+
                 asistenciasCollection.UpdateOne(filtroAsistencia, update);
 
                 return Json(new { success = true, message = "Salida registrada correctamente", hora = fechaActualColombia.Hour, minuto = fechaActualColombia.Minute, esPM = fechaActualColombia.Hour >= 12 }, JsonRequestBehavior.AllowGet);
             }
         }
+
+
+
 
         //////////////////////////////////////////////////////////////////////////////////
         #endregion

@@ -82,7 +82,7 @@ namespace TerMasterr.Controllers
             {
                 try
                 {
-                    // Verificar si ya existe un bus con la misma placa
+                    // Verificar si ya existe un bus con la misma placa en la colección `Bus`
                     var busExistente = _context.GetCollection<Bus>("Bus")
                         .Find(b => b.placa == bus.placa)
                         .FirstOrDefault();
@@ -93,20 +93,30 @@ namespace TerMasterr.Controllers
                         return RedirectToAction("Bus");
                     }
 
-                    // Verificar si el conductor ya está asignado a otro bus
-                    var conductorAsignado = _context.GetCollection<Bus>("Bus")
-                        .Find(b => b.id_conductor == bus.id_conductor)
+                    // Agregar el bus a la colección `Bus`
+                    _context.GetCollection<Bus>("Bus").InsertOne(bus);
+
+                    // Obtener el conductor asociado al bus
+                    var conductorParaActualizar = _context.GetCollection<Conductor>("Conductor")
+                        .Find(c => c.id_conductor == bus.id_conductor)
                         .FirstOrDefault();
 
-                    if (conductorAsignado != null)
+                    if (conductorParaActualizar != null)
                     {
-                        TempData["ErrorMessage_RegBus"] = "El conductor ya está asignado a otro bus.";
+                        // Actualizar la placa del bus en el conductor
+                        conductorParaActualizar.placa_bus_asignado = bus.placa;
+
+                        // Actualizar el documento del conductor con la nueva placa del bus
+                        _context.GetCollection<Conductor>("Conductor").ReplaceOne(
+                            c => c.id_conductor == bus.id_conductor,
+                            conductorParaActualizar
+                        );
+
+                        TempData["SuccessMessage_RegBus"] = "Bus agregado exitosamente y placa registrada.";
                         return RedirectToAction("Bus");
                     }
 
-                    // Insertar el nuevo bus en la colección
-                    _context.GetCollection<Bus>("Bus").InsertOne(bus);
-                    TempData["SuccessMessage_RegBus"] = "Bus agregado exitosamente.";
+                    TempData["ErrorMessage_RegBus"] = "El conductor no fue encontrado.";
                     return RedirectToAction("Bus");
                 }
                 catch (Exception ex)
@@ -119,6 +129,8 @@ namespace TerMasterr.Controllers
             // Si el modelo no es válido, devolver la vista con el modelo actual
             return View(bus);
         }
+
+
         public ActionResult Eliminar_bus(int id)
         {
             try
@@ -145,24 +157,7 @@ namespace TerMasterr.Controllers
                 return RedirectToAction("Bus");
             }
         }
-        //[HttpGet]
-        //public ActionResult Get_busById(int id)
-        //{
-        //    var bus = _context.GetCollection<Bus>("Bus")
-        //                            .Find(c => c.id_conductor == id)
-        //                            .FirstOrDefault();
-        //    if (bus == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-
-        //    return Json(new
-        //    {
-        //        placa = bus.placa,
-        //        id_conductor = bus.id_conductor,
-        //        nombre = bus.nombre
-        //    }, JsonRequestBehavior.AllowGet);
-        //}
+        
         [HttpGet]
         public ActionResult Get_busByPlaca(string placa)
         {

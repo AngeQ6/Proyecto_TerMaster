@@ -21,6 +21,7 @@ namespace Capa_entidad
         public string contraseña { get; set; }
         public int código_pueblo { get; set; } // Código del pueblo en el que va a quedar registrado el conductor 
         public string ImagenUrl { get; set; }
-        public string Estado { get; set; } 
+        public string Estado { get; set; }
+        public string placa_bus_asignado { get; set; } 
     }
 }
