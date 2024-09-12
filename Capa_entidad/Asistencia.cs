@@ -22,6 +22,6 @@ namespace Capa_entidad
 
         public int IdConductor { get; set; } // Campo de la colección Conductor
 
-        public string placa_bus_asignado { get; set; }  // Campo de la colección Bus
+        public string PlacaBus { get; set; }  // Campo de la colección Bus
     }
 }

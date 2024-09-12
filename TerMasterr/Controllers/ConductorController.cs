@@ -205,9 +205,10 @@ namespace TerMasterr.Controllers
                     IdAsistencia = nuevoIdAsistencia,
                     FechaIngreso = fechaActualUTC,
                     IdConductor = idConductor,
-                    placa_bus_asignado = placaBus // Agregar la placa del bus
+                    PlacaBus = placaBus // Agregar la placa del bus
                 };
 
+                // Insertar la nueva asistencia en la colección
                 asistenciasCollection.InsertOne(nuevaAsistencia);
 
                 return Json(new { success = true, message = "Entrada registrada correctamente", hora = fechaActualColombia.Hour, minuto = fechaActualColombia.Minute, esPM = fechaActualColombia.Hour >= 12 }, JsonRequestBehavior.AllowGet);
@@ -223,8 +224,6 @@ namespace TerMasterr.Controllers
                 return Json(new { success = true, message = "Salida registrada correctamente", hora = fechaActualColombia.Hour, minuto = fechaActualColombia.Minute, esPM = fechaActualColombia.Hour >= 12 }, JsonRequestBehavior.AllowGet);
             }
         }
-
-
 
 
         //////////////////////////////////////////////////////////////////////////////////

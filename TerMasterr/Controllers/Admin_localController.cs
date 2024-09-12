@@ -131,6 +131,7 @@ namespace TerMasterr.Controllers
         }
 
 
+
         public ActionResult Eliminar_bus(int id)
         {
             try
