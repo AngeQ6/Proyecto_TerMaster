@@ -167,9 +167,8 @@ namespace TerMasterr.Controllers
         public ActionResult Get_busByPlaca(string placa)
         {
             var bus = _context.GetCollection<Bus>("Bus")
-                              .Find(b => b.placa == placa)
+                              .Find(c => c.placa == placa)
                               .FirstOrDefault();
-
             if (bus == null)
             {
                 return HttpNotFound();
@@ -182,6 +181,9 @@ namespace TerMasterr.Controllers
                 nombre = bus.nombre
             }, JsonRequestBehavior.AllowGet);
         }
+
+
+
 
 
 
@@ -214,26 +216,64 @@ namespace TerMasterr.Controllers
         //        return RedirectToAction("ErrorPage", new { message = ex.Message });
         //    }
         //}
+
+        //[HttpPost]
+        //public ActionResult Edit_bus(string oldPlaca, string placa, int id_conductor, string nombre)
+        //{
+        //    try
+        //    {
+        //        // Buscar el bus por la placa
+        //        var busExistente = _context.GetCollection<Bus>("Bus")
+        //                                   .Find(b => b.placa == oldPlaca)
+        //                                   .FirstOrDefault();
+
+        //        if (busExistente != null)
+        //        {
+        //            // Actualizar los campos del bus
+        //            var update = Builders<Bus>.Update
+        //                                      .Set(b => b.placa, placa)
+        //                                      .Set(b => b.id_conductor, id_conductor)
+        //                                      .Set(b => b.nombre, nombre);
+
+        //            _context.GetCollection<Bus>("Bus").UpdateOne(b => b.placa == oldPlaca, update);
+        //        }
+
+        //        return RedirectToAction("Bus", "Admin_local");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Manejar el error
+        //        return RedirectToAction("ErrorPage", new { message = ex.Message });
+        //    }
+        //}
+
         [HttpPost]
-        public ActionResult Edit_bus(Bus bus)
+        public ActionResult Edit_bus(string oldPlaca, string placa, int id_conductor, string nombre)
         {
             try
             {
-                var busExistente = _context.GetCollection<Bus>("Bus")
-                                           .Find(b => b.placa == bus.placa)  // Buscar el bus por su placa
-                                           .FirstOrDefault();
+                var busCollection = _context.GetCollection<Bus>("Bus");
 
-                if (busExistente != null)
+                // Buscar el bus por la placa antigua
+                var filter = Builders<Bus>.Filter.Eq(b => b.placa, oldPlaca);
+
+                // Crear el objeto de actualización
+                var update = Builders<Bus>.Update
+                    .Set(b => b.placa, placa)
+                    .Set(b => b.id_conductor, id_conductor)
+                    .Set(b => b.nombre, nombre);
+
+                // Realizar la actualización
+                var result = busCollection.UpdateOne(filter, update);
+
+                if (result.ModifiedCount == 0)
                 {
-                    // Actualizar los campos del bus, incluyendo placa e id del conductor
-                    var update = Builders<Bus>.Update
-                                              .Set(b => b.placa, bus.placa)
-                                              .Set(b => b.id_conductor, bus.id_conductor)
-                                              .Set(b => b.nombre, bus.nombre);  // Asegurarse de actualizar también el nombre
-
-                    _context.GetCollection<Bus>("Bus").UpdateOne(b => b.placa == bus.placa, update);
+                    // No se encontró el bus o no se realizaron cambios
+                    TempData["ErrorMessage_EditBus"] = "No se pudo actualizar el bus. Verifica que la placa sea correcta.";
+                    return RedirectToAction("Bus", "Admin_local");
                 }
 
+                TempData["SuccessMessage_EditBus"] = "Bus actualizado correctamente.";
                 return RedirectToAction("Bus", "Admin_local");
             }
             catch (Exception ex)
@@ -242,6 +282,9 @@ namespace TerMasterr.Controllers
                 return RedirectToAction("ErrorPage", new { message = ex.Message });
             }
         }
+
+
+
 
 
 
