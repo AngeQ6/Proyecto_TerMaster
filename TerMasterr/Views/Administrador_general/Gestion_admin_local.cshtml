@@ -6,3 +6,98 @@
 
 <h2>Gestion_admin_local</h2>
 
+@model IEnumerable<Capa_entidad.Admin_local>
+@{
+    ViewBag.Title = "Gestion_admin_local";
+    Layout = "~/Views/Shared/_Layout - admin_general.cshtml";
+}
+
+<h2>Gestion_admin_local</h2>
+
+<link href="~/Content/css/styles.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<div class="container">
+    <div class="row">
+        @if (Model != null && Model.Any())
+        {
+            foreach (var admin_local in Model)
+            {
+                <div class="col-md-5 col-lg-6 mb-3">
+                    <div class="card car-conductor">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h5 class="card-title">@admin_local.nombre_admin_local</h5>
+                                <p class="card-text"><strong>Número de Documento:</strong> @admin_local.id_admin_local</p>
+                                <p class="card-text"><strong>Teléfono:</strong> @admin_local.telefono_admin_local</p>
+                                <p class="card-text"><strong>Correo:</strong> @admin_local.correo_admin_local</p>
+                                <p class="card-text"><strong>Estado:</strong> @admin_local.estado</p>
+                                <div class="mt-3">
+                                    <a class="btn btn-info" id="editar" data-bs-toggle="modal" data-bs-target="#editar_conductor" data-id="@admin_local.id_admin_local">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    @*<a href="@Url.Action("EliminarConductor", "Admin_local", new { id = conductor.id_conductor })" class="btn btn-danger" onclick="return Eliminar_conductor(event, '@Url.Action("EliminarConductor", "Admin_local", new { id = conductor.id_conductor })')">
+                                            <i class="fa fa-trash"></i>
+                                        </a>*@
+                                </div>
+                            </div>
+                            <div class="ms-3 text-center conductor-img-container">
+                                <img src="@admin_local.ImagenUrl" alt="@admin_local.nombre_admin_local" class="img-fluid conductor-image" style="width: 150px; height: 150px; object-fit: cover;" data-bs-toggle="modal" data-bs-target="#imageModal">
+                                <!-- Botón para abrir el formulario de carga de imagen -->
+                                @*<a href="#" class="btn btn-cargar-foto mt-2 small-btn" data-bs-toggle="modal" data-bs-target="#modalCargarFoto" data-id="@conductor.id_conductor">
+                                        <span class="material-icons">add_circle</span>
+                                        <span>Cargar foto</span>
+                                    </a>*@
+                            </div>
+                        </div>
+                    </div>
+                </div> }
+        }
+        else
+        {
+            <div class="col">
+                <p>No hay conductores registrados.</p>
+            </div>}
+    </div>
+</div>
+
+<!-- Modal para editar estado de conductor -->
+<div class="modal fade" id="editar_conductor" tabindex="-1" aria-labelledby="editar_conductorLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editar_conductorLabel">Editar estado de conductor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form enctype="multipart/form-data" action="@Url.Action("EditarConductor", "Admin_local")" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="Number" class="form-label">Número de documento</label>
+                        <input type="text" class="form-control" id="id_conductor" name="id_conductor" required disabled>
+                    </div>
+                    <!-- Campo oculto para enviar el ID del conductor -->
+                    <input type="hidden" id="id_conductor_hidden" name="id_conductor">
+                    <div class="mb-3">
+                        <label for="Route" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" required disabled>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Capacity" class="form-label">Estado</label>
+                        <select class="form-control" id="Estado" name="Estado" required>
+                            <option value="Activo">Activo</option>
+                            <option value="No activo">No activo</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
