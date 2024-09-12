@@ -678,6 +678,7 @@
     <Content Include="Views\Admin_local\Editar_datos_personales.cshtml" />
     <Content Include="Views\Admin_local\Gestion_conductor.cshtml" />
     <Content Include="Views\Admin_local\Index.cshtml" />
+    <Content Include="Views\Administrador_general\Gestion_admin_local.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
