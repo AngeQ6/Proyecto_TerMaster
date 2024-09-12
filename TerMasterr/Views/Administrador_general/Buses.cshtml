@@ -72,7 +72,7 @@
 <div class="row">
     <div class="col-md-12 text-right mb-3">
         
-        <form method="get" action="@Url.Action("DescargarReportePDF", "TuControlador")" style="display: inline-block;">
+        <form method="get" action="@Url.Action("DescargarReportePDF", "Administrador_general")" style="display: inline-block;">
             <input type="hidden" name="fechaInicio" value="@Request.QueryString["fechaInicio"]" />
             <input type="hidden" name="fechaFin" value="@Request.QueryString["fechaFin"]" />
             <button type="submit" class="btn btn-danger">Descargar PDF</button>
