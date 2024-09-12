@@ -20,6 +20,28 @@
 </div>
 <br />
 
+
+<form method="get" action="@Url.Action("Buses", "Administrador_general")">
+    <div class="row">
+        <div class="col-md-4">
+            <label for="fechaInicio">Fecha de inicio</label>
+            <input type="date" class="form-control" name="fechaInicio" id="fechaInicio" max="@DateTime.Now.ToString("yyyy-MM-dd")"
+                   value="@Request.QueryString["fechaInicio"]" />
+        </div>
+        <div class="col-md-4">
+            <label for="fechaFin">Fecha de fin</label>
+            <input type="date" class="form-control" name="fechaFin" id="fechaFin" max="@DateTime.Now.ToString("yyyy-MM-dd")"
+                   value="@Request.QueryString["fechaFin"]" />
+        </div>
+        <div class="col-md-4">
+            <label>&nbsp;</label>
+            <button type="submit" class="btn btn-primary w-100 mt-2">Filtrar</button>
+        </div>
+    </div>
+</form>
+
+<br />
+
 <div class="row">
     @if (Model != null && Model.Any())
     {
@@ -29,7 +51,7 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-start">
                         <h5 class="card-title mb-0">Placa: @buses.PlacaBus</h5>
-                        
+
                     </div>
                     <div class="card-body">
                         <p><strong>ID del conductor:</strong> @buses.IdConductor</p>
@@ -43,3 +65,17 @@
     {
         <p>No hay buses disponibles.</p>}
 </div>
+
+
+@if (Model != null && Model.Any())
+{
+<div class="row">
+    <div class="col-md-12 text-right mb-3">
+        
+        <form method="get" action="@Url.Action("DescargarReportePDF", "TuControlador")" style="display: inline-block;">
+            <input type="hidden" name="fechaInicio" value="@Request.QueryString["fechaInicio"]" />
+            <input type="hidden" name="fechaFin" value="@Request.QueryString["fechaFin"]" />
+            <button type="submit" class="btn btn-danger">Descargar PDF</button>
+        </form>
+    </div>
+</div>}
