@@ -63,14 +63,21 @@ namespace TerMasterr.Controllers
             {
                 try
                 {
+                    // Convertir el ID a entero
+                    int idIngresado;
+                    if (!int.TryParse(id, out idIngresado))
+                    {
+                        ViewBag.Error = "El ID ingresado no es válido.";
+                        return View();
+                    }
+
                     // Buscar el usuario en la colección de conductores
                     var conductor = _context.GetCollection<Conductor>("Conductor")
-                        .Find(c => c.id_conductor.ToString() == id && c.contraseña == contraseña)
+                        .Find(c => c.id_conductor == idIngresado && c.contraseña == contraseña)
                         .FirstOrDefault();
 
                     if (conductor != null)
                     {
-
                         Session["id_conductor"] = conductor.id_conductor;
                         Session["nombre_usuario"] = conductor.nombre;
                         return RedirectToAction("Index", "Conductor");
@@ -78,27 +85,23 @@ namespace TerMasterr.Controllers
 
                     // Buscar el usuario en la colección de administradores generales
                     var adminGeneral = _context.GetCollection<AdminG>("AdminG")
-                        .Find(a => a.id_admin_general.ToString() == id && a.contraseña_admin_general == contraseña)
+                        .Find(a => a.id_admin_general == idIngresado && a.contraseña_admin_general == contraseña)
                         .FirstOrDefault();
 
                     if (adminGeneral != null)
                     {
-                       
-
-                        Session["id_adminG"] = adminGeneral.id_admin_general;
-                        Session["nombre_usuario"] = adminGeneral.nombre;
+                        Session["id_admin_general"] = adminGeneral.id_admin_general;
+                        Session["nombre_usuario"] = adminGeneral.nombre_admin_general;
                         return RedirectToAction("Index", "Administrador_general");
                     }
 
                     // Buscar el usuario en la colección de administradores locales
                     var adminLocal = _context.GetCollection<Admin_local>("Admin_local")
-                        
-                        .Find(a => a.id_admin_local.ToString() == id && a.contraseña_admin_local == contraseña)
+                        .Find(a => a.id_admin_local == idIngresado && a.contraseña_admin_local == contraseña)
                         .FirstOrDefault();
 
                     if (adminLocal != null)
                     {
-
                         Session["id_admin_local"] = adminLocal.id_admin_local;
                         Session["nombre_usuario"] = adminLocal.nombre_admin_local;
                         return RedirectToAction("Index", "Admin_local");
@@ -117,6 +120,7 @@ namespace TerMasterr.Controllers
             ViewBag.Error = "ModelState no es válido";
             return View();
         }
+
         public ActionResult Cerrar_sesion()
         {
             FormsAuthentication.SignOut(); // Cerrar sesión

@@ -4,5 +4,137 @@
     Layout = "~/Views/Shared/_Layout - admin_general.cshtml";
 }
 
-<h2>Editar_datos_personales</h2>
+<form enctype="multipart/form-data">
+    <div class="header_2">
+        <h2>Editar datos personales</h2>
+    </div>
+    <br />
+    <div class="form-group">
+        <label for="id_admin_general">ID</label>
+        <input type="text" class="form-control" id="id_admin_general" name="id_admin_general" value="@ViewBag.id_admin_general" readonly />
+    </div>
+    <br />
+    <div class="form-group">
+        <label for="nombre_admin_general">Nombre Completo</label>
+        <input type="text" class="form-control" id="nombre_admin_general" name="nombre_admin_general" placeholder="Nombre completo" value="@ViewBag.nombre_admin_general" required />
+    </div>
+    <br />
+    <div class="form-group">
+        <label for="correo_admin_general">Correo Electrónico</label>
+        <input type="email" class="form-control" id="correo_admin_general" name="correo_admin_general" placeholder="Correo electrónico" value="@ViewBag.correo_admin_general" required />
+    </div>
+    <br />
+    <div class="form-group">
+        <label for="telefono_admin_general">Teléfono</label>
+        <input type="tel" class="form-control" id="telefono_admin_general" name="telefono_admin_general" placeholder="Número de teléfono" value="@ViewBag.telefono_admin_general" required />
+    </div>
+    <br />
+    
+    <button type="submit" class="btn btn-primary btn-block">Modificar</button>
+</form>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<style>
+    body {
+        background-color: #f4f4f4; /* Color de fondo */
+        font-family: Arial, sans-serif; /* Fuente general */
+    }
+
+    .container {
+        max-width: 800px; /* Ancho máximo del contenedor */
+        margin: 50px auto; /* Centrado vertical y horizontal */
+        padding: 30px; /* Espaciado interno */
+        border-radius: 10px; /* Bordes redondeados */
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Sombra */
+    }
+
+    .header_2 {
+        background: -webkit-linear-gradient(315deg, #4723D9 0%, #00D2Df 100%);
+        padding: 10px;
+        border-radius: 10px 10px 0 0;
+    }
+
+    h2 {
+        color: #ffffff;
+    }
+
+    .btn-primary {
+        background-color: #6f42c1; /* Color del botón */
+        border: none; /* Sin borde */
+    }
+
+        .btn-primary:hover {
+            background-color: #5a32a1; /* Color del botón al pasar el mouse */
+        }
+</style>
+
+@section scripts{
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+
+$(document).ready(function () {
+    $.ajax({
+        url: "@Url.Action("Obtener_datos_admin_general", "Administrador_general")",
+        type: 'GET',
+        success: function (data) {
+            console.log("Datos recibidos:", data);
+            if (data && data.success) {
+                $('#id_admin_general').val(data.id_admin_general);
+                $('#nombre_admin_general').val(data.nombre_admin_general);
+                $('#correo_admin_general').val(data.correo_admin_general);
+                $('#telefono_admin_general').val(data.telefono_admin_general);
+            } else {
+                alert("No se recibieron datos o el Administrador no fue encontrado.");
+            }
+        },
+
+        error: function (xhr, status, error) {
+            console.error("Error en la solicitud AJAX:", status, error); // Imprime el error en la consola
+            alert("Error en la solicitud AJAX: " + error);
+        }
+    });
+});
+
+ // Enviar datos del formulario
+            $('form').submit(function (e) {
+                e.preventDefault(); // Evita el envío del formulario tradicional
+
+                var formData = new FormData(this); // Crear un objeto FormData con los datos del formulario
+
+                $.ajax({
+                    url: '@Url.Action("Modificar_datos_admin_general", "Administrador_general")',
+                    type: 'POST',
+                    data: formData,
+                    processData: false, // No procesar los datos, FormData lo hace por nosotros
+                    contentType: false, // No establecer el tipo de contenido, FormData lo gestiona
+                    success: function (response) {
+                        if (response && response.success) {
+                            Swal.fire({
+                                icon: "success",
+                                title: "Actualización exitosa"
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error al actualizar los datos"
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error en la solicitud AJAX",
+                            text: error
+                        });
+                    }
+                });
+            });
+
+
+    </script>
+}
 

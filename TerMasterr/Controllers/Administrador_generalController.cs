@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Capa_entidad;
 using ConexionMongoDB;
+using CrystalDecisions.CrystalReports.Engine;
+using CrystalDecisions.Shared;
+using DinkToPdf;
 using MongoDB.Driver;
 using QRCoder;
 
@@ -54,7 +59,9 @@ namespace TerMasterr.Controllers
         }
         public ActionResult Buses()
         {
-            return View();
+            var buses = _context.GetCollection<Asistencia>("Asistencia").Find(b => true).ToList();
+
+            return View(buses);
         }
         public ActionResult Editar_datos_personales()
         {
@@ -125,47 +132,29 @@ namespace TerMasterr.Controllers
         }
 
         [HttpPost]
-        public ActionResult Validar_cod_pueblo(string id_pueblo)
+        public async Task<JsonResult> Validar_id_pueblo(int id_pueblo)
         {
-            bool isValid = false;
             try
             {
-                // Convertir id_pueblo a entero si es necesario
-                if (!int.TryParse(id_pueblo, out int codigoInt))
+                var conexion = new Conexion();
+                var coleccionPueblo = conexion.GetCollection<Pueblo>("Pueblo");
+                var puebloExistente = await coleccionPueblo.Find(p => p.id_pueblo == id_pueblo).FirstOrDefaultAsync();
+
+                if (puebloExistente != null)
                 {
-                    TempData["MensajeError_CodPueblo"] = "Código inválido";
-                    return RedirectToAction("Error", "Login");
-                }
-
-                // Obtener la colección desde MongoDB
-                var collection = _context.GetCollection<Pueblo>("Pueblo");
-
-                // Construir el filtro usando Builders<T>.Filter
-                var filtro = Builders<Pueblo>.Filter.Eq("id_pueblo", codigoInt);
-                var resultado = collection.Find(filtro).FirstOrDefault();
-
-                // Verificar si el documento existe
-                isValid = resultado != null;
-
-                if (isValid)
-                {
-                    TempData["Mensaje_exito"] = $"Código válido para el pueblo {resultado.nombre_pueblo}"; //Mensaje con el nombre del pueblo al que se le validó el código
-                    TempData["codigo_pueblo_validado"] = resultado.id_pueblo; // Guardar el código del pueblo validado en TempData
-                    return View("Validar_cod_conductor"); // Devolver a la vista para mostrar el mensaje
+                    return Json(new { existe = true });
                 }
                 else
                 {
-                    TempData["MensajeError_CodPueblo"] = "Código inválido";
-                    return RedirectToAction("Validar_cod_conductor", "Login");
+                    return Json(new { existe = false });
                 }
             }
             catch (Exception ex)
             {
-                // Manejar errores
-                TempData["MensajeError_CodPueblo"] = $"Error: {ex.Message}";
-                return RedirectToAction("Validar_cod_conductor", "Login");
+                return Json(new { existe = false, error = ex.Message });
             }
         }
+
 
 
         private string GenerarContraseña(int longitud = 12)
@@ -294,6 +283,135 @@ namespace TerMasterr.Controllers
             }
             TempData["SuccessMessage_EditPueblo"] = "Actualizacion exitosa.";
             return RedirectToAction("Pueblos");
+        }
+
+        [HttpGet]
+        public JsonResult Obtener_datos_admin_general()
+        {
+            try
+            {
+                // Supongamos que obtienes el ID del conductor desde la sesión
+                int idadmingeneral = (int)Session["id_admin_general"]; // Asegúrate de que este ID esté correctamente almacenado en la sesión
+
+                // Crear una instancia de la clase Conexion
+                Conexion conexion = new Conexion();
+
+                // Obtener la colección de conductores
+                var coleccionAdmingeneral = conexion.GetCollection<AdminG>("AdminG");
+
+                // Buscar el conductor por ID
+                var admingeneral = coleccionAdmingeneral.Find(c => c.id_admin_general == idadmingeneral).FirstOrDefault();
+
+                if (admingeneral == null)
+                {
+                    return Json(new { success = false, message = "Administrador general no encontrado" }, JsonRequestBehavior.AllowGet);
+                }
+
+                // Devolver los datos del conductor como JSON
+                return Json(new
+                {
+                    success = true,
+                    id_admin_general = admingeneral.id_admin_general,
+                    nombre_admin_general = admingeneral.nombre_admin_general,
+                    correo_admin_general = admingeneral.correo_admin_general,
+                    telefono_admin_general = admingeneral.telefono_admin_general
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                // Manejar excepciones y devolver un mensaje de error
+                return Json(new { success = false, message = "Error al obtener los datos del Administrador general: " + ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult Modificar_datos_admin_general(AdminG updatedConductor)
+        {
+            if (Session["id_admin_general"] != null)
+            {
+                int id_admingeneral = (int)Session["id_admin_general"];
+
+                // Crear el filtro para buscar por el campo id_admin_general
+                var filter = Builders<AdminG>.Filter.Eq(c => c.id_admin_general, id_admingeneral);
+
+                // Crear la actualización sin modificar el campo _id
+                var update = Builders<AdminG>.Update
+                                             .Set(c => c.nombre_admin_general, updatedConductor.nombre_admin_general)
+                                             .Set(c => c.correo_admin_general, updatedConductor.correo_admin_general)
+                                             .Set(c => c.telefono_admin_general, updatedConductor.telefono_admin_general);
+
+                var result = _context.GetCollection<AdminG>("AdminG").UpdateOne(filter, update);
+
+                if (result.ModifiedCount > 0)
+                {
+                    return Json(new { success = true });
+                }
+            }
+
+            return Json(new { success = false });
+        }
+
+        public ActionResult Generar_reporte_ingreso()
+        {
+            // Obtener las asistencias desde MongoDB  
+            var asistencias = _context.GetCollection<Asistencia>("Asistencia").Find(a => true).ToList();
+
+            // Verificar si los datos se están obteniendo  
+            if (asistencias == null || !asistencias.Any())
+            {
+                TempData["Error"] = "No se encontraron datos de asistencia.";
+                return RedirectToAction("Error");
+            }
+
+            // Añadir un log para comprobar si se están obteniendo datos
+            Console.WriteLine($"Cantidad de asistencias obtenidas: {asistencias.Count}");
+
+            // Este lugar es donde llamas al método para renderizar la vista Razor como un string HTML  
+            var html = RenderRazorViewToString("Reportes", asistencias);
+
+            // Configurar DinkToPdf para generar el PDF  
+            var converter = new SynchronizedConverter(new PdfTools());
+            var doc = new HtmlToPdfDocument()
+            {
+                GlobalSettings = {
+            ColorMode = ColorMode.Color,
+            Orientation = Orientation.Portrait,
+            PaperSize = PaperKind.A4,
+        },
+                Objects = {
+            new ObjectSettings() {
+                PagesCount = true,
+                HtmlContent = html,
+                WebSettings = { DefaultEncoding = "utf-8" }
+            }
+        }
+            };
+
+            // Convertir a PDF  
+            var pdf = converter.Convert(doc);
+
+            // Retornar el archivo PDF  
+            return File(pdf, "application/pdf", "ReporteAsistencia.pdf");
+        }
+
+        // Método para renderizar la vista Razor como string
+        private string RenderRazorViewToString(string viewName, object model)
+        {
+            ViewData.Model = model;
+
+            using (var sw = new StringWriter())
+            {
+                var viewResult = ViewEngines.Engines.FindPartialView(ControllerContext, viewName);
+
+                if (viewResult.View == null)
+                {
+                    throw new ArgumentNullException($"No se encontró la vista: {viewName}");
+                }
+
+                var viewContext = new ViewContext(ControllerContext, viewResult.View, ViewData, TempData, sw);
+                viewResult.View.Render(viewContext, sw);
+                return sw.GetStringBuilder().ToString();
+            }
         }
 
         #endregion

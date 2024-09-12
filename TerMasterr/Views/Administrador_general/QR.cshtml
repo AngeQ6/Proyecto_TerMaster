@@ -4,5 +4,7 @@
     Layout = "~/Views/Shared/_Layout - admin_general.cshtml";
 }
 
-<h2>QR</h2>
-<img src="@Url.Action("Generar_QR", "Administrador_general")" alt="Código QR para Asistencia" />
+<div>
+    <h2>QR</h2>
+    <img class="img-fluid d-block mx-auto" src="@Url.Action("Generar_QR", "Administrador_general")" alt="Código QR para Asistencia" />
+</div>

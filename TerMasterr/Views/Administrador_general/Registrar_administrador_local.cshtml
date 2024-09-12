@@ -40,10 +40,11 @@
         <label for="telefono_admin_local">Teléfono</label>
         <input type="tel" class="form-control" id="telefono_admin_local" name="telefono_admin_local" placeholder="Ingrese el número de teléfono" required />
     </div>
-    
+    <br />
     <div class="form-group">
-        <label for="id_pueblo">Teléfono</label>
-        <input type="tel" class="form-control" id="id_pueblo" name="id_pueblo" placeholder="Ingrese el codigo de su pueblo" required />
+        <label for="id_pueblo">Ingrese el código del pueblo</label>
+        <input type="tel" class="form-control" id="id_pueblo" name="id_pueblo" placeholder="Ingrese el código de su pueblo" required />
+        <small id="pueblo-feedback" class="form-text"></small> <!-- Espacio para mostrar el feedback -->
     </div>
     <br />
 
@@ -113,5 +114,65 @@
         .btn-primary:hover {
             background-color: #5a32a1; /* Color del botón al pasar el mouse */
         }
+
+    .is-valid {
+        border-color: #28a745; /* Verde para indicar éxito */
+    }
+
+    .is-invalid {
+        border-color: #dc3545; /* Rojo para indicar error */
+    }
+
+    .text-success {
+        color: #28a745; /* Texto verde para éxito */
+    }
+
+    .text-danger {
+        color: #dc3545; /* Texto rojo para error */
+    }
+
+
 </style>
+
+
+
+<script>
+    $(document).ready(function () {
+        $('#id_pueblo').on('input', function () {
+            var idPueblo = $(this).val();
+            var feedbackElement = $('#pueblo-feedback');
+
+            if (idPueblo) {
+                $.ajax({
+                    url: '@Url.Action("Validar_id_pueblo", "Administrador_general")',
+                    type: 'POST',
+                    data: { id_pueblo: idPueblo },
+                    success: function (response) {
+                        if (response.existe) {
+                            // Si el pueblo existe, color verde
+                            $('#id_pueblo').removeClass('is-invalid').addClass('is-valid');
+                            feedbackElement.removeClass('text-danger').addClass('text-success');
+                            feedbackElement.text('El código del pueblo es válido.');
+                        } else {
+                            // Si no existe, color rojo
+                            $('#id_pueblo').removeClass('is-valid').addClass('is-invalid');
+                            feedbackElement.removeClass('text-success').addClass('text-danger');
+                            feedbackElement.text('El código del pueblo no existe.');
+                        }
+                    },
+                    error: function () {
+                        $('#id_pueblo').removeClass('is-valid').addClass('is-invalid');
+                        feedbackElement.removeClass('text-success').addClass('text-danger');
+                        feedbackElement.text('Error al validar el código del pueblo.');
+                    }
+                });
+            } else {
+                // Si el campo está vacío, resetear los estilos
+                $('#id_pueblo').removeClass('is-valid is-invalid');
+                feedbackElement.text('');
+            }
+        });
+    });
+</script>
+
 
