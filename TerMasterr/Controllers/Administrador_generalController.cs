@@ -74,6 +74,10 @@ namespace TerMasterr.Controllers
         {
             return View();
         }
+        public ActionResult Gestion_admin_local()
+        {
+            return View();
+        }
         //////////////////////////////////////////////////////////////////////////////////////
         #endregion
 
