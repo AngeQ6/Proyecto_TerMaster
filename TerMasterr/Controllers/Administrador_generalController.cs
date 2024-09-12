@@ -11,6 +11,7 @@ using ConexionMongoDB;
 using CrystalDecisions.CrystalReports.Engine;
 using CrystalDecisions.Shared;
 using DinkToPdf;
+using iTextSharp.text.pdf;
 using MongoDB.Driver;
 using QRCoder;
 
@@ -57,9 +58,18 @@ namespace TerMasterr.Controllers
         {
             return View();
         }
-        public ActionResult Buses()
+        public ActionResult Buses(DateTime? fechaInicio, DateTime? fechaFin)
         {
-            var buses = _context.GetCollection<Asistencia>("Asistencia").Find(b => true).ToList();
+            var collection = _context.GetCollection<Asistencia>("Asistencia");
+
+            var filtro = collection.Find(b => true);
+
+            if (fechaInicio.HasValue && fechaFin.HasValue)
+            {
+                filtro = collection.Find(b => b.FechaIngreso >= fechaInicio.Value && b.FechaIngreso <= fechaFin.Value);
+            }
+
+            var buses = filtro.ToList();
 
             return View(buses);
         }
@@ -351,66 +361,157 @@ namespace TerMasterr.Controllers
             return Json(new { success = false });
         }
 
-        public ActionResult Generar_reporte_ingreso()
-        {
-            // Obtener las asistencias desde MongoDB  
-            var asistencias = _context.GetCollection<Asistencia>("Asistencia").Find(a => true).ToList();
+        //public ActionResult Generar_reporte_ingreso()
+        //{
+        //    // Obtener las asistencias desde MongoDB  
+        //    var asistencias = _context.GetCollection<Asistencia>("Asistencia").Find(a => true).ToList();
 
-            // Verificar si los datos se están obteniendo  
-            if (asistencias == null || !asistencias.Any())
+        //    // Verificar si los datos se están obteniendo  
+        //    if (asistencias == null || !asistencias.Any())
+        //    {
+        //        TempData["Error"] = "No se encontraron datos de asistencia.";
+        //        return RedirectToAction("Error");
+        //    }
+
+        //    // Añadir un log para comprobar si se están obteniendo datos
+        //    Console.WriteLine($"Cantidad de asistencias obtenidas: {asistencias.Count}");
+
+        //    // Este lugar es donde llamas al método para renderizar la vista Razor como un string HTML  
+        //    var html = RenderRazorViewToString("Reportes", asistencias);
+
+        //    // Configurar DinkToPdf para generar el PDF  
+        //    var converter = new SynchronizedConverter(new PdfTools());
+        //    var doc = new HtmlToPdfDocument()
+        //    {
+        //        GlobalSettings = {
+        //    ColorMode = ColorMode.Color,
+        //    Orientation = Orientation.Portrait,
+        //    PaperSize = PaperKind.A4,
+        //},
+        //        Objects = {
+        //    new ObjectSettings() {
+        //        PagesCount = true,
+        //        HtmlContent = html,
+        //        WebSettings = { DefaultEncoding = "utf-8" }
+        //    }
+        //}
+        //    };
+
+        //    // Convertir a PDF  
+        //    var pdf = converter.Convert(doc);
+
+        //    // Retornar el archivo PDF  
+        //    return File(pdf, "application/pdf", "ReporteAsistencia.pdf");
+        //}
+
+        //// Método para renderizar la vista Razor como string
+        //private string RenderRazorViewToString(string viewName, object model)
+        //{
+        //    ViewData.Model = model;
+
+        //    using (var sw = new StringWriter())
+        //    {
+        //        var viewResult = ViewEngines.Engines.FindPartialView(ControllerContext, viewName);
+
+        //        if (viewResult.View == null)
+        //        {
+        //            throw new ArgumentNullException($"No se encontró la vista: {viewName}");
+        //        }
+
+        //        var viewContext = new ViewContext(ControllerContext, viewResult.View, ViewData, TempData, sw);
+        //        viewResult.View.Render(viewContext, sw);
+
+        //        // Añadir un log para comprobar el contenido HTML que se está generando
+        //        var htmlContent = sw.GetStringBuilder().ToString();
+        //        Console.WriteLine(htmlContent);
+
+        //        return htmlContent;
+        //    }
+        //}
+
+        public ActionResult DescargarReporte(DateTime? fechaInicio, DateTime? fechaFin)
+        {
+            var collection = _context.GetCollection<Asistencia>("Asistencia");
+
+            var filtro = collection.Find(b => true);
+
+            if (fechaInicio.HasValue && fechaFin.HasValue)
             {
-                TempData["Error"] = "No se encontraron datos de asistencia.";
-                return RedirectToAction("Error");
+                filtro = collection.Find(b => b.FechaIngreso >= fechaInicio.Value && b.FechaIngreso <= fechaFin.Value);
             }
 
-            // Añadir un log para comprobar si se están obteniendo datos
-            Console.WriteLine($"Cantidad de asistencias obtenidas: {asistencias.Count}");
+            var buses = filtro.ToList();
 
-            // Este lugar es donde llamas al método para renderizar la vista Razor como un string HTML  
-            var html = RenderRazorViewToString("Reportes", asistencias);
-
-            // Configurar DinkToPdf para generar el PDF  
-            var converter = new SynchronizedConverter(new PdfTools());
-            var doc = new HtmlToPdfDocument()
+            using (var workbook = new ClosedXML.Excel.XLWorkbook())
             {
-                GlobalSettings = {
-            ColorMode = ColorMode.Color,
-            Orientation = Orientation.Portrait,
-            PaperSize = PaperKind.A4,
-        },
-                Objects = {
-            new ObjectSettings() {
-                PagesCount = true,
-                HtmlContent = html,
-                WebSettings = { DefaultEncoding = "utf-8" }
-            }
-        }
-            };
+                var worksheet = workbook.Worksheets.Add("Reporte de Buses");
+                worksheet.Cell(1, 1).Value = "Placa";
+                worksheet.Cell(1, 2).Value = "ID del Conductor";
+                worksheet.Cell(1, 3).Value = "Fecha de Ingreso";
+                worksheet.Cell(1, 4).Value = "Fecha de Salida";
 
-            // Convertir a PDF  
-            var pdf = converter.Convert(doc);
-
-            // Retornar el archivo PDF  
-            return File(pdf, "application/pdf", "ReporteAsistencia.pdf");
-        }
-
-        // Método para renderizar la vista Razor como string
-        private string RenderRazorViewToString(string viewName, object model)
-        {
-            ViewData.Model = model;
-
-            using (var sw = new StringWriter())
-            {
-                var viewResult = ViewEngines.Engines.FindPartialView(ControllerContext, viewName);
-
-                if (viewResult.View == null)
+                for (int i = 0; i < buses.Count; i++)
                 {
-                    throw new ArgumentNullException($"No se encontró la vista: {viewName}");
+                    worksheet.Cell(i + 2, 1).Value = buses[i].PlacaBus;
+                    worksheet.Cell(i + 2, 2).Value = buses[i].IdConductor;
+                    worksheet.Cell(i + 2, 3).Value = buses[i].FechaIngreso.ToString("yyyy-MM-dd");
+                    worksheet.Cell(i + 2, 4).Value = buses[i].FechaSalida?.ToString("yyyy-MM-dd") ?? "N/A";
                 }
 
-                var viewContext = new ViewContext(ControllerContext, viewResult.View, ViewData, TempData, sw);
-                viewResult.View.Render(viewContext, sw);
-                return sw.GetStringBuilder().ToString();
+                using (var stream = new System.IO.MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+                    return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "ReporteBuses.xlsx");
+                }
+            }
+        }
+
+        public ActionResult DescargarReportePDF(DateTime? fechaInicio, DateTime? fechaFin)
+        {
+            var collection = _context.GetCollection<Asistencia>("Asistencia");
+
+            var filtro = collection.Find(b => true);
+
+            if (fechaInicio.HasValue && fechaFin.HasValue)
+            {
+                filtro = collection.Find(b => b.FechaIngreso >= fechaInicio.Value && b.FechaIngreso <= fechaFin.Value);
+            }
+
+            var buses = filtro.ToList();
+
+            using (System.IO.MemoryStream stream = new System.IO.MemoryStream())
+            {
+                // Crear un documento PDF
+                var pdfDoc = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4, 25, 25, 30, 30);
+                PdfWriter.GetInstance(pdfDoc, stream);
+                pdfDoc.Open();
+
+                // Añadir título al PDF
+                pdfDoc.Add(new iTextSharp.text.Paragraph("Reporte de Buses"));
+                pdfDoc.Add(new iTextSharp.text.Paragraph(" ")); // Espacio en blanco
+
+                // Crear una tabla
+                PdfPTable table = new PdfPTable(4); // 4 columnas
+                table.AddCell("Placa");
+                table.AddCell("ID del Conductor");
+                table.AddCell("Fecha de Ingreso");
+                table.AddCell("Fecha de Salida");
+
+                // Rellenar la tabla con los datos de los buses
+                foreach (var bus in buses)
+                {
+                    table.AddCell(bus.PlacaBus);
+                    table.AddCell(bus.IdConductor.ToString());
+                    table.AddCell(bus.FechaIngreso.ToString("yyyy-MM-dd"));
+                    table.AddCell(bus.FechaSalida?.ToString("yyyy-MM-dd") ?? "N/A");
+                }
+
+                pdfDoc.Add(table);
+                pdfDoc.Close();
+
+                var content = stream.ToArray();
+                return File(content, "application/pdf", "ReporteBuses.pdf");
             }
         }
 
