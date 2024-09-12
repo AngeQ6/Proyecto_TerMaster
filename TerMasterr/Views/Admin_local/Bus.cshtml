@@ -187,36 +187,62 @@
             </div>
             <form action="@Url.Action("Edit_bus", "Admin_local")" method="post">
                 <div class="modal-body">
-                    <!-- Campo oculto para la placa -->
-                    @*<input type="hidden" id="placa_hidden" name="placa">*@
+                    
+                    <!-- Campo oculto para almacenar la placa antigua -->
+                    <input type="hidden" id="old_placa_edit" name="oldPlaca" value="placa">
 
+                    <!-- Campo para editar la placa -->
                     <div class="mb-3">
                         <label for="placa_edit" class="form-label">Placa del bus</label>
                         <input type="text" class="form-control" id="placa_edit" name="placa" required>
                     </div>
+
+                    <!-- Campo para asignar conductor -->
                     <div class="mb-3">
                         <label for="id_conductor_edit" class="form-label">Asignar conductor</label>
                         <select class="form-control" id="id_conductor_edit" name="id_conductor" required>
                             <option value="">Selecciona un conductor</option>
                             @foreach (var conductor in ViewBag.Conductores)
                             {
-                                <option value="@conductor.id_conductor">@conductor.id_conductor</option>
-                            }
+                <option value="@conductor.id_conductor">@conductor.id_conductor</option>}
                         </select>
                     </div>
+
+                    <!-- Campo para editar nombre del conductor -->
                     <div class="mb-3">
                         <label for="nombre_edit" class="form-label">Nombre del conductor</label>
-                        <input type="text" class="form-control" id="nombre_edit" name="nombre" required disabled>
+                        <input type="text" class="form-control" id="nombre_edit" name="nombre" required readonly>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                 </div>
+                @if (TempData["SuccessMessage_EditBus"] != null) { 
+                    <script>
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Éxito!',
+                            text: '@Html.Raw(TempData["SuccessMessage_EditBus"])'
+                        });
+                    </script>
+                }
+                @if (TempData["ErrorMessage_EditBus"] != null) { 
+                    <script>
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Éxito!',
+                            text: '@Html.Raw(TempData["ErrorMessage_EditBus"])'
+                        });
+                    </script>
+                }
             </form>
         </div>
     </div>
 </div>
+
+
+
 
 
 
@@ -310,23 +336,21 @@
             // Manejo del modal de edición
             $('#editBusModal').on('show.bs.modal', function (event) {
                 var button = $(event.relatedTarget); // Botón que activó el modal
-                var placa = button.data('placa'); // Obtener la placa del bus desde el botón
+                var placa = button.data('placa'); // Obtener la placa del bus
 
-                // Hacer la solicitud AJAX para obtener los datos del bus
+                // Hacer la solicitud AJAX para obtener los datos del bus por su placa
                 $.getJSON(`/Admin_local/Get_busByPlaca?placa=${placa}`, function (data) {
                     // Rellenar los campos del modal con los datos del bus
-                    $('#placa_hidden').val(data.placa); // Asignar la placa al campo oculto
-                    $('#placa_edit').val(data.placa); // Asignar la placa al campo de texto
-                    $('#id_conductor_edit').val(data.id_conductor); // Asignar el conductor
-
-                    // Asignar el nombre del conductor correspondiente
-                    $('#nombre_edit').val(data.nombre);
+                    $('#old_placa_edit').val(data.placa); // Placa anterior, oculta
+                    $('#placa_edit').val(data.placa); // Placa actual
+                    $('#id_conductor_edit').val(data.id_conductor); // Id del nuevo conductor
+                    $('#nombre_edit').val(data.nombre); // Nombre del nuevo conductor
                 }).fail(function () {
                     console.error('Error al obtener los datos del bus.');
                 });
             });
 
-            // Manejo del cambio en el select del modal de edición
+            // Actualizar el nombre del conductor cuando se cambie el ID en el select
             document.getElementById('id_conductor_edit').addEventListener('change', function () {
                 var idSeleccionado = this.value;
                 var nombreConductor = '';
@@ -343,8 +367,8 @@
                 document.getElementById('nombre_edit').value = nombreConductor;
             });
         });
-
     </script>
 }
+
 
 
