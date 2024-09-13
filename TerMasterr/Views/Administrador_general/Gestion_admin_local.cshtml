@@ -3,7 +3,17 @@
     ViewBag.Title = "Gestion_admin_local";
     Layout = "~/Views/Shared/_Layout - admin_general.cshtml";
 }
-<h2>Gestionar administradores locales</h2>
+<style>
+    .header_2 {
+        background: -webkit-linear-gradient(315deg, #4723D9 0%, #00D2Df 100%);
+        padding: 10px;
+        border-radius: 10px 10px 0 0;
+    }
+</style>
+
+<div class="header_2">
+    <h2 style="color: white">Gestionar Aministradores locales</h2>
+</div>
 
 <link href="~/Content/css/styles.css" rel="stylesheet" />
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -16,91 +26,91 @@
         Nuevo administrador
     </a>
 </div>
-        <div class="row">
-            @if (Model != null && Model.Any())
-            {
-                foreach (var admin_local in Model)
-                {
-                    <div class="col-md-5 col-lg-6 mb-3">
-                        <div class="card car-conductor">
-                            <div class="card-body d-flex align-items-center">
-                                <div class="flex-grow-1">
-                                    <h5 class="card-title">@admin_local.nombre_admin_local</h5>
-                                    <p class="card-text"><strong>Número de Documento:</strong> @admin_local.id_admin_local</p>
-                                    <p class="card-text"><strong>Teléfono:</strong> @admin_local.telefono_admin_local</p>
-                                    <p class="card-text"><strong>Correo:</strong> @admin_local.correo_admin_local</p>
-                                    <p class="card-text"><strong>Estado:</strong> @admin_local.estado</p>
-                                    <div class="mt-3">
-                                        @*<a class="btn btn-info" id="editar" data-bs-toggle="modal" data-bs-target="#editar_adminL" data-id="@admin_local.id_admin_local">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>*@
-                                        @*<a href="@Url.Action("EliminarConductor", "Admin_local", new { id = conductor.id_conductor })" class="btn btn-danger" onclick="return Eliminar_conductor(event, '@Url.Action("EliminarConductor", "Admin_local", new { id = conductor.id_conductor })')">
-                                                <i class="fa fa-trash"></i>
-                                            </a>*@
-                                    </div>
-                                </div>
-                                <div class="ms-3 text-center conductor-img-container">
-                                    <img src="@admin_local.ImagenUrl" alt="@admin_local.nombre_admin_local" class="img-fluid conductor-image" style="width: 150px; height: 150px; object-fit: cover;" data-bs-toggle="modal" data-bs-target="#imageModal">
-                                    <!-- Botón para abrir el formulario de carga de imagen -->
-                                    @*<a href="#" class="btn btn-cargar-foto mt-2 small-btn" data-bs-toggle="modal" data-bs-target="#modalCargarFoto" data-id="@conductor.id_conductor">
-                                            <span class="material-icons">add_circle</span>
-                                            <span>Cargar foto</span>
-                                        </a>*@
-                                </div>
+<div class="row">
+    @if (Model != null && Model.Any())
+    {
+        foreach (var admin_local in Model)
+        {
+            <div class="col-md-5 col-lg-6 mb-3">
+                <div class="card car-conductor">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h5 class="card-title">@admin_local.nombre_admin_local</h5>
+                            <p class="card-text"><strong>Número de Documento:</strong> @admin_local.id_admin_local</p>
+                            <p class="card-text"><strong>Teléfono:</strong> @admin_local.telefono_admin_local</p>
+                            <p class="card-text"><strong>Correo:</strong> @admin_local.correo_admin_local</p>
+                            <p class="card-text"><strong>Estado:</strong> @admin_local.estado</p>
+                            <div class="mt-3">
+                                @*<a class="btn btn-info" id="editar" data-bs-toggle="modal" data-bs-target="#editar_adminL" data-id="@admin_local.id_admin_local">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>*@
+                                @*<a href="@Url.Action("EliminarConductor", "Admin_local", new { id = conductor.id_conductor })" class="btn btn-danger" onclick="return Eliminar_conductor(event, '@Url.Action("EliminarConductor", "Admin_local", new { id = conductor.id_conductor })')">
+                                        <i class="fa fa-trash"></i>
+                                    </a>*@
                             </div>
                         </div>
-                    </div> }
-            }
-            else
-            {
-                <div class="col">
-                    <p>No hay administradores locales registrados.</p>
+                        <div class="ms-3 text-center conductor-img-container">
+                            <img src="@admin_local.ImagenUrl" alt="@admin_local.nombre_admin_local" class="img-fluid conductor-image" style="width: 150px; height: 150px; object-fit: cover;" data-bs-toggle="modal" data-bs-target="#imageModal">
+                            <!-- Botón para abrir el formulario de carga de imagen -->
+                            @*<a href="#" class="btn btn-cargar-foto mt-2 small-btn" data-bs-toggle="modal" data-bs-target="#modalCargarFoto" data-id="@conductor.id_conductor">
+                                    <span class="material-icons">add_circle</span>
+                                    <span>Cargar foto</span>
+                                </a>*@
+                        </div>
+                    </div>
                 </div>
-            }
+            </div> }
+    }
+    else
+    {
+        <div class="col">
+            <p>No hay administradores locales registrados.</p>
         </div>
+    }
+</div>
 
-    <!-- Modal para editar estado de conductor -->
-    <div class="modal fade" id="editar_adminL" tabindex="-1" aria-labelledby="editar_adminLLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editar_adminLLabel">Editar estado de conductor</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form enctype="multipart/form-data" action="@Url.Action("Editar_admin_local", "Administrador_general")" method="post">
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="Number" class="form-label">Número de documento</label>
-                            <input type="text" class="form-control" id="id_admin_local" name="id_admin_local" required disabled>
-                        </div>
-                        <!-- Campo oculto para enviar el ID del conductor -->
-                        <input type="hidden" id="id_admin_local_hidden" name="id_admin_local_hidden">
-                        <div class="mb-3">
-                            <label for="Route" class="form-label">Nombre</label>
-                            <input type="text" class="form-control" id="nombre_admin_local" name="nombre_admin_local" required disabled>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="Capacity" class="form-label">Estado</label>
-                            <select class="form-control" id="estado" name="estado" required>
-                                <option value="Activo">Activo</option>
-                                <option value="No activo">No activo</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Guardar</button>
-                    </div>
-                </form>
+<!-- Modal para editar estado de conductor -->
+<div class="modal fade" id="editar_adminL" tabindex="-1" aria-labelledby="editar_adminLLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editar_adminLLabel">Editar estado de conductor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            <form enctype="multipart/form-data" action="@Url.Action("Editar_admin_local", "Administrador_general")" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="Number" class="form-label">Número de documento</label>
+                        <input type="text" class="form-control" id="id_admin_local" name="id_admin_local" required disabled>
+                    </div>
+                    <!-- Campo oculto para enviar el ID del conductor -->
+                    <input type="hidden" id="id_admin_local_hidden" name="id_admin_local_hidden">
+                    <div class="mb-3">
+                        <label for="Route" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="nombre_admin_local" name="nombre_admin_local" required disabled>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Capacity" class="form-label">Estado</label>
+                        <select class="form-control" id="estado" name="estado" required>
+                            <option value="Activo">Activo</option>
+                            <option value="No activo">No activo</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 
-    @section Scripts {
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
-        <script>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <script>
         /////////////////// Función para abrir el modal de imagen en tamaño completo /////////////////////
         document.querySelectorAll('.conductor-image').forEach(image => {
             image.addEventListener('click', function () {
@@ -131,108 +141,108 @@
             });
         });
 
-        </script>
+    </script>
+}
+
+<style>
+    /* Google Poppins Font CDN Link */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
     }
 
-    <style>
-        /* Google Poppins Font CDN Link */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    /* Variables */
+    :root {
+        --primary-font-family: 'Poppins', sans-serif;
+        --light-white: #f5f8fa;
+        --gray: #5e6278;
+        --gray-1: #e3e3e3;
+        --primary-color: #FA6C17;
+    }
 
-        /* Variables */
-        :root {
-            --primary-font-family: 'Poppins', sans-serif;
-            --light-white: #f5f8fa;
-            --gray: #5e6278;
-            --gray-1: #e3e3e3;
-            --primary-color: #FA6C17;
-        }
+    body {
+        font-family: var(--primary-font-family);
+    }
 
-        body {
-            font-family: var(--primary-font-family);
-        }
+    /* Main CSS */
+    .wrapper {
+        padding: 20px;
+        background-color: var(--light-white);
+        min-height: 100vh;
+    }
 
-        /* Main CSS */
-        .wrapper {
-            padding: 20px;
-            background-color: var(--light-white);
-            min-height: 100vh;
-        }
+    .car-conductor {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        margin: 0; /* Asegúrate de que no haya margen */
+    }
 
-        .car-conductor {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            margin: 0; /* Asegúrate de que no haya margen */
-        }
-
-        .card-body {
-            /*padding: 10px;*/ /* Ajusta el padding según sea necesario */
-            /*align-items: center;
+    .card-body {
+        /*padding: 10px;*/ /* Ajusta el padding según sea necesario */
+        /*align-items: center;
         width: 100%;*/ /* Ocupar todo el ancho posible */
-            /*max-width: 100px;*/ /* Puedes ajustar este valor para limitar el ancho máximo */
-            padding: 15px; /* Ajusta el padding según sea necesario */
-            margin: 0; /* Asegúrate de que no haya margen adicional */
+        /*max-width: 100px;*/ /* Puedes ajustar este valor para limitar el ancho máximo */
+        padding: 15px; /* Ajusta el padding según sea necesario */
+        margin: 0; /* Asegúrate de que no haya margen adicional */
+    }
+
+    .car-conductor .card-body {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .conductor-img-container {
+        width: 100px; /*Ancho fijo para el contenedor de la imagen y el botón*/
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: 0; /* Asegúrate de que no haya margen adicional */
+    }
+
+        .conductor-img-container img {
+            margin-bottom: 10px;
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
         }
 
-        .car-conductor .card-body {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
+    .btn {
+        margin: 0 5px;
+        padding: 5px 10px;
+    }
+
+    .btn-cargar-foto {
+        background-color: seagreen;
+        padding: 4px 6px; /* Ajusta el tamaño del botón */
+        color: #fff;
+        font-weight: bold;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-decoration: none;
+        transition: all 0.3s ease-in-out;
+        text-align: center;
+        font-size: 14px; /* Ajusta el tamaño del texto */
+        margin-top: 10px; /* Ajusta el espacio entre la imagen y el botón */
+        width: 130px; /* Ajusta el ancho del botón */
+        margin-left: 0; /* Asegúrate de que el botón no esté pegado al borde */
+    }
+
+        .btn-cargar-foto .material-icons {
+            vertical-align: middle;
+            font-size: 18px; /* Ajusta el tamaño del icono */
         }
 
-        .conductor-img-container {
-            width: 100px; /*Ancho fijo para el contenedor de la imagen y el botón*/
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin: 0; /* Asegúrate de que no haya margen adicional */
+        .btn-cargar-foto span {
+            vertical-align: middle;
+            margin-left: 5px; /* Ajusta el espacio entre el icono y el texto */
         }
 
-            .conductor-img-container img {
-                margin-bottom: 10px;
-                width: 80px;
-                height: 80px;
-                object-fit: cover;
-            }
-
-        .btn {
-            margin: 0 5px;
-            padding: 5px 10px;
-        }
-
-        .btn-cargar-foto {
+        .btn-cargar-foto:hover {
             background-color: seagreen;
-            padding: 4px 6px; /* Ajusta el tamaño del botón */
-            color: #fff;
-            font-weight: bold;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            text-decoration: none;
-            transition: all 0.3s ease-in-out;
-            text-align: center;
-            font-size: 14px; /* Ajusta el tamaño del texto */
-            margin-top: 10px; /* Ajusta el espacio entre la imagen y el botón */
-            width: 130px; /* Ajusta el ancho del botón */
-            margin-left: 0; /* Asegúrate de que el botón no esté pegado al borde */
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
         }
-
-            .btn-cargar-foto .material-icons {
-                vertical-align: middle;
-                font-size: 18px; /* Ajusta el tamaño del icono */
-            }
-
-            .btn-cargar-foto span {
-                vertical-align: middle;
-                margin-left: 5px; /* Ajusta el espacio entre el icono y el texto */
-            }
-
-            .btn-cargar-foto:hover {
-                background-color: seagreen;
-                box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-            }
-    </style>
+</style>
