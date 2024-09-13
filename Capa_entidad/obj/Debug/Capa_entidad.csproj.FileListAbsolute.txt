@@ -177,3 +177,4 @@ C:\Users\USER\Source\Repos\TerMaster\Capa_entidad\obj\Debug\Capa_entidad.csproj.
 C:\Users\USER\Source\Repos\TerMaster\Capa_entidad\obj\Debug\Capa_entidad.dll
 C:\Users\USER\Source\Repos\TerMaster\Capa_entidad\obj\Debug\Capa_entidad.pdb
 C:\Users\DELL\source\repos\Proyecto_TerMaster\Capa_entidad\obj\Debug\Capa_entidad.csproj.AssemblyReference.cache
+C:\Users\USER\Source\Repos\Proyecto_TerMaster\Capa_entidad\obj\Debug\Capa_entidad.csproj.AssemblyReference.cache

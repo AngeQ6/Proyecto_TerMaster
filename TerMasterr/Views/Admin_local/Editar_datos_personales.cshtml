@@ -34,6 +34,11 @@
         <input type="tel" class="form-control" id="telefono" name="telefono" placeholder="Número de teléfono" value="@ViewBag.telefono" required />
     </div>
     <br />
+    <div class="form-group">
+        <label for="contraseña">Contraseña</label>
+        <input type="text" class="form-control" id="contraseña_admin_local" name="contraseña_admin_local" placeholder="Contraseña" value="@ViewBag.contraseña_admin_local" required />
+    </div>
+    <br />
 
     <button type="submit" class="btn btn-primary btn-block">Modificar</button>
 </form>
@@ -93,6 +98,7 @@
                         $('#apellido').val(data.apellido_admin_local);
                         $('#correo').val(data.correo_admin_local);
                         $('#telefono').val(data.telefono_admin_local);
+                        $('#contraseña_admin_local').val(data.contraseña_admin_local);
                     } else {
                         Swal.fire({
                             icon: 'error',
@@ -119,6 +125,7 @@
                 nombre_admin_local: $('#nombre').val(),
                 apellido_admin_local: $('#apellido').val(),
                 correo_admin_local: $('#correo').val(),
+                contraseña_admin_local: $('#contraseña_admin_local').val(),
                 telefono_admin_local: $('#telefono').val()
             };
 

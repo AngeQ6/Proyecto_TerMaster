@@ -307,10 +307,6 @@ namespace TerMasterr.Controllers
 
 
 
-
-
-
-
         //[HttpPost]
         //public ActionResult Edit_bus(Bus bus)
         //{
@@ -507,6 +503,7 @@ namespace TerMasterr.Controllers
                     nombre_admin_local = admin_local.nombre_admin_local,
                     apellido_admin_local = admin_local.apellido_admin_local,
                     correo_admin_local = admin_local.correo_admin_local,
+                    contraseña_admin_local = admin_local.contraseña_admin_local,
                     telefono_admin_local = admin_local.telefono_admin_local
                 }, JsonRequestBehavior.AllowGet);
             }
@@ -538,6 +535,7 @@ namespace TerMasterr.Controllers
                                                   .Set(c => c.nombre_admin_local, updatedAdminLocal.nombre_admin_local)
                                                   .Set(c => c.apellido_admin_local, updatedAdminLocal.apellido_admin_local)
                                                   .Set(c => c.correo_admin_local, updatedAdminLocal.correo_admin_local)
+                                                  .Set(c => c.contraseña_admin_local, updatedAdminLocal.contraseña_admin_local)
                                                   .Set(c => c.telefono_admin_local, updatedAdminLocal.telefono_admin_local);
 
                 // Ejecutar la actualización
