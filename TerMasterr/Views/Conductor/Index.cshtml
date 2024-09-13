@@ -6,6 +6,7 @@
 
 <h2>Escanear Código QR para Registrar Asistencia</h2>
 
+<!-- Contenedor del botón con representación SVG del código QR -->
 <div class="button-container">
     <button id="scanQrButton" class="qr-scanner-button">
         <div class="qr-scanner-image">
@@ -34,19 +35,23 @@
     </button>
 </div>
 
+<!-- Contenedor de pantalla completa para el escáner QR -->
 <div id="full-screen-container" style="display: none;">
-        <video id="qr-video" playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>
-        <canvas id="qr-canvas" style="display: none;"></canvas>
-        <div id="overlay">
-            <div class="scan-frame"></div>
-        </div>
-        <button id="close-scanner" class="close-button">&times;</button>
-    </div>
 
-    @section Scripts {
-        <script src="https://unpkg.com/jsqr/dist/jsQR.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script>
+    <video id="qr-video" playsinline style="width: 100%; height: 100%; object-fit: cover;"></video> <!-- Elemento de video para la alimentación de la cámara -->
+    <canvas id="qr-canvas" style="display: none;"></canvas> <!-- Elemento canvas para procesar los cuadros de video -->
+    <!-- Superposición con marco de escaneo -->
+    <div id="overlay">
+        <div class="scan-frame"></div>
+    </div>
+    <button id="close-scanner" class="close-button">&times;</button> <!-- Botón para cerrar el escáner -->
+</div>
+
+@section Scripts {
+    <!-- Incluir bibliotecas de alerta y JsQR para el escaneo del QR -->
+    <script src="https://unpkg.com/jsqr/dist/jsQR.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
             $(document).ready(function () {
                 // Animación de la línea de escaneo
                 var scanLine = document.getElementById('scanLine');
@@ -65,7 +70,9 @@
 
                 animateScanLine();
 
+                // Manejar el clic en el botón del escáner QR
                 $('#scanQrButton').click(function () {
+                    // Inicializar elementos del escáner
                     const fullScreenContainer = document.getElementById('full-screen-container');
                     const video = document.getElementById('qr-video');
                     const canvasElement = document.getElementById('qr-canvas');
@@ -73,9 +80,11 @@
                     const overlay = document.getElementById('overlay');
                     const scanFrame = document.querySelector('.scan-frame');
 
+                    // Mostrar el contenedor de pantalla completa y solicitar el modo de pantalla completa
                     fullScreenContainer.style.display = 'flex';
                     fullScreenContainer.requestFullscreen();
 
+                    // Solicitar acceso a la cámara
                     navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }).then(function (stream) {
                         video.srcObject = stream;
                         video.play();
@@ -91,25 +100,31 @@
                         });
                     });
 
+                    // Función principal de escaneo
                     function tick() {
                         if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                            // Configurar el canvas para coincidir con el tamaño del video
                             canvasElement.height = video.videoHeight;
                             canvasElement.width = video.videoWidth;
                             canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
                             const imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
+                            // Intentar decodificar el código QR
                             const code = jsQR(imageData.data, imageData.width, imageData.height, {
                                 inversionAttempts: "dontInvert",
                             });
                             if (code) {
+                                // Verificar si el código QR está dentro del marco de escaneo
                                 const codeLocation = code.location;
                                 const scanFrameBounds = scanFrame.getBoundingClientRect();
                                 const videoBounds = video.getBoundingClientRect();
 
+                                 // Calcular las coordenadas del marco de escaneo en relación con el video
                                 const frameTop = (scanFrameBounds.top - videoBounds.top) * (canvasElement.height / videoBounds.height);
                                 const frameLeft = (scanFrameBounds.left - videoBounds.left) * (canvasElement.width / videoBounds.width);
                                 const frameBottom = (scanFrameBounds.bottom - videoBounds.top) * (canvasElement.height / videoBounds.height);
                                 const frameRight = (scanFrameBounds.right - videoBounds.left) * (canvasElement.width / videoBounds.width);
 
+                                // Si el código QR está dentro del marco, procesar el resultado
                                 if (
                                     codeLocation.topLeftCorner.x >= frameLeft &&
                                     codeLocation.topLeftCorner.y >= frameTop &&
@@ -124,6 +139,7 @@
                         requestAnimationFrame(tick);
                     }
 
+                    // Función para detener el escaneo
                     function stopScan() {
                         const stream = video.srcObject;
                         const tracks = stream.getTracks();
@@ -137,6 +153,7 @@
                         fullScreenContainer.style.display = 'none';
                     }
 
+                    // Función para registrar la asistencia
                     function registrarAsistencia(qrContent) {
                         $.ajax({
                             url: '@Url.Action("RegistrarAsistencia", "Conductor")', // Actualiza el controlador a "Conductor"
@@ -144,17 +161,21 @@
                             data: { qrContent: qrContent },
                             success: function (response) {
                                 if (response.success) {
+                                    // Formatear la hora para mostrar 
                                     let hora = response.hora % 12 || 12; // Convierte a formato 12 horas
                                     let minuto = response.minuto.toString().padStart(2, '0');
                                     let ampm = response.esPM ? 'p.m.' : 'a.m.';
                                     let horaFormateada = `${hora}:${minuto} ${ampm}`;
                                     let mensaje = `${response.message} a las ${horaFormateada}`;
+
+                                    // Mostrar mensaje de éxito
                                     Swal.fire({
                                         icon: 'success',
                                         title: '¡Éxito!',
                                         text: mensaje
                                     });
                                 } else {
+                                    // Mostrar mensaje de error
                                     Swal.fire({
                                         icon: 'error',
                                         title: 'Error',
@@ -162,6 +183,7 @@
                                     });
                                 }
                             },
+                            // Mostrar mensaje de error en caso de fallo en la solicitud AJAX
                             error: function () {
                                 Swal.fire({
                                     icon: 'error',
@@ -172,10 +194,13 @@
                         });
                     }
                 });
+
+                // Manejar el clic en el botón de cerrar el escáner
                 $('#close-scanner').click(function () {
                     const fullScreenContainer = document.getElementById('full-screen-container');
                     const video = document.getElementById('qr-video');
 
+                    // Detener la transmisión de video si existe
                     if (video.srcObject) {
                         const tracks = video.srcObject.getTracks();
                         tracks.forEach(function (track) {
@@ -183,135 +208,139 @@
                         });
                     }
 
+                    // Limpiar el origen del video, salir del modo de pantalla completa y ocultar el contenedor
                     video.srcObject = null;
                     document.exitFullscreen();
                     fullScreenContainer.style.display = 'none';
                 });
             });
-        </script>
+    </script>
+}
+
+<style>
+    #full-screen-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: black;
+        z-index: 1000;
+        display: none;
+        justify-content: center;
+        align-items: center;
     }
 
-    <style>
-        #full-screen-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: black;
-            z-index: 1000;
-            display: none;
-            justify-content: center;
-            align-items: center;
+    #overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+    }
+
+    .scan-frame {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 280px;
+        height: 280px;
+        border: 4px solid #00ff00;
+        box-sizing: border-box;
+        animation: scan-anim 2s infinite;
+    }
+
+    .scan-text {
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 18px;
+        text-align: center;
+        width: 90%;
+    }
+
+    @@keyframes scan-anim {
+        0% {
+            border-color: #4723d9;
         }
 
-        #overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
+        50% {
+            border-color: #00d2df;
         }
 
-        .scan-frame {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 280px;
-            height: 280px;
-            border: 4px solid #00ff00;
-            box-sizing: border-box;
-            animation: scan-anim 2s infinite;
+        100% {
+            border-color: #4723d9;
         }
+    }
 
-        .scan-text {
-            position: absolute;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            font-size: 18px;
-            text-align: center;
-            width: 90%;
-        }
+    .scan-text {
+        margin-top: 20px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 20px;
+        font-size: 18px;
+        text-align: center;
+    }
 
-        @@keyframes scan-anim {
-            0% {
-                border-color: #4723d9;
-            }
+    .close-button {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 30px;
+        cursor: pointer;
+    }
 
-            50% {
-                border-color: #00d2df;
-            }
+    /* Nuevos estilos para centrar y ajustar el tamaño del botón */
+    .button-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px; /* Ajusta según sea necesario */
+    }
 
-            100% {
-                border-color: #4723d9;
-            }
-        }
-        .scan-text {
-            margin-top: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 18px;
-            text-align: center;
-        }
-        .close-button {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 30px;
-            cursor: pointer;
-        }
+    .qr-scanner-button {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem;
+        background-color: white;
+        color: black;
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        cursor: pointer;
+        transition: background-color 0.2s;
+        /* Ajusta el tamaño del botón aquí */
+        width: 180px; /* Ajustar el ancho */
+        height: auto; /* Altura automática basada en el contenido */
+    }
 
-        /* Nuevos estilos para centrar y ajustar el tamaño del botón */
-        .button-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 20px; /* Ajusta según sea necesario */
-        }
-
-        .qr-scanner-button {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 1rem;
-            background-color: white;
-            color: black;
-            border: 1px solid #d1d5db;
-            border-radius: 0.5rem;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            cursor: pointer;
-            transition: background-color 0.2s;
-            /* Ajusta el tamaño del botón aquí */
-            width: 180px; /* Ajustar el ancho */
-            height: auto; /* Altura automática basada en el contenido */
-        }
         .qr-scanner-button:hover {
             background-color: #f3f4f6;
-            }
-
-        .qr-scanner-image {
-            width: 100%; /* Ocupa todo el ancho del botón */
-            height: auto; /* Mantiene la proporción */
-            margin-bottom: 0.5rem;
         }
 
-        .qr-scanner-button span {
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-    </style>
+    .qr-scanner-image {
+        width: 100%; /* Ocupa todo el ancho del botón */
+        height: auto; /* Mantiene la proporción */
+        margin-bottom: 0.5rem;
+    }
+
+    .qr-scanner-button span {
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+</style>
 
 
 

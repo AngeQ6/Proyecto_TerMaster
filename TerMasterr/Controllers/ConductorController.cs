@@ -148,7 +148,7 @@ namespace TerMasterr.Controllers
         public JsonResult RegistrarAsistencia(string qrContent)
         {
             // Verificar que el contenido del QR sea el correcto
-            if (qrContent != "https://192.168.1.3:45455/Conductor/RegistrarAsistencia")
+            if (qrContent != "https://192.168.1.4:45455/Conductor/RegistrarAsistencia")
             {
                 return Json(new { success = false, message = "QR incorrecto. Asegúrese de escanear el código correcto." }, JsonRequestBehavior.AllowGet);
             }

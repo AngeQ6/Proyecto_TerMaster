@@ -92,7 +92,7 @@ namespace TerMasterr.Controllers
                     {
                         Session["id_admin_general"] = adminGeneral.id_admin_general;
                         Session["nombre_usuario"] = adminGeneral.nombre_admin_general;
-                        return RedirectToAction("Index", "Administrador_general");
+                        return RedirectToAction("Gestion_admin_local", "Administrador_general");
                     }
 
                     // Buscar el usuario en la colección de administradores locales
@@ -105,7 +105,7 @@ namespace TerMasterr.Controllers
                         Session["id_admin_local"] = adminLocal.id_admin_local;
                         Session["nombre_usuario"] = adminLocal.nombre_admin_local;
                         Session["PuebloId"] = adminLocal.id_pueblo; // Guarda el PuebloId del administrador local
-                        return RedirectToAction("Index", "Admin_local");
+                        return RedirectToAction("Gestion_conductor", "Admin_local");
                     }
 
                     ViewBag.Error = "Número de identificación o contraseña incorrecta";

@@ -54,6 +54,7 @@
 
 
     <button type="submit" class="btn btn-primary btn-block">Registrar</button>
+    <a href="@Url.Action("Gestion_admin_local", "Admin_local")" class="btn btn-secondary submit_btn w-40 my-4">Atrás</a>
 
     @if (TempData["SuccessMessage"] != null)
     {
@@ -63,7 +64,7 @@
                 title: '¡Éxito!',
                 text: '@Html.Raw(TempData["SuccessMessage"])'
             }).then(function () {
-                window.location = '@Url.Action("Registrar_administrador_local", "Administrador_general")';
+                window.location = '@Url.Action("Gestión_admin_local", "Administrador_general")';
             });
         </script>
     }
