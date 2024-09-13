@@ -39,15 +39,30 @@ namespace TerMasterr.Controllers
         }
         public ActionResult Bus()
         {
-            var buses = _context.GetCollection<Bus>("Bus").Find(c => true).ToList();
-            var conductores = _context.GetCollection<Conductor>("Conductor").Find(c => true).ToList();
+            // Obtén el ID del pueblo desde la sesión
+            var idPuebloStr = Session["PuebloId"]?.ToString();
 
-            ViewBag.Conductores = conductores; // Enviamos la lista de conductores a la vista
-            return View(buses); // Enviamos la lista de buses a la vista
+            if (string.IsNullOrEmpty(idPuebloStr) || !int.TryParse(idPuebloStr, out int idPueblo))
+            {
+                return RedirectToAction("Login", "Login"); // Redirige si no hay ID de pueblo en la sesión o es inválido
+            }
+
+            // Filtrar conductores asociados al pueblo
+            var conductoresEnPueblo = _context.GetCollection<Conductor>("Conductor")
+                .Find(c => c.código_pueblo == idPueblo)
+                .ToList();
+
+            // Filtrar buses asociados a los conductores filtrados
+            var idsConductoresEnPueblo = conductoresEnPueblo.Select(c => c.id_conductor).ToList();
+            var busesFiltrados = _context.GetCollection<Bus>("Bus")
+                .Find(b => idsConductoresEnPueblo.Contains(b.id_conductor))
+                .ToList();
+
+            ViewBag.Conductores = conductoresEnPueblo; // Enviamos la lista de conductores a la vista
+            return View(busesFiltrados); // Enviamos la lista de buses a la vista
         }
 
-        
-        
+
         public ActionResult Asignar_horarios()
 
         {
@@ -56,8 +71,38 @@ namespace TerMasterr.Controllers
         }
         public ActionResult Gestion_conductor()
         {
-            var conductor = _context.GetCollection<Conductor>("Conductor").Find(c => true).ToList();
-            return View(conductor);
+            try
+            {
+                // Verificar que el usuario esté autenticado
+                if (Session["PuebloId"] == null)
+                {
+                    return RedirectToAction("Login", "Login");
+                }
+
+                // Obtener el ID del pueblo del administrador local
+                int puebloId = (int)Session["PuebloId"];
+
+                // Buscar los conductores que pertenecen al pueblo del administrador local
+                var conductores = _context.GetCollection<Conductor>("Conductor")
+                                          .Find(c => c.código_pueblo == puebloId)
+                                          .ToList();
+
+                return View(conductores);
+            }
+            catch (FormatException ex)
+            {
+                // Log the exception details
+                TempData["ErrorMessage"] = "Error al deserializar los datos: " + ex.Message;
+                // Redirect or handle as necessary
+                return RedirectToAction("Error");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details
+                TempData["ErrorMessage"] = "Error inesperado: " + ex.Message;
+                // Redirect or handle as necessary
+                return RedirectToAction("Error");
+            }
         }
 
         public ActionResult Editar_datos_personales()

@@ -84,17 +84,24 @@ namespace TerMasterr.Controllers
         /////////////////////////// METODOS /////////////////////////////////////////////
 
         #region
-        public ActionResult Generar_QR()
+        public ActionResult Generar_QR(bool download = false)
         {
             string qrContent = "https://192.168.1.3:45455/Conductor/RegistrarAsistencia";
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
             QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrContent, QRCodeGenerator.ECCLevel.Q);
             BitmapByteQRCode qrCode = new BitmapByteQRCode(qrCodeData);
             byte[] qrCodeImage = qrCode.GetGraphic(15);
+
+            if (download)
+            {
+                return File(qrCodeImage, "image/png", "qr_code.png");
+            }
+
             return File(qrCodeImage, "image/png");
         }
 
-        
+
+
 
         [HttpPost]
         public async Task<ActionResult> Registrar_administrador_local(int id_admin_local, string nombre_admin_local, string apellido_admin_local, string correo_admin_local, long telefono_admin_local, int id_pueblo)
@@ -168,9 +175,9 @@ namespace TerMasterr.Controllers
 
 
 
-        private string GenerarContraseña(int longitud = 12)
+        private string GenerarContraseña(int longitud = 6)
         {
-            const string caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+            const string caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             var random = new Random();
             return new string(Enumerable.Repeat(caracteres, longitud)
                                         .Select(s => s[random.Next(s.Length)]).ToArray());
@@ -399,8 +406,8 @@ namespace TerMasterr.Controllers
                 {
                     table.AddCell(bus.PlacaBus);
                     table.AddCell(bus.IdConductor.ToString());
-                    table.AddCell(bus.FechaIngreso.ToString("yyyy-MM-dd,mm-hh-ss"));
-                    table.AddCell(bus.FechaSalida?.ToString("yyyy-MM-dd,mm-hh-ss") ?? "N/A");
+                    table.AddCell(bus.FechaIngreso.ToString("yyyy-MM-dd hh:mm:ss"));
+                    table.AddCell(bus.FechaSalida?.ToString("yyyy-MM-dd hh:mm:ss") ?? "N/A");
                 }
 
                 pdfDoc.Add(table);

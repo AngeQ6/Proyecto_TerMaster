@@ -20,7 +20,7 @@ namespace Capa_entidad
         public string correo_admin_local { get; set; }
         public string contraseña_admin_local { get; set; }
         public int id_pueblo { get; set; }
-        public int estado { get; set; }
+        public string estado { get; set; }
         public int ImagenUrl { get; set; }
     }
 }
