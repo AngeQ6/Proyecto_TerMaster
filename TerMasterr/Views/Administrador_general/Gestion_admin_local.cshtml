@@ -3,14 +3,13 @@
     ViewBag.Title = "Gestion_admin_local";
     Layout = "~/Views/Shared/_Layout - admin_general.cshtml";
 }
-<h2>Gestionar administradores locales</h2>
+
 
 <link href="~/Content/css/styles.css" rel="stylesheet" />
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
 <br />
 <div class="d-flex justify-content-between align-items-center mb-4">
     <a class="btn btn-primary" href="@Url.Action("Registrar_administrador_local", "Admin_local")">
@@ -57,7 +56,8 @@
             {
                 <div class="col">
                     <p>No hay administradores locales registrados.</p>
-                </div>}
+                </div>
+            }
         </div>
     </div>
 

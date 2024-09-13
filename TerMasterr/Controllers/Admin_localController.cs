@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using Capa_entidad;
 using ConexionMongoDB;
+using iTextSharp.text.pdf;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -112,8 +113,56 @@ namespace TerMasterr.Controllers
 
         public ActionResult Reportes()
         {
-            return View();
+            // Obtén el ID del pueblo desde la sesión
+            var idPuebloStr = Session["PuebloId"]?.ToString();
+
+            if (string.IsNullOrEmpty(idPuebloStr) || !int.TryParse(idPuebloStr, out int idPueblo))
+            {
+                return RedirectToAction("Login", "Login"); // Redirige si no hay ID de pueblo en la sesión o es inválido
+            }
+
+            // Filtrar conductores asociados al pueblo
+            var conductoresEnPueblo = _context.GetCollection<Conductor>("Conductor")
+                .Find(c => c.código_pueblo == idPueblo)
+                .ToList();
+
+            // Filtrar buses asociados a los conductores filtrados
+            var idsConductoresEnPueblo = conductoresEnPueblo.Select(c => c.id_conductor).ToList();
+            var busesFiltrados = _context.GetCollection<Bus>("Bus")
+                .Find(b => idsConductoresEnPueblo.Contains(b.id_conductor))
+                .ToList();
+
+            // Filtrar registros de asistencia asociados a los buses filtrados
+            var idsBusesFiltrados = busesFiltrados.Select(b => b.placa).ToList();
+            var asistenciasFiltradas = _context.GetCollection<Asistencia>("Asistencia")
+                .Find(a => idsBusesFiltrados.Contains(a.PlacaBus))
+                .ToList();
+
+            // Enviar datos a la vista
+            ViewBag.Conductores = conductoresEnPueblo; // Lista de conductores
+            ViewBag.Buses = busesFiltrados; // Lista de buses
+            return View(asistenciasFiltradas); // Lista de asistencias
+
         }
+
+        public ActionResult Buses(DateTime? fechaInicio, DateTime? fechaFin)
+        {
+            var idPuebloStr = Session["PuebloId"]?.ToString();
+
+            var collection = _context.GetCollection<Asistencia>("Asistencia");
+
+            var filtro = collection.Find(b => true);
+
+            if (fechaInicio.HasValue && fechaFin.HasValue)
+            {
+                filtro = collection.Find(b => b.FechaIngreso >= fechaInicio.Value && b.FechaIngreso <= fechaFin.Value);
+            }
+
+            var buses = filtro.ToList();
+
+            return View(buses);
+        }
+
         ////////////////////////////////////////////////////////////////////////////
         #endregion
 
@@ -366,10 +415,6 @@ namespace TerMasterr.Controllers
         }
 
 
-
-
-
-
         [HttpGet]
         public ActionResult Get_ConductorById(int id)
         { 
@@ -520,6 +565,54 @@ namespace TerMasterr.Controllers
             {
                 // Manejar excepciones y devolver un mensaje de error
                 return Json(new { success = false, message = "Error al modificar los datos: " + ex.Message });
+            }
+        }
+
+        public ActionResult DescargarReportePDF(DateTime? fechaInicio, DateTime? fechaFin)
+        {
+            var collection = _context.GetCollection<Asistencia>("Asistencia");
+
+            var filtro = collection.Find(b => true);
+
+            if (fechaInicio.HasValue && fechaFin.HasValue)
+            {
+                filtro = collection.Find(b => b.FechaIngreso >= fechaInicio.Value && b.FechaIngreso <= fechaFin.Value);
+            }
+
+            var buses = filtro.ToList();
+
+            using (System.IO.MemoryStream stream = new System.IO.MemoryStream())
+            {
+                // Crear un documento PDF
+                var pdfDoc = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4, 25, 25, 30, 30);
+                PdfWriter.GetInstance(pdfDoc, stream);
+                pdfDoc.Open();
+
+                // Añadir título al PDF
+                pdfDoc.Add(new iTextSharp.text.Paragraph("Reporte de Buses"));
+                pdfDoc.Add(new iTextSharp.text.Paragraph(" ")); // Espacio en blanco
+
+                // Crear una tabla
+                PdfPTable table = new PdfPTable(4); // 4 columnas
+                table.AddCell("Placa");
+                table.AddCell("ID del Conductor");
+                table.AddCell("Fecha de Ingreso");
+                table.AddCell("Fecha de Salida");
+
+                // Rellenar la tabla con los datos de los buses
+                foreach (var bus in buses)
+                {
+                    table.AddCell(bus.PlacaBus);
+                    table.AddCell(bus.IdConductor.ToString());
+                    table.AddCell(bus.FechaIngreso.ToString("yyyy-MM-dd hh:mm:ss"));
+                    table.AddCell(bus.FechaSalida?.ToString("yyyy-MM-dd hh:mm:ss") ?? "N/A");
+                }
+
+                pdfDoc.Add(table);
+                pdfDoc.Close();
+
+                var content = stream.ToArray();
+                return File(content, "application/pdf", "ReporteBuses.pdf");
             }
         }
         /////////////////////////////////////////////////////////////////////////////

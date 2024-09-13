@@ -106,10 +106,10 @@ namespace TerMasterr.Controllers
                         Session["nombre_usuario"] = adminLocal.nombre_admin_local;
                         Session["PuebloId"] = adminLocal.id_pueblo; // Guarda el PuebloId del administrador local
                         return RedirectToAction("Gestion_conductor", "Admin_local");
-                    }
 
-                    ViewBag.Error = "Número de identificación o contraseña incorrecta";
-                    return View();
+                        ViewBag.Error = "Número de identificación o contraseña incorrecta";
+                        return View();
+                    }
                 }
                 catch (ApplicationException ex)
                 {

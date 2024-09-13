@@ -665,7 +665,6 @@
     <Content Include="Views\Conductor\Modificar_datos_personales.cshtml" />
     <Content Include="Views\Shared\_Layout - admin_general.cshtml" />
     <Content Include="Views\Shared\_Layout - admin_local.cshtml" />
-    <Content Include="Views\Administrador_general\Index.cshtml" />
     <Content Include="Views\Administrador_general\Pueblos.cshtml" />
     <Content Include="Views\Administrador_general\QR.cshtml" />
     <Content Include="Views\Administrador_general\Registrar_administrador_local.cshtml" />
@@ -675,7 +674,6 @@
     <Content Include="Views\Admin_local\Reportes.cshtml" />
     <Content Include="Views\Admin_local\Editar_datos_personales.cshtml" />
     <Content Include="Views\Admin_local\Gestion_conductor.cshtml" />
-    <Content Include="Views\Admin_local\Index.cshtml" />
     <Content Include="Views\Administrador_general\Gestion_admin_local.cshtml" />
   </ItemGroup>
   <ItemGroup>
