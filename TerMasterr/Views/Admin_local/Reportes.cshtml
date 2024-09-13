@@ -1,8 +1,85 @@
-﻿
+﻿@model IEnumerable<Capa_entidad.Asistencia>
 @{
     ViewBag.Title = "Reportes";
     Layout = "~/Views/Shared/_Layout - admin_local.cshtml";
 }
 
-<h2>Reportes</h2>
 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reportes de Asistencia</title>
+    <link rel="stylesheet" type="text/css" href="~/Content/Site.css" />
+</head>
+<body>
+    <style>
+        .header_2 {
+            background: -webkit-linear-gradient(315deg, #4723D9 0%, #00D2Df 100%);
+            padding: 10px;
+            border-radius: 10px 10px 0 0;
+        }
+    </style>
+
+    <div class="header_2">
+        <h2 class="text-light">Reporte de asistencia</h2>
+    </div>
+    <br />
+
+    <form method="get" action="@Url.Action("Buses", "Administrador_general")">
+        <div class="row">
+            <div class="col-md-4">
+                <label for="fechaInicio">Fecha de inicio</label>
+                <input type="date" class="form-control" name="fechaInicio" id="fechaInicio" max="@DateTime.Now.ToString("yyyy-MM-dd")"
+                       value="@Request.QueryString["fechaInicio"]" />
+            </div>
+            <div class="col-md-4">
+                <label for="fechaFin">Fecha de fin</label>
+                <input type="date" class="form-control" name="fechaFin" id="fechaFin" max="@DateTime.Now.ToString("yyyy-MM-dd")"
+                       value="@Request.QueryString["fechaFin"]" />
+            </div>
+            <div class="col-md-4">
+                <label>&nbsp;</label>
+                <button type="submit" class="btn btn-primary w-100 mt-2">Filtrar</button>
+            </div>
+        </div>
+    </form>
+    <br />
+    <div class="row">
+        @if (Model != null && Model.Any())
+        {
+            foreach (var asistencia in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-start">
+                            <h5 class="card-title mb-0">Placa: @asistencia.PlacaBus</h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>ID del conductor:</strong> @asistencia.IdConductor</p>
+                            <p><strong>Fecha de ingreso:</strong> @asistencia.FechaIngreso</p>
+                            <p><strong>Fecha de salida:</strong> @asistencia.FechaSalida</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <p>No hay registro de asistencia disponibles.</p>
+        }
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+<div class="row">
+    <div class="col-md-12 text-right mb-3">
+        <form method="get" action="@Url.Action("DescargarReportePDF", "Admin_local")" style="display: inline-block;">
+            <input type="hidden" name="fechaInicio" value="@Request.QueryString["fechaInicio"]" />
+            <input type="hidden" name="fechaFin" value="@Request.QueryString["fechaFin"]" />
+            <button type="submit" class="btn btn-danger">Descargar PDF</button>
+        </form>
+    </div>
+</div>
+    }
+</body>
+</html>

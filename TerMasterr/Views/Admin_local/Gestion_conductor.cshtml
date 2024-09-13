@@ -3,7 +3,6 @@
 @{ ViewBag.Title = "Gestion_conductor";
     Layout = "~/Views/Shared/_Layout - admin_local.cshtml"; }
 
-<h2>Gestionar conductores</h2>
 
 <link href="~/Content/css/styles.css" rel="stylesheet" />
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -11,49 +10,60 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-<div class="container">
-    <div class="row">
-        @if (Model != null && Model.Any())
+<style>
+    .header_2 {
+        background: -webkit-linear-gradient(315deg, #4723D9 0%, #00D2Df 100%);
+        padding: 10px;
+        border-radius: 10px 10px 0 0;
+    }
+</style>
+
+<div class="header_2">
+    <h2 class="text-light">Gestionar conductores</h2>
+</div>
+<br />
+<div class="row">
+    @if (Model != null && Model.Any())
+    {
+        foreach (var conductor in Model)
         {
-            foreach (var conductor in Model)
-            {
-                <div class="col-md-5 col-lg-6 mb-3">
-                    <div class="card car-conductor">
-                        <div class="card-body d-flex align-items-center">
-                            <div class="flex-grow-1">
-                                <h5 class="card-title">@conductor.nombre</h5>
-                                <p class="card-text"><strong>Número de Documento:</strong> @conductor.id_conductor</p>
-                                <p class="card-text"><strong>Teléfono:</strong> @conductor.telefono</p>
-                                <p class="card-text"><strong>Correo:</strong> @conductor.correo</p>
-                                <p class="card-text"><strong>Estado:</strong> @conductor.Estado</p>
-                                <div class="mt-3">
-                                    <a class="btn btn-info" id="editar" data-bs-toggle="modal" data-bs-target="#editar_conductor" data-id="@conductor.id_conductor">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    @*<a href="@Url.Action("EliminarConductor", "Admin_local", new { id = conductor.id_conductor })" class="btn btn-danger" onclick="return Eliminar_conductor(event, '@Url.Action("EliminarConductor", "Admin_local", new { id = conductor.id_conductor })')">
-                                            <i class="fa fa-trash"></i>
-                                        </a>*@
-                                </div>
-                            </div>
-                            <div class="ms-3 text-center conductor-img-container">
-                                <img src="@conductor.ImagenUrl" alt="@conductor.nombre" class="img-fluid conductor-image" style="width: 150px; height: 150px; object-fit: cover;" data-bs-toggle="modal" data-bs-target="#imageModal">
-                                <!-- Botón para abrir el formulario de carga de imagen -->
-                                @*<a href="#" class="btn btn-cargar-foto mt-2 small-btn" data-bs-toggle="modal" data-bs-target="#modalCargarFoto" data-id="@conductor.id_conductor">
-                                        <span class="material-icons">add_circle</span>
-                                        <span>Cargar foto</span>
+            <div class="col-md-5 col-lg-6 mb-3">
+                <div class="card car-conductor">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h5 class="card-title">@conductor.nombre</h5>
+                            <p class="card-text"><strong>Número de Documento:</strong> @conductor.id_conductor</p>
+                            <p class="card-text"><strong>Teléfono:</strong> @conductor.telefono</p>
+                            <p class="card-text"><strong>Correo:</strong> @conductor.correo</p>
+                            <p class="card-text"><strong>Estado:</strong> @conductor.Estado</p>
+                            <div class="mt-3">
+                                <a class="btn btn-info" id="editar" data-bs-toggle="modal" data-bs-target="#editar_conductor" data-id="@conductor.id_conductor">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                @*<a href="@Url.Action("EliminarConductor", "Admin_local", new { id = conductor.id_conductor })" class="btn btn-danger" onclick="return Eliminar_conductor(event, '@Url.Action("EliminarConductor", "Admin_local", new { id = conductor.id_conductor })')">
+                                        <i class="fa fa-trash"></i>
                                     </a>*@
                             </div>
                         </div>
+                        <div class="ms-3 text-center conductor-img-container">
+                            <img src="@conductor.ImagenUrl" alt="@conductor.nombre" class="img-fluid conductor-image" style="width: 150px; height: 150px; object-fit: cover;" data-bs-toggle="modal" data-bs-target="#imageModal">
+                            <!-- Botón para abrir el formulario de carga de imagen -->
+                            @*<a href="#" class="btn btn-cargar-foto mt-2 small-btn" data-bs-toggle="modal" data-bs-target="#modalCargarFoto" data-id="@conductor.id_conductor">
+                                    <span class="material-icons">add_circle</span>
+                                    <span>Cargar foto</span>
+                                </a>*@
+                        </div>
                     </div>
-                </div> }
-        }
-        else
-        {
-            <div class="col">
-                <p>No hay conductores registrados.</p>
-            </div>}
-    </div>
+                </div>
+            </div> }
+    }
+    else
+    {
+        <div class="col">
+            <p>No hay conductores registrados.</p>
+        </div>}
 </div>
+
 
 <!-- Modal para editar estado de conductor -->
 <div class="modal fade" id="editar_conductor" tabindex="-1" aria-labelledby="editar_conductorLabel" aria-hidden="true">
