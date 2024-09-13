@@ -38,12 +38,12 @@ namespace TerMasterr.Controllers
         {
             return View();
         }
-        public ActionResult Bus()
+        public ActionResult Bus() 
         {
             // Obtén el ID del pueblo desde la sesión
-            var idPuebloStr = Session["PuebloId"]?.ToString();
+            var idPuebloStr = Session["PuebloId"]?.ToString(); //Obtener el id del pueblo de la sesión
 
-            if (string.IsNullOrEmpty(idPuebloStr) || !int.TryParse(idPuebloStr, out int idPueblo))
+            if (string.IsNullOrEmpty(idPuebloStr) || !int.TryParse(idPuebloStr, out int idPueblo)) // Validar que el id del pueblo no esté vacío y combierte el id del pueblo a int
             {
                 return RedirectToAction("Login", "Login"); // Redirige si no hay ID de pueblo en la sesión o es inválido
             }
@@ -61,14 +61,6 @@ namespace TerMasterr.Controllers
 
             ViewBag.Conductores = conductoresEnPueblo; // Enviamos la lista de conductores a la vista
             return View(busesFiltrados); // Enviamos la lista de buses a la vista
-        }
-
-
-        public ActionResult Asignar_horarios()
-
-        {
-            var conductor = _context.GetCollection<Conductor>("Conductor").Find(c => true).ToList();
-            return View(conductor);
         }
         public ActionResult Gestion_conductor()
         {

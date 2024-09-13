@@ -3,7 +3,7 @@
     ViewBag.Title = "Gestion_admin_local";
     Layout = "~/Views/Shared/_Layout - admin_general.cshtml";
 }
-
+<h2>Gestionar administradores locales</h2>
 
 <link href="~/Content/css/styles.css" rel="stylesheet" />
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -12,11 +12,10 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <br />
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <a class="btn btn-primary" href="@Url.Action("Registrar_administrador_local", "Admin_local")">
+    <a class="btn btn-primary" href="@Url.Action("Registrar_administrador_local", "Administrador_general")">
         Nuevo administrador
     </a>
 </div>
-    <div class="container">
         <div class="row">
             @if (Model != null && Model.Any())
             {
@@ -59,7 +58,6 @@
                 </div>
             }
         </div>
-    </div>
 
     <!-- Modal para editar estado de conductor -->
     <div class="modal fade" id="editar_adminL" tabindex="-1" aria-labelledby="editar_adminLLabel" aria-hidden="true">
@@ -110,31 +108,6 @@
                 document.getElementById('modalImage').setAttribute('src', imgSrc); // Asignar la URL al modal
             });
         });
-
-        //////////////////////// Función para eliminar coductor //////////////////////////////////
-        @*function Eliminar_conductor(event, url) {
-            event.preventDefault(); // Previene el comportamiento por defecto del enlace
-
-            Swal.fire({
-                title: '¿Estás seguro?',
-                text: "¡Esta acción no se puede deshacer!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: 'secundary',
-                confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Si el usuario confirma, redirige a la URL
-                    Swal.fire({
-                        icon: 'succes',
-                        title: '@Html.Raw(TempData["SuccessMessage"])'
-                    });
-                    window.location.href = url;
-                }
-            });
-        };*@
 
         /////////////////////////Función para editar el estado del conductor/////////////////////////////
         document.addEventListener('DOMContentLoaded', function () {
