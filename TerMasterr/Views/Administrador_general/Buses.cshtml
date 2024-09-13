@@ -1,9 +1,7 @@
 ﻿@model IEnumerable<Capa_entidad.Asistencia>
 
-@{
-    ViewBag.Title = "Buses";
-    Layout = "~/Views/Shared/_Layout - admin_general.cshtml";
-}
+@{ ViewBag.Title = "Buses";
+                Layout = "~/Views/Shared/_Layout - admin_general.cshtml"; }
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
@@ -20,7 +18,6 @@
 </div>
 <br />
 
-
 <form method="get" action="@Url.Action("Buses", "Administrador_general")">
     <div class="row">
         <div class="col-md-4">
@@ -31,7 +28,7 @@
         <div class="col-md-4">
             <label for="fechaFin">Fecha de fin</label>
             <input type="date" class="form-control" name="fechaFin" id="fechaFin" max="@DateTime.Now.ToString("yyyy-MM-dd")"
-                   value="@Request.QueryString["fechaFin"]" />
+                   value="@Request.QueryString["fechaFin"]"/>
         </div>
         <div class="col-md-4">
             <label>&nbsp;</label>
@@ -47,31 +44,28 @@
     {
         foreach (var buses in Model)
         {
-            <div class="col-md-4 mb-4">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-start">
-                        <h5 class="card-title mb-0">Placa: @buses.PlacaBus</h5>
-
-                    </div>
-                    <div class="card-body">
-                        <p><strong>ID del conductor:</strong> @buses.IdConductor</p>
-                        <p><strong>Fecha de ingreso:</strong> @buses.FechaIngreso</p>
-                        <p><strong>Fecha de salida:</strong> @buses.FechaSalida</p>
-                    </div>
-                </div>
-            </div> }
-    }
-    else
-    {
-        <p>No hay buses disponibles.</p>}
+<div class="col-md-4 mb-4">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-start">
+            <h5 class="card-title mb-0">Placa: @buses.PlacaBus</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>ID del conductor:</strong> @buses.IdConductor</p>
+            <p><strong>Fecha de ingreso:</strong> @buses.FechaIngreso</p>
+            <p><strong>Fecha de salida:</strong> @buses.FechaSalida</p>
+        </div>
+    </div>
+</div> }
+            }
+            else
+            {
+<p>No hay buses disponibles.</p>}
 </div>
-
 
 @if (Model != null && Model.Any())
 {
 <div class="row">
     <div class="col-md-12 text-right mb-3">
-        
         <form method="get" action="@Url.Action("DescargarReportePDF", "Administrador_general")" style="display: inline-block;">
             <input type="hidden" name="fechaInicio" value="@Request.QueryString["fechaInicio"]" />
             <input type="hidden" name="fechaFin" value="@Request.QueryString["fechaFin"]" />
@@ -79,3 +73,42 @@
         </form>
     </div>
 </div>}
+
+@*<script>
+    function buses(qrContent) {
+        $.ajax({
+            url: '@Url.Action("Buses", "Administrador_general")',
+            type: 'GET',
+            data: { qrContent: qrContent },
+            success: function (response) {
+                if (response.success) {
+                    let hora = response.hora % 12 || 12; // Convierte a formato 12 horas
+                    let minuto = response.minuto.toString().padStart(2, '0');
+                    let ampm = response.esPM ? 'p.m.' : 'a.m.';
+                    let horaFormateada = `${hora}:${minuto} ${ampm}`;
+                    let mensaje = `${response.message} a las ${horaFormateada}`;
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Éxito!',
+                        text: mensaje
+                    });
+
+                } else {
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: response.message
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Ocurrió un error al registrar la asistencia.'
+                });
+            }
+        });
+    }
+</script>*@

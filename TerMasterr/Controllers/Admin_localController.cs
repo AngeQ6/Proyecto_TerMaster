@@ -39,15 +39,30 @@ namespace TerMasterr.Controllers
         }
         public ActionResult Bus()
         {
-            var buses = _context.GetCollection<Bus>("Bus").Find(c => true).ToList();
-            var conductores = _context.GetCollection<Conductor>("Conductor").Find(c => true).ToList();
+            // Obtén el ID del pueblo desde la sesión
+            var idPuebloStr = Session["PuebloId"]?.ToString();
 
-            ViewBag.Conductores = conductores; // Enviamos la lista de conductores a la vista
-            return View(buses); // Enviamos la lista de buses a la vista
+            if (string.IsNullOrEmpty(idPuebloStr) || !int.TryParse(idPuebloStr, out int idPueblo))
+            {
+                return RedirectToAction("Login", "Login"); // Redirige si no hay ID de pueblo en la sesión o es inválido
+            }
+
+            // Filtrar conductores asociados al pueblo
+            var conductoresEnPueblo = _context.GetCollection<Conductor>("Conductor")
+                .Find(c => c.código_pueblo == idPueblo)
+                .ToList();
+
+            // Filtrar buses asociados a los conductores filtrados
+            var idsConductoresEnPueblo = conductoresEnPueblo.Select(c => c.id_conductor).ToList();
+            var busesFiltrados = _context.GetCollection<Bus>("Bus")
+                .Find(b => idsConductoresEnPueblo.Contains(b.id_conductor))
+                .ToList();
+
+            ViewBag.Conductores = conductoresEnPueblo; // Enviamos la lista de conductores a la vista
+            return View(busesFiltrados); // Enviamos la lista de buses a la vista
         }
 
-        
-        
+
         public ActionResult Asignar_horarios()
 
         {
@@ -56,8 +71,38 @@ namespace TerMasterr.Controllers
         }
         public ActionResult Gestion_conductor()
         {
-            var conductor = _context.GetCollection<Conductor>("Conductor").Find(c => true).ToList();
-            return View(conductor);
+            try
+            {
+                // Verificar que el usuario esté autenticado
+                if (Session["PuebloId"] == null)
+                {
+                    return RedirectToAction("Login", "Login");
+                }
+
+                // Obtener el ID del pueblo del administrador local
+                int puebloId = (int)Session["PuebloId"];
+
+                // Buscar los conductores que pertenecen al pueblo del administrador local
+                var conductores = _context.GetCollection<Conductor>("Conductor")
+                                          .Find(c => c.código_pueblo == puebloId)
+                                          .ToList();
+
+                return View(conductores);
+            }
+            catch (FormatException ex)
+            {
+                // Log the exception details
+                TempData["ErrorMessage"] = "Error al deserializar los datos: " + ex.Message;
+                // Redirect or handle as necessary
+                return RedirectToAction("Error");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details
+                TempData["ErrorMessage"] = "Error inesperado: " + ex.Message;
+                // Redirect or handle as necessary
+                return RedirectToAction("Error");
+            }
         }
 
         public ActionResult Editar_datos_personales()
@@ -78,87 +123,128 @@ namespace TerMasterr.Controllers
 
         public ActionResult AddBus(Bus bus)
         {
+            // Verifica si los datos del modelo son válidos antes de continuar.
             if (ModelState.IsValid)
             {
                 try
                 {
-                    // Verificar si ya existe un bus con la misma placa en la colección `Bus`
+                    // Busca en la colección `Bus` si ya existe un bus con la misma placa.
                     var busExistente = _context.GetCollection<Bus>("Bus")
                         .Find(b => b.placa == bus.placa)
                         .FirstOrDefault();
 
+                    // Si se encuentra un bus con la misma placa, se muestra un mensaje de error
+                    // y se redirige al usuario de vuelta a la vista de buses.
                     if (busExistente != null)
                     {
                         TempData["ErrorMessage_RegBus"] = "Ya existe un bus registrado con la misma placa.";
                         return RedirectToAction("Bus");
                     }
 
-                    // Agregar el bus a la colección `Bus`
-                    _context.GetCollection<Bus>("Bus").InsertOne(bus);
-
-                    // Obtener el conductor asociado al bus
+                    // Busca al conductor relacionado con el ID del conductor asociado al bus.
                     var conductorParaActualizar = _context.GetCollection<Conductor>("Conductor")
                         .Find(c => c.id_conductor == bus.id_conductor)
                         .FirstOrDefault();
 
+                    // Si el conductor es encontrado en la base de datos:
                     if (conductorParaActualizar != null)
                     {
-                        // Actualizar la placa del bus en el conductor
+                        // Verifica si el conductor ya tiene un bus asignado.
+                        // Si el campo `placa_bus_asignado` no está vacío (tiene un valor), se evita asignar otro bus.
+                        if (!string.IsNullOrEmpty(conductorParaActualizar.placa_bus_asignado))
+                        {
+                            // Si ya tiene un bus asignado, muestra un mensaje de error y redirige a la vista de buses.
+                            TempData["ErrorMessage_RegBus"] = "Este conductor ya tiene un bus asignado.";
+                            return RedirectToAction("Bus");
+                        }
+
+                        // Si no hay un bus asignado para el conductor, se agrega el nuevo bus a la colección `Bus`.
+                        _context.GetCollection<Bus>("Bus").InsertOne(bus);
+
+                        // Actualiza el campo `placa_bus_asignado` del conductor con la placa del nuevo bus.
                         conductorParaActualizar.placa_bus_asignado = bus.placa;
 
-                        // Actualizar el documento del conductor con la nueva placa del bus
+                        // Guarda los cambios del conductor en la base de datos, reemplazando el documento original
+                        // con el conductor actualizado que ahora tiene la placa del bus.
                         _context.GetCollection<Conductor>("Conductor").ReplaceOne(
                             c => c.id_conductor == bus.id_conductor,
                             conductorParaActualizar
                         );
 
+                        // Muestra un mensaje de éxito al agregar el bus y actualizar la placa del conductor.
                         TempData["SuccessMessage_RegBus"] = "Bus agregado exitosamente y placa registrada.";
                         return RedirectToAction("Bus");
                     }
 
+                    // Si no se encuentra el conductor, se muestra un mensaje de error y se redirige a la vista de buses.
                     TempData["ErrorMessage_RegBus"] = "El conductor no fue encontrado.";
                     return RedirectToAction("Bus");
                 }
                 catch (Exception ex)
                 {
+                    // En caso de que ocurra cualquier error durante el proceso, captura la excepción
+                    // y muestra un mensaje de error, luego redirige a la vista de buses.
                     TempData["ErrorMessage_RegBus"] = "Error al agregar el bus: " + ex.Message;
                     return RedirectToAction("Bus");
                 }
             }
 
-            // Si el modelo no es válido, devolver la vista con el modelo actual
+            // Si el modelo no es válido (por ejemplo, si faltan datos requeridos), se retorna la vista
+            // con el modelo `bus` actual para mostrar los errores de validación.
             return View(bus);
         }
-
 
 
         public ActionResult Eliminar_bus(int id)
         {
             try
             {
-                // Buscar el bus por su Id
+                // Buscar el bus por su Id (usando id_conductor como referencia).
                 var bus = _context.GetCollection<Bus>("Bus")
                     .Find(b => b.id_conductor == id)
                     .FirstOrDefault();
 
+                // Si no se encuentra el bus, retornar un mensaje de error.
                 if (bus == null)
                 {
                     TempData["ErrorMessage_eliminacionBus"] = "No se encontró un bus con el ID proporcionado.";
                     return RedirectToAction("Bus");
                 }
 
-                // Eliminar el bus
+                // Eliminar el bus de la colección 'Bus'.
                 _context.GetCollection<Bus>("Bus").DeleteOne(b => b.id_conductor == id);
+
+                // Buscar el conductor asociado al bus eliminado.
+                var conductorParaActualizar = _context.GetCollection<Conductor>("Conductor")
+                    .Find(c => c.id_conductor == id)
+                    .FirstOrDefault();
+
+                // Si se encuentra el conductor, eliminar la placa asociada.
+                if (conductorParaActualizar != null)
+                {
+                    // Establecer la placa del bus asignado a null (o cadena vacía) para desasociarlo del conductor.
+                    conductorParaActualizar.placa_bus_asignado = null; // También puedes usar string.Empty si prefieres una cadena vacía.
+
+                    // Actualizar el documento del conductor en la colección 'Conductor'.
+                    _context.GetCollection<Conductor>("Conductor").ReplaceOne(
+                        c => c.id_conductor == id,
+                        conductorParaActualizar
+                    );
+                }
+
+                // Mensaje de éxito si ambas operaciones (eliminación del bus y actualización del conductor) se completaron.
                 TempData["SuccessMessage_eliminacionBus"] = "Bus eliminado exitosamente.";
                 return RedirectToAction("Bus");
             }
             catch (Exception ex)
             {
+                // En caso de error, se captura la excepción y se muestra un mensaje de error.
                 TempData["ErrorMessage_eliminacionBus"] = "Error al eliminar el bus: " + ex.Message;
                 return RedirectToAction("Bus");
             }
         }
-        
+
+
         [HttpGet]
         public ActionResult Get_busByPlaca(string placa)
         {

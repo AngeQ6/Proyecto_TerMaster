@@ -104,6 +104,7 @@ namespace TerMasterr.Controllers
                     {
                         Session["id_admin_local"] = adminLocal.id_admin_local;
                         Session["nombre_usuario"] = adminLocal.nombre_admin_local;
+                        Session["PuebloId"] = adminLocal.id_pueblo; // Guarda el PuebloId del administrador local
                         return RedirectToAction("Index", "Admin_local");
                     }
 
@@ -120,6 +121,7 @@ namespace TerMasterr.Controllers
             ViewBag.Error = "ModelState no es válido";
             return View();
         }
+
 
         public ActionResult Cerrar_sesion()
         {
