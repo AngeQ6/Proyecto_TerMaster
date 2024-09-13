@@ -76,7 +76,8 @@ namespace TerMasterr.Controllers
         }
         public ActionResult Gestion_admin_local()
         {
-            return View();
+            var admin_local = _context.GetCollection<Admin_local>("Admin_local").Find(c => true).ToList();
+            return View(admin_local);
         }
         //////////////////////////////////////////////////////////////////////////////////////
         #endregion
@@ -97,7 +98,7 @@ namespace TerMasterr.Controllers
         
 
         [HttpPost]
-        public async Task<ActionResult> Registrar_administrador_local(int id_admin_local, string nombre_admin_local, string apellido_admin_local, string correo_admin_local, long telefono_admin_local, int id_pueblo)
+        public async Task<ActionResult> Registrar_administrador_local(int id_admin_local, string nombre_admin_local, string apellido_admin_local, string correo_admin_local, long telefono_admin_local, int id_pueblo, string estado)
         {
             try
             {
@@ -123,6 +124,7 @@ namespace TerMasterr.Controllers
                     correo_admin_local = correo_admin_local,
                     telefono_admin_local = telefono_admin_local,
                     contraseña_admin_local = contraseñaGenerada, 
+                    estado = estado, 
                     id_pueblo = id_pueblo
                 };
 
@@ -168,14 +170,13 @@ namespace TerMasterr.Controllers
 
 
 
-        private string GenerarContraseña(int longitud = 12)
+        private string GenerarContraseña(int longitud = 4)
         {
-            const string caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+            const string caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             var random = new Random();
             return new string(Enumerable.Repeat(caracteres, longitud)
                                         .Select(s => s[random.Next(s.Length)]).ToArray());
         }
-
 
         //public async Task EnviarCorreoAsync(string destinatario, string contrasena)
         //{
@@ -409,6 +410,41 @@ namespace TerMasterr.Controllers
                 var content = stream.ToArray();
                 return File(content, "application/pdf", "ReporteBuses.pdf");
             }
+        }
+        [HttpGet]
+        public ActionResult Get_admin_localById(int id)
+        {
+            //Método de edición de estado de conductor completo
+            var admin_local = _context.GetCollection<Admin_local>("Admin_local")
+                                    .Find(c => c.id_admin_local == id)
+                                    .FirstOrDefault();
+            if (admin_local == null)
+            {
+                return HttpNotFound();
+            }
+
+            return Json(new
+            {
+                id_admin_local = admin_local.id_admin_local,
+                nombre_admin_local = admin_local.nombre_admin_local,
+                Estado = admin_local.estado
+            }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public ActionResult Editar_admin_local(Admin_local admin_local)
+        {
+            var admin_localExistente = _context.GetCollection<Admin_local>("Admin_local")
+                                              .Find(a => a.id_admin_local == admin_local.id_admin_local)
+                                              .FirstOrDefault();
+
+            if (admin_localExistente != null)
+            {
+                //Campos que se van a editar
+                admin_localExistente.estado = admin_local.estado;
+
+                _context.GetCollection<Admin_local>("Admin_local").ReplaceOne(a => a.id_admin_local == admin_local.id_admin_local, admin_localExistente);
+            }
+            return RedirectToAction("Gestion_admin_local");
         }
 
         #endregion

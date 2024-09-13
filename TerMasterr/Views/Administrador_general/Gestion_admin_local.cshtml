@@ -3,7 +3,7 @@
     ViewBag.Title = "Gestion_admin_local";
     Layout = "~/Views/Shared/_Layout - admin_general.cshtml";
 }
-<h2>Gestion_admin_local</h2>
+<h2>Gestionar administradores locales</h2>
 
 <link href="~/Content/css/styles.css" rel="stylesheet" />
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -27,7 +27,7 @@
                                 <p class="card-text"><strong>Correo:</strong> @admin_local.correo_admin_local</p>
                                 <p class="card-text"><strong>Estado:</strong> @admin_local.estado</p>
                                 <div class="mt-3">
-                                    <a class="btn btn-info" id="editar" data-bs-toggle="modal" data-bs-target="#editar_conductor" data-id="@admin_local.id_admin_local">
+                                    <a class="btn btn-info" id="editar" data-bs-toggle="modal" data-bs-target="#editar_adminL" data-id="@admin_local.id_admin_local">
                                         <i class="bi bi-pencil"></i>
                                     </a>
                                     @*<a href="@Url.Action("EliminarConductor", "Admin_local", new { id = conductor.id_conductor })" class="btn btn-danger" onclick="return Eliminar_conductor(event, '@Url.Action("EliminarConductor", "Admin_local", new { id = conductor.id_conductor })')">
@@ -56,29 +56,29 @@
 </div>
 
 <!-- Modal para editar estado de conductor -->
-<div class="modal fade" id="editar_conductor" tabindex="-1" aria-labelledby="editar_conductorLabel" aria-hidden="true">
+<div class="modal fade" id="editar_adminL" tabindex="-1" aria-labelledby="editar_adminLLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editar_conductorLabel">Editar estado de conductor</h5>
+                <h5 class="modal-title" id="editar_adminLLabel">Editar estado de conductor</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form enctype="multipart/form-data" action="@Url.Action("EditarConductor", "Admin_local")" method="post">
+            <form enctype="multipart/form-data" action="@Url.Action("Editar_admin_local", "Administrador_general")" method="post">
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="Number" class="form-label">Número de documento</label>
-                        <input type="text" class="form-control" id="id_conductor" name="id_conductor" required disabled>
+                        <input type="text" class="form-control" id="id_admin_local" name="id_admin_local" required disabled>
                     </div>
                     <!-- Campo oculto para enviar el ID del conductor -->
-                    <input type="hidden" id="id_conductor_hidden" name="id_conductor">
+                    <input type="hidden" id="id_admin_local_hidden" name="id_admin_local_hidden">
                     <div class="mb-3">
                         <label for="Route" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="nombre" name="nombre" required disabled>
+                        <input type="text" class="form-control" id="nombre_admin_local" name="nombre_admin_local" required disabled>
                     </div>
 
                     <div class="mb-3">
                         <label for="Capacity" class="form-label">Estado</label>
-                        <select class="form-control" id="Estado" name="Estado" required>
+                        <select class="form-control" id="estado" name="estado" required>
                             <option value="Activo">Activo</option>
                             <option value="No activo">No activo</option>
                         </select>
@@ -92,3 +92,168 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <script>
+        /////////////////// Función para abrir el modal de imagen en tamaño completo /////////////////////
+        document.querySelectorAll('.conductor-image').forEach(image => {
+            image.addEventListener('click', function () {
+                const imgSrc = this.getAttribute('src'); // Obtener la URL de la imagen
+                document.getElementById('modalImage').setAttribute('src', imgSrc); // Asignar la URL al modal
+            });
+        });
+
+        //////////////////////// Función para eliminar coductor //////////////////////////////////
+        @*function Eliminar_conductor(event, url) {
+            event.preventDefault(); // Previene el comportamiento por defecto del enlace
+
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡Esta acción no se puede deshacer!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: 'secundary',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Si el usuario confirma, redirige a la URL
+                    Swal.fire({
+                        icon: 'succes',
+                        title: '@Html.Raw(TempData["SuccessMessage"])'
+                    });
+                    window.location.href = url;
+                }
+            });
+        };*@
+
+        /////////////////////////Función para editar el estado del conductor/////////////////////////////
+        document.addEventListener('DOMContentLoaded', function () {
+            var editar_adminL = document.getElementById('editar_adminL');
+            editar_adminL.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget; // Botón que abrió el modal
+                var adminL_Id = button.getAttribute('data-id'); // Extraer el ID del administrador local
+
+                // Hacer una solicitud AJAX para obtener los datos del conductor
+                fetch(`/Administrador_general/Get_admin_localById?id=${adminL_Id}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Rellenar los campos del modal con los datos del conductor
+                        document.getElementById('id_admin_local').value = data.id_admin_local; // Campo visible del id_admin_local, no se envía al formulario
+                        document.getElementById('id_admin_local_hidden').value = data.id_admin_local; //Campo invisible del id_admin_local, este se enviará en el formulario
+                        document.getElementById('nombre_admin_local').value = data.nombre_admin_local;
+                        document.getElementById('estado').value = data.Estado; // Estado actual del administrador local
+
+                    })
+                    .catch(error => console.error('Error al obtener los datos del conductor:', error));
+            });
+        });
+
+    </script>
+}
+
+<style>
+    /* Google Poppins Font CDN Link */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    /* Variables */
+    :root {
+        --primary-font-family: 'Poppins', sans-serif;
+        --light-white: #f5f8fa;
+        --gray: #5e6278;
+        --gray-1: #e3e3e3;
+        --primary-color: #FA6C17;
+    }
+
+    body {
+        font-family: var(--primary-font-family);
+    }
+
+    /* Main CSS */
+    .wrapper {
+        padding: 20px;
+        background-color: var(--light-white);
+        min-height: 100vh;
+    }
+
+    .car-conductor {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        margin: 0; /* Asegúrate de que no haya margen */
+    }
+
+    .card-body {
+        /*padding: 10px;*/ /* Ajusta el padding según sea necesario */
+        /*align-items: center;
+        width: 100%;*/ /* Ocupar todo el ancho posible */
+        /*max-width: 100px;*/ /* Puedes ajustar este valor para limitar el ancho máximo */
+        padding: 15px; /* Ajusta el padding según sea necesario */
+        margin: 0; /* Asegúrate de que no haya margen adicional */
+    }
+
+    .car-conductor .card-body {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .conductor-img-container {
+        width: 100px; /*Ancho fijo para el contenedor de la imagen y el botón*/
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: 0; /* Asegúrate de que no haya margen adicional */
+    }
+
+        .conductor-img-container img {
+            margin-bottom: 10px;
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+        }
+
+    .btn {
+        margin: 0 5px;
+        padding: 5px 10px;
+    }
+
+    .btn-cargar-foto {
+        background-color: seagreen;
+        padding: 4px 6px; /* Ajusta el tamaño del botón */
+        color: #fff;
+        font-weight: bold;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-decoration: none;
+        transition: all 0.3s ease-in-out;
+        text-align: center;
+        font-size: 14px; /* Ajusta el tamaño del texto */
+        margin-top: 10px; /* Ajusta el espacio entre la imagen y el botón */
+        width: 130px; /* Ajusta el ancho del botón */
+        margin-left: 0; /* Asegúrate de que el botón no esté pegado al borde */
+    }
+
+        .btn-cargar-foto .material-icons {
+            vertical-align: middle;
+            font-size: 18px; /* Ajusta el tamaño del icono */
+        }
+
+        .btn-cargar-foto span {
+            vertical-align: middle;
+            margin-left: 5px; /* Ajusta el espacio entre el icono y el texto */
+        }
+
+        .btn-cargar-foto:hover {
+            background-color: seagreen;
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+</style>

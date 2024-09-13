@@ -40,6 +40,7 @@
         <label for="telefono_admin_local">Teléfono</label>
         <input type="tel" class="form-control" id="telefono_admin_local" name="telefono_admin_local" placeholder="Ingrese el número de teléfono" required />
     </div>
+    
     <br />
     <div class="form-group">
         <label for="id_pueblo">Ingrese el código del pueblo</label>
@@ -47,8 +48,10 @@
         <small id="pueblo-feedback" class="form-text"></small> <!-- Espacio para mostrar el feedback -->
     </div>
     <br />
+    <div class="mb-3">
+        <input type="hidden" id="esado" name="estado" value="Activo">
+    </div>
 
-    
 
     <button type="submit" class="btn btn-primary btn-block">Registrar</button>
 
