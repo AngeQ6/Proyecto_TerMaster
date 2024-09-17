@@ -16,66 +16,74 @@ namespace TerMasterr.Controllers
 {
     public class Administrador_generalController : Controller
     {
-        private readonly Conexion _context;
+        private readonly Conexion _context; // Objeto con el que se maneja la conexion a la base de datos obtenida de la clase Conexion
 
-        public Administrador_generalController()
+        public Administrador_generalController() // Constructor del controlador para establecer la conexión con la base de datos
         {
             try
             {
-                _context = new Conexion();
+                _context = new Conexion(); // Inicializa la conexión con MongoDB en este controlador
             }
+
             catch (ApplicationException ex)
             {
+                // Captura cualquier error de conexión a la base de datos para ser mostrado en la vista
                 ViewBag.ErrorMessage = "Error al conectar con la base de datos: " + ex.Message;
             }
         }
         ///////////////////////////////////// VISTAS ///////////////////////////////////
         #region
-        public ActionResult Index()
-        {
-            return View();
-        }
+
+        // Vista para registrar administradores locales
         public ActionResult Registrar_administrador_local()
         {
             return View();
         }
+        // Vista para gestionar pueblos
         public ActionResult Pueblos()
         {
+            // Obtiene la lista de pueblos y administradores locales desde la base de datos
             var pueblos = _context.GetCollection<Pueblo>("Pueblo").Find(c => true).ToList();
             var adminlocal = _context.GetCollection<Admin_local>("Admin_local").Find(c => true).ToList();
 
+            // Pasar la lista de administradores locales a la vista
             ViewBag.adminlocales = adminlocal;
             return View(pueblos);
         }
+        // Vista para los reportes de ingreso y salida de buses
         public ActionResult Reportes()
         {
             return View();
-        }
+        } 
+        // Vista para la visualización del código con el que se registrará la asistencia QR
         public ActionResult QR()
         {
             return View();
         }
+        // Vista para la gestión de buses que ingresaron a la terminal
         public ActionResult Buses(DateTime? fechaInicio, DateTime? fechaFin)
         {
-            var collection = _context.GetCollection<Asistencia>("Asistencia");
+            var collection = _context.GetCollection<Asistencia>("Asistencia"); // Obtener colección Asistencia de la base de datos
+            var filtro = collection.Find(b => true); // Crea un filtro básico que obtiene todas las asistencias
 
-            var filtro = collection.Find(b => true);
-
-            if (fechaInicio.HasValue && fechaFin.HasValue)
+            if (fechaInicio.HasValue && fechaFin.HasValue) // Condición que se cumple si se han proporcionado fechas para filtrarlas por rango de fechas
             {
                 filtro = collection.Find(b => b.FechaIngreso >= fechaInicio.Value && b.FechaIngreso <= fechaFin.Value);
             }
 
+            // Convierte el filtro en una lista de buses y los envía a la vista
             var buses = filtro.ToList();
-
             return View(buses);
         }
+        // Vista para editar los datos personales del administrador general
         public ActionResult Editar_datos_personales()
         {
             return View();
         }
+        // Vista para la gestión de administradores locales
         public ActionResult Gestion_admin_local()
         {
+            // Obtiene la lista de administradores locales para llevarlos a la vista
             var admin_local = _context.GetCollection<Admin_local>("Admin_local").Find(c => true).ToList();
             return View(admin_local);
         }
@@ -85,45 +93,46 @@ namespace TerMasterr.Controllers
         /////////////////////////// METODOS /////////////////////////////////////////////
 
         #region
-        public ActionResult Generar_QR(bool download = false)
-        {
-            string qrContent = "https://192.168.1.4:45455/Conductor/RegistrarAsistencia";
-            QRCodeGenerator qrGenerator = new QRCodeGenerator();
-            QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrContent, QRCodeGenerator.ECCLevel.Q);
-            BitmapByteQRCode qrCode = new BitmapByteQRCode(qrCodeData);
-            byte[] qrCodeImage = qrCode.GetGraphic(15);
 
-            if (download)
+        // Método para generar un código QR
+        public ActionResult Generar_QR(bool download = false) 
+        {
+            string qrContent = "https://192.168.1.4:45455/Conductor/RegistrarAsistencia"; // Contenido del QR el cual puede ser cambiado dependiendo de la URL que nos proporcione la herramienta conveyor
+            QRCodeGenerator qrGenerator = new QRCodeGenerator(); // Objeto de la función para generar QR
+            QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrContent, QRCodeGenerator.ECCLevel.Q); 
+            BitmapByteQRCode qrCode = new BitmapByteQRCode(qrCodeData);
+            byte[] qrCodeImage = qrCode.GetGraphic(15); // Tamaño del QR
+
+            if (download) // Condición que se cumple si el QR es descargado por el usuario
             {
-                return File(qrCodeImage, "image/png", "qr_code.png");
+                return File(qrCodeImage, "image/png", "qr_code.png"); // Retorna el QR en un archivo .png 
             }
 
-            return File(qrCodeImage, "image/png");
+            return File(qrCodeImage, "image/png"); // Retorna la imagen del QR para la vista
         }
 
-
-
-
+        // Método para registrar a los administradores locales 
         [HttpPost]
-        public async Task<ActionResult> Registrar_administrador_local(int id_admin_local, string nombre_admin_local, string apellido_admin_local, string correo_admin_local, long telefono_admin_local, int id_pueblo, string estado)
+        public async Task<ActionResult> Registrar_administrador_local(int id_admin_local, string nombre_admin_local, string apellido_admin_local, string correo_admin_local, long telefono_admin_local, int id_pueblo, string estado) // Datos del administrador local
         {
             try
             {
-                var conexion = new Conexion();
-                var coleccion_admi_local = conexion.GetCollection<Admin_local>("Admin_local");
+                var conexion = new Conexion(); // Abre una nueva cnexión a la base de datos
+                var coleccion_admi_local = conexion.GetCollection<Admin_local>("Admin_local"); // Obtiene la colección de administradores locales
 
                 // Validar si el administrador local ya existe
                 var adminExistente = await coleccion_admi_local.Find(c => c.id_admin_local == id_admin_local).FirstOrDefaultAsync();
 
-                if (adminExistente != null)
+                if (adminExistente != null) // Condición que se cumple si el administrador local ya existe 
                 {
+                    // Mensaje que se muestra en la vista indicando que el administrador local especificado ya existe
                     TempData["ErrorMessage"] = "El administrador local con este ID ya existe. Por favor, use otro ID.";
                     return RedirectToAction("Registrar_administrador_local", "Administrador_general");
                 }
 
-                string contraseñaGenerada = GenerarContraseña();
+                string contraseñaGenerada = GenerarContraseña(); // Método para generar una nueva contraseña para el administrador local
                 // Registrar nuevo administrador local
-                var nuevo_admin_local = new Admin_local
+                var nuevo_admin_local = new Admin_local 
                 {
                     id_admin_local = id_admin_local,
                     nombre_admin_local = nombre_admin_local,
@@ -135,7 +144,7 @@ namespace TerMasterr.Controllers
                     id_pueblo = id_pueblo
                 };
 
-                await coleccion_admi_local.InsertOneAsync(nuevo_admin_local);
+                await coleccion_admi_local.InsertOneAsync(nuevo_admin_local); // Insertar el nuevo administrador local en la base de datos
 
                 // Enviar la contraseña generada por correo electrónico
                 //await EnviarCorreoAsync(correo_admin_local, contraseñaGenerada);
