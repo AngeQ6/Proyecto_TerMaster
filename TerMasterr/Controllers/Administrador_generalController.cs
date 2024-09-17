@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -11,6 +12,8 @@ using ConexionMongoDB;
 using iTextSharp.text.pdf;
 using MongoDB.Driver;
 using QRCoder;
+//using SendGrid;
+//using SendGrid.Helpers.Mail;
 
 namespace TerMasterr.Controllers
 {
@@ -150,12 +153,12 @@ namespace TerMasterr.Controllers
                 //await EnviarCorreoAsync(correo_admin_local, contraseñaGenerada);
 
                 // Si la inserción y el envío de correo son exitosos, almacenar un mensaje de éxito en TempData
-                TempData["SuccessMessage"] = "Registro exitoso. Se ha enviado una contraseña generada al correo proporcionado.";
+                TempData["SuccessMessage_Reg_admin_local"] = "Registro exitoso. Se ha enviado una contraseña generada al correo proporcionado.";
                 return View("Registrar_administrador_local");
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = "Ocurrió un error al registrar el administrador local: " + ex.Message;
+                TempData["ErrorMessage_Reg_admin_local"] = "Ocurrió un error al registrar el administrador local: " + ex.Message;
                 return RedirectToAction("Registrar_administrador_local", "Administrador_general");
             }
         }
@@ -210,7 +213,7 @@ namespace TerMasterr.Controllers
 
         //}
 
-        
+
         [HttpPost]
         public ActionResult Agregar_pueblo(Pueblo pueblo)
         {
@@ -343,6 +346,7 @@ namespace TerMasterr.Controllers
                     id_admin_general = admingeneral.id_admin_general,
                     nombre_admin_general = admingeneral.nombre_admin_general,
                     correo_admin_general = admingeneral.correo_admin_general,
+                    contraseña_admin_general = admingeneral.contraseña_admin_general,
                     telefono_admin_general = admingeneral.telefono_admin_general
                 }, JsonRequestBehavior.AllowGet);
             }
@@ -367,6 +371,7 @@ namespace TerMasterr.Controllers
                 var update = Builders<AdminG>.Update
                                              .Set(c => c.nombre_admin_general, updatedConductor.nombre_admin_general)
                                              .Set(c => c.correo_admin_general, updatedConductor.correo_admin_general)
+                                             .Set(c => c.contraseña_admin_general, updatedConductor.contraseña_admin_general)
                                              .Set(c => c.telefono_admin_general, updatedConductor.telefono_admin_general);
 
                 var result = _context.GetCollection<AdminG>("AdminG").UpdateOne(filter, update);
@@ -394,7 +399,7 @@ namespace TerMasterr.Controllers
 
             var buses = filtro.ToList();
 
-            using (System.IO.MemoryStream stream = new System.IO.MemoryStream())
+            using (var stream = new MemoryStream())
             {
                 // Crear un documento PDF
                 var pdfDoc = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4, 25, 25, 30, 30);
@@ -423,7 +428,6 @@ namespace TerMasterr.Controllers
 
                 pdfDoc.Add(table);
                 pdfDoc.Close();
-
                 var content = stream.ToArray();
                 return File(content, "application/pdf", "ReporteBuses.pdf");
             }

@@ -4,7 +4,18 @@
 }
 
 <div>
-    <h2>QR</h2>
+    <style>
+        .header_2 {
+            background: -webkit-linear-gradient(315deg, #4723D9 0%, #00D2Df 100%);
+            padding: 10px;
+            border-radius: 10px 10px 0 0;
+        }
+    </style>
+
+    <div class="header_2">
+        <h2 class="text-light">QR</h2>
+    </div>
+    <br />
     <img class="img-fluid d-block mx-auto" src="@Url.Action("Generar_QR", "Administrador_general")" alt="Código QR para Asistencia" />
 
     <a href="@Url.Action("Generar_QR", "Administrador_general", new { download = true })" class="btn btn-primary mt-3">Descargar QR</a>

@@ -54,27 +54,27 @@
 
 
     <button type="submit" class="btn btn-primary btn-block">Registrar</button>
-    <a href="@Url.Action("Gestion_admin_local", "Admin_local")" class="btn btn-secondary submit_btn w-40 my-4">Atrás</a>
+    <a href="@Url.Action("Gestion_admin_local", "Administrador_general")" class="btn btn-secondary submit_btn w-40 my-4">Atrás</a>
 
-    @if (TempData["SuccessMessage"] != null)
+    @if (TempData["SuccessMessage_Reg_admin_local"] != null)
     {
         <script>
             Swal.fire({
                 icon: 'success',
                 title: '¡Éxito!',
-                text: '@Html.Raw(TempData["SuccessMessage"])'
+                text: '@Html.Raw(TempData["SuccessMessage_Reg_admin_local"])'
             }).then(function () {
                 window.location = '@Url.Action("Gestión_admin_local", "Administrador_general")';
             });
         </script>
     }
-    @if (TempData["ErrorMessage"] != null)
+    @if (TempData["ErrorMessage_Reg_admin_local"] != null)
     {
         <script>
             Swal.fire({
                 icon: 'error',
                 title: '¡Error!',
-                text: '@Html.Raw(TempData["ErrorMessage"])'
+                text: '@Html.Raw(TempData["ErrorMessage_Reg_admin_local"])'
             });
         </script>
     }

@@ -38,12 +38,12 @@ namespace TerMasterr.Controllers
         {
             return View();
         }
-        public ActionResult Bus()
+        public ActionResult Bus() 
         {
             // Obtén el ID del pueblo desde la sesión
-            var idPuebloStr = Session["PuebloId"]?.ToString();
+            var idPuebloStr = Session["PuebloId"]?.ToString(); //Obtener el id del pueblo de la sesión
 
-            if (string.IsNullOrEmpty(idPuebloStr) || !int.TryParse(idPuebloStr, out int idPueblo))
+            if (string.IsNullOrEmpty(idPuebloStr) || !int.TryParse(idPuebloStr, out int idPueblo)) // Validar que el id del pueblo no esté vacío y combierte el id del pueblo a int
             {
                 return RedirectToAction("Login", "Login"); // Redirige si no hay ID de pueblo en la sesión o es inválido
             }
@@ -61,14 +61,6 @@ namespace TerMasterr.Controllers
 
             ViewBag.Conductores = conductoresEnPueblo; // Enviamos la lista de conductores a la vista
             return View(busesFiltrados); // Enviamos la lista de buses a la vista
-        }
-
-
-        public ActionResult Asignar_horarios()
-
-        {
-            var conductor = _context.GetCollection<Conductor>("Conductor").Find(c => true).ToList();
-            return View(conductor);
         }
         public ActionResult Gestion_conductor()
         {
@@ -315,10 +307,6 @@ namespace TerMasterr.Controllers
 
 
 
-
-
-
-
         //[HttpPost]
         //public ActionResult Edit_bus(Bus bus)
         //{
@@ -515,6 +503,7 @@ namespace TerMasterr.Controllers
                     nombre_admin_local = admin_local.nombre_admin_local,
                     apellido_admin_local = admin_local.apellido_admin_local,
                     correo_admin_local = admin_local.correo_admin_local,
+                    contraseña_admin_local = admin_local.contraseña_admin_local,
                     telefono_admin_local = admin_local.telefono_admin_local
                 }, JsonRequestBehavior.AllowGet);
             }
@@ -546,6 +535,7 @@ namespace TerMasterr.Controllers
                                                   .Set(c => c.nombre_admin_local, updatedAdminLocal.nombre_admin_local)
                                                   .Set(c => c.apellido_admin_local, updatedAdminLocal.apellido_admin_local)
                                                   .Set(c => c.correo_admin_local, updatedAdminLocal.correo_admin_local)
+                                                  .Set(c => c.contraseña_admin_local, updatedAdminLocal.contraseña_admin_local)
                                                   .Set(c => c.telefono_admin_local, updatedAdminLocal.telefono_admin_local);
 
                 // Ejecutar la actualización

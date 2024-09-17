@@ -29,6 +29,11 @@
         <input type="tel" class="form-control" id="telefono_admin_general" name="telefono_admin_general" placeholder="Número de teléfono" value="@ViewBag.telefono_admin_general" required />
     </div>
     <br />
+    <div class="form-group">
+        <label for="contraseña">Contraseña</label>
+        <input type="text" class="form-control" id="contraseña_admin_general" name="contraseña_admin_general" placeholder="Contraseña" value="@ViewBag.contraseña_admin_general" required />
+    </div>
+    <br />
     
     <button type="submit" class="btn btn-primary btn-block">Modificar</button>
 </form>
@@ -87,6 +92,7 @@ $(document).ready(function () {
                 $('#nombre_admin_general').val(data.nombre_admin_general);
                 $('#correo_admin_general').val(data.correo_admin_general);
                 $('#telefono_admin_general').val(data.telefono_admin_general);
+                $('#contraseña_admin_general').val(data.contraseña_admin_general);
             } else {
                 alert("No se recibieron datos o el Administrador no fue encontrado.");
             }

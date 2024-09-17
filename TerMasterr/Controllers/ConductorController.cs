@@ -156,6 +156,7 @@ namespace TerMasterr.Controllers
         {
             // Verificar que el contenido del QR sea el correcto
             if (qrContent != "https://192.168.1.4:45455/Conductor/RegistrarAsistencia") // La URL puede ser cambiada dependiendo de la URL que nos brinde la herramienta Conveyor
+
             {
                 // Mensaje que se muestra si se intenta escanear un QR que no tenga el contenido anteriormente especificado
                 return Json(new { success = false, message = "QR incorrecto. Asegúrese de escanear el código correcto." }, JsonRequestBehavior.AllowGet);
