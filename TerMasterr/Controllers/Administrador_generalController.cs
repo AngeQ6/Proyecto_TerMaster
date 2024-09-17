@@ -158,42 +158,44 @@ namespace TerMasterr.Controllers
             }
             catch (Exception ex)
             {
+                // Manejo de cualquier error que pueda ocurrir durante el proceso de registro
                 TempData["ErrorMessage_Reg_admin_local"] = "Ocurrió un error al registrar el administrador local: " + ex.Message;
                 return RedirectToAction("Registrar_administrador_local", "Administrador_general");
             }
         }
 
+        // Método para validar el id del pueblo
         [HttpPost]
-        public async Task<JsonResult> Validar_id_pueblo(int id_pueblo)
+        public async Task<JsonResult> Validar_id_pueblo(int id_pueblo) 
         {
             try
             {
-                var conexion = new Conexion();
-                var coleccionPueblo = conexion.GetCollection<Pueblo>("Pueblo");
-                var puebloExistente = await coleccionPueblo.Find(p => p.id_pueblo == id_pueblo).FirstOrDefaultAsync();
+                var conexion = new Conexion(); // Abre una nueva conexión a la base de datos
+                var coleccionPueblo = conexion.GetCollection<Pueblo>("Pueblo"); // Obtener la colecciónde pueblos
+                var puebloExistente = await coleccionPueblo.Find(p => p.id_pueblo == id_pueblo).FirstOrDefaultAsync(); 
 
-                if (puebloExistente != null)
+                if (puebloExistente != null) // Condición que se cumple si el pueblo existe
                 {
                     return Json(new { existe = true });
                 }
-                else
+                else // Condición que se cumple si el pueblo no existe
                 {
                     return Json(new { existe = false });
                 }
             }
             catch (Exception ex)
             {
+                // Captura de errores que puedan suceder durante el proceso 
                 return Json(new { existe = false, error = ex.Message });
             }
         }
 
 
-
-
-        private string GenerarContraseña(int longitud = 6)
+        // Método para generar la contraseña de manera aleatoria
+        private string GenerarContraseña(int longitud = 6) // Especificación de la cantidad de dígitos para la contraseña
         {
-            const string caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            var random = new Random();
+            const string caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; // Se especifica los carácteres en los que se va a mostrar la contraseña
+            var random = new Random(); // Función que permite escoger la contraseña de manera aleatoria 
             return new string(Enumerable.Repeat(caracteres, longitud)
                                         .Select(s => s[random.Next(s.Length)]).ToArray());
         }
@@ -213,32 +215,34 @@ namespace TerMasterr.Controllers
 
         //}
 
-
+        // Método para agregar a los pueblos
         [HttpPost]
-        public ActionResult Agregar_pueblo(Pueblo pueblo)
-        {
-            if (ModelState.IsValid)
+        public ActionResult Agregar_pueblo(Pueblo pueblo) 
+        { 
+            if (ModelState.IsValid) // Condición que se cumple si el modelo de datos es válido 
             {
                 try
                 {
-                    // Verificar si ya existe un pueblo con el mismo nombre
-                    var pueblo_existente = _context.GetCollection<Pueblo>("Pueblo")
+                    // Verificar si ya existe un pueblo con el mismo nombre 
+                    var pueblo_existente = _context.GetCollection<Pueblo>("Pueblo") // Obtener la colección de los pueblos
                         .Find(b => b.nombre_pueblo == pueblo.nombre_pueblo)
                         .FirstOrDefault();
 
-                    if (pueblo_existente != null)
+                    if (pueblo_existente != null) // Condición que se cumple si el pueblo ya existe
                     {
+                        // Mensaje que indica la existencia del pueblo e impide el registro duplicado
                         TempData["ErrorMessage"] = "Ya existe un pueblo registrado con ese nombre.";
                         return RedirectToAction("Pueblos");
                     }
 
                     // Verificar si el administrador ya tiene un pueblo asignado
-                    var administradorConPueblo = _context.GetCollection<Pueblo>("Pueblo")
+                    var administradorConPueblo = _context.GetCollection<Pueblo>("Pueblo") // Obtener la colección de pueblos
                         .Find(p => p.id_admin_local == pueblo.id_admin_local)
                         .FirstOrDefault();
 
-                    if (administradorConPueblo != null)
+                    if (administradorConPueblo != null) // Condición uqe se cumple si el administrador local ya tiene un pueblo asignado
                     {
+                        // Mensaje que indica que el administrador local ya tiene un pueblo asignado e impide el registro de múltiples datos
                         TempData["ErrorMessage"] = "El administrador ya tiene un pueblo asignado.";
                         return RedirectToAction("Pueblos");
                     }
@@ -274,18 +278,18 @@ namespace TerMasterr.Controllers
         }
 
 
-
+        // Obtener los datos del pueblo
         [HttpGet]
         public ActionResult Get_puebloById(int id)
         {
-            var pueblo = _context.GetCollection<Pueblo>("Pueblo")
-                                    .Find(c => c.id_pueblo == id)
+            var pueblo = _context.GetCollection<Pueblo>("Pueblo") // Obtener la colección de pueblos
+                                    .Find(c => c.id_pueblo == id) 
                                     .FirstOrDefault();
-            if (pueblo == null)
+            if (pueblo == null) // Condición que se cumple si no hay pueblos
             {
                 return HttpNotFound();
             }
-
+            // Condición que se cumple si hay pueblos y se obtiene los datos del pueblo especificado
             return Json(new
             {
                 id_pueblo = pueblo.id_pueblo,
@@ -295,15 +299,15 @@ namespace TerMasterr.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
-
+        // Método para editar a los pueblos
         [HttpPost]
         public ActionResult Editar_pueblo(Pueblo pueblo)
-        {
-            var puelo_existente = _context.GetCollection<Pueblo>("Pueblo")
+        { 
+            var puelo_existente = _context.GetCollection<Pueblo>("Pueblo") // Obtener la colección de los pueblos
                                               .Find(c => c.id_pueblo == pueblo.id_pueblo)
                                               .FirstOrDefault();
 
-            if (puelo_existente != null)
+            if (puelo_existente != null) // Condición que se cumple si el pueblo especificado existe en la base de datos
             {
                 //Campos que se van a editar
                 puelo_existente.nombre_pueblo = pueblo.nombre_pueblo;
@@ -313,33 +317,36 @@ namespace TerMasterr.Controllers
                 TempData["ErrorMessage_EditPueblo"] = "Error.";
                 _context.GetCollection<Pueblo>("Pueblo").ReplaceOne(c => c.id_pueblo == pueblo.id_pueblo, puelo_existente);
             }
+            // Mensaje que indica que la actualización de los datos ha sido exitosa
             TempData["SuccessMessage_EditPueblo"] = "Actualizacion exitosa.";
             return RedirectToAction("Pueblos");
         }
 
+        // Método para obtener los datos del administrador general
         [HttpGet]
         public JsonResult Obtener_datos_admin_general()
         {
             try
             {
-                // Supongamos que obtienes el ID del conductor desde la sesión
-                int idadmingeneral = (int)Session["id_admin_general"]; // Asegúrate de que este ID esté correctamente almacenado en la sesión
+                // Ontener el ID de la sesión
+                int idadmingeneral = (int)Session["id_admin_general"]; // ID de la sesión especificado en el método Login del controlador Login
 
                 // Crear una instancia de la clase Conexion
                 Conexion conexion = new Conexion();
 
-                // Obtener la colección de conductores
+                // Obtener la colección de administradores generales
                 var coleccionAdmingeneral = conexion.GetCollection<AdminG>("AdminG");
 
-                // Buscar el conductor por ID
+                // Buscar el administrador por ID
                 var admingeneral = coleccionAdmingeneral.Find(c => c.id_admin_general == idadmingeneral).FirstOrDefault();
 
-                if (admingeneral == null)
+                if (admingeneral == null) // Condición que se cumple si el administrador general no se encuentra en la base de datos
                 {
+                    // Mensaje que infica que administrador general no fue encontrado 
                     return Json(new { success = false, message = "Administrador general no encontrado" }, JsonRequestBehavior.AllowGet);
                 }
 
-                // Devolver los datos del conductor como JSON
+                // Devolver los datos del administrador como JSON
                 return Json(new
                 {
                     success = true,
@@ -357,12 +364,13 @@ namespace TerMasterr.Controllers
             }
         }
 
+        // Método para editar los datos personales del administrador general
         [HttpPost]
         public JsonResult Modificar_datos_admin_general(AdminG updatedConductor)
         {
-            if (Session["id_admin_general"] != null)
+            if (Session["id_admin_general"] != null) // Condición que se cumple si el id de la sesión ha sido autenticada
             {
-                int id_admingeneral = (int)Session["id_admin_general"];
+                int id_admingeneral = (int)Session["id_admin_general"]; // Obtiene el id de la sesión
 
                 // Crear el filtro para buscar por el campo id_admin_general
                 var filter = Builders<AdminG>.Filter.Eq(c => c.id_admin_general, id_admingeneral);
@@ -374,9 +382,9 @@ namespace TerMasterr.Controllers
                                              .Set(c => c.contraseña_admin_general, updatedConductor.contraseña_admin_general)
                                              .Set(c => c.telefono_admin_general, updatedConductor.telefono_admin_general);
 
-                var result = _context.GetCollection<AdminG>("AdminG").UpdateOne(filter, update);
+                var result = _context.GetCollection<AdminG>("AdminG").UpdateOne(filter, update); // Obtiene la colección para actualizarla con los nuevos datos
 
-                if (result.ModifiedCount > 0)
+                if (result.ModifiedCount > 0) // Condición que se cumple si el resultado es correcto
                 {
                     return Json(new { success = true });
                 }
@@ -385,10 +393,10 @@ namespace TerMasterr.Controllers
             return Json(new { success = false });
         }
 
-
+        // Método para descaegar los reportes de la asistencia de buses
         public ActionResult DescargarReportePDF(DateTime? fechaInicio, DateTime? fechaFin)
         {
-            var collection = _context.GetCollection<Asistencia>("Asistencia");
+            var collection = _context.GetCollection<Asistencia>("Asistencia"); // Obtener la colección Asistencia 
 
             var filtro = collection.Find(b => true);
 
