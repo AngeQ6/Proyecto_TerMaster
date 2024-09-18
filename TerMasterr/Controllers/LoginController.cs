@@ -115,18 +115,18 @@ namespace TerMasterr.Controllers
                         return RedirectToAction("Gestion_conductor", "Admin_local"); // Redirecciona a la vista de gestión de conductores del controlador Admin_local
                     }
 
-                    ViewBag.Error = "Número de identificación o contraseña incorrecta"; // Mensaje por si no se cumple ninguna de las condiciones anteriores o si los datos ingresados no son correctos
+                    TempData["ErrorMessage_login"] = "Número de identificación o contraseña incorrecta"; // Mensaje por si no se cumple ninguna de las condiciones anteriores o si los datos ingresados no son correctos
                     return RedirectToAction("Login", "Login"); // Redirecciona nuevamente a la vista de Login para que intente nuevamente iniciar sesión
                 }
                 catch (ApplicationException ex)
                 {
                     // Captura y muestra errores durante el proceso de inicio de sesión
-                    ViewBag.Error = "Error al procesar la solicitud: " + ex.Message; 
+                    TempData["ErrorMessage_login"] = "Error al procesar la solicitud: " + ex.Message; 
                     return View();
                 }
             }
             // Si el estado del modelo no es válido
-            ViewBag.Error = "ModelState no es válido";
+            TempData["ErrorMessage_login"] = "ModelState no es válido";
             return View();
         }
 

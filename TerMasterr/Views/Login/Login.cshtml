@@ -64,10 +64,10 @@
                                                 <span class="fas fa-key"></span>
                                                 <input type="password" name="contraseña" id="contraseña" placeholder="Contraseña" required>
                                             </div>
-                                            @if (ViewBag.Error != null)
+                                            @if (TempData["ErrorMessage_login"] != null)
                                             {
                                                 <div class="alert alert-danger" role="alert">
-                                                    @ViewBag.Error
+                                                    @TempData["ErrorMessage_login"]
                                                 </div>
                                             }
 

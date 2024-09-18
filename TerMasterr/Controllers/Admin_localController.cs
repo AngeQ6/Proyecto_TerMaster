@@ -241,15 +241,15 @@ namespace TerMasterr.Controllers
             try
             {
                 // Buscar el bus por su Id (usando id_conductor como referencia).
-                var bus = _context.GetCollection<Bus>("Bus")
-                    .Find(b => b.id_conductor == id)
+                var bus = _context.GetCollection<Bus>("Bus") // Obtener colección Bus
+                    .Find(b => b.id_conductor == id) 
                     .FirstOrDefault();
 
                 // Si no se encuentra el bus, retornar un mensaje de error.
                 if (bus == null)
                 {
                     TempData["ErrorMessage_eliminacionBus"] = "No se encontró un bus con el ID proporcionado.";
-                    return RedirectToAction("Bus");
+                    return RedirectToAction("Bus"); // Retorna a la vista Bus luego de mostrar el mensaje
                 }
 
                 // Eliminar el bus de la colección 'Bus'.
